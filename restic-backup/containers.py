@@ -6,17 +6,43 @@ DOCKER_BASE_URL = os.environ.get('DOCKER_BASE_URL') or "unix://tmp/docker.sock"
 VOLUME_TYPE_BIND = "bind"
 VOLUME_TYPE_VOLUME = "volume"
 
+
 class Container:
 
     def __init__(self, data):
         self.id = data.get('Id')
+        self.state = data.get('State')
+        self.labels = data.get('Labels')
         self.names = data.get('Names')
         self.mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]
 
+    @property
+    def backup_enabled(self):
+        return self.labels.get('restic-volume-backup.enabled') == 'True'
+
+    @property
+    def is_running(self):
+        return self.state == 'running'
+
+    @property
+    def service_name(self):
+        return self.labels['com.docker.compose.service']
+
+    @property
+    def project_name(self):
+        return self.labels['com.docker.compose.project']
+
+    @property
+    def is_oneoff(self):
+        return self.labels['com.docker.compose.oneoff'] == 'True'
+
     def to_dict(self):
         return {
-            "Id": self.id,
-            "Mounts": [mnt.data for mnt in self.mounts]
+            'Id': self.id,
+            'Names': self.names,
+            'State': self.state,
+            'Labels': self.labels,
+            'Mounts': [mnt.data for mnt in self.mounts]
         }
 
 
@@ -90,17 +116,28 @@ class RunningContainers:
         client.close()
 
         self.containers = []
+        self.all_containers = []
         self.backup_container = None
 
+        # Read all containers and find this container
         for entry in all_containers:
-            if entry['Id'].startswith(os.environ['HOSTNAME']):
-                self.backup_container = Container(entry)
+            container = Container(entry)
+
+            if container.id.startswith(os.environ['HOSTNAME']):
+                self.backup_container = container
             else:
-                if entry['State'] == "running":
-                    self.containers.append(Container(entry))
+                self.all_containers.append(container)
 
         if not self.backup_container:
             raise ValueError("Cannot find metadata for backup container")
+
+        for container in self.all_containers:
+            # Weed out containers not beloging to this project.
+            if container.project_name == self.backup_container.project_name:
+                # Keep only containers with backup enabled
+                # and not oneoffs (started manually with run or similar)
+                if container.backup_enabled and not container.is_oneoff:
+                    self.containers.append(container)
 
     def backup_volumes(self):
         return self.backup_container.mounts
