@@ -20,6 +20,8 @@ RESTIC_REPOSITORY
 RESTIC_PASSWORD
 ```
 
+Backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
+
 Example compose setup:
 
 ```yaml
