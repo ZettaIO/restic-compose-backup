@@ -141,7 +141,7 @@ class RunningContainers:
 
             # Keep only containers with backup enabled
             if not container.backup_enabled:
-                container
+                continue
 
             # and not oneoffs (started manually with run or similar)
             if container.is_oneoff:
