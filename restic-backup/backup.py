@@ -7,12 +7,12 @@ cmds = ['volumes', 'backup', 'snapshots', 'check']
 
 
 class Config:
-    container_name = os.environ['CONTAINER_NAME']
+    repository = os.environ['RESTIC_REPOSITORY']
     password = os.environ['RESTIC_PASSWORD']
 
     @classmethod
     def check(cls):
-        if not cls.container_name:
+        if not cls.repository:
             raise ValueError("CONTAINER env var not set")
 
         if not cls.password:
@@ -34,7 +34,7 @@ def main():
     if mode == 'volumes':
         volumes = containers.volume_mounts()
         for vol in volumes:
-            print(vol)
+            # print(vol)
             print(vol.mount_string())
 
         binds = containers.bind_mounts()
@@ -42,13 +42,13 @@ def main():
             print(vol.mount_string())
 
     if mode == 'backup':
-        restic.init_repo(Config.container_name)
+        restic.init_repo(Config.repository)
 
         for vol in containers.backup_volumes():
-            restic.backup_volume(Config.container_name, vol)
+            restic.backup_volume(Config.repository, vol)
 
     if mode == 'snapshots':
-        restic.snapshots(Config.container_name)
+        restic.snapshots(Config.repository)
 
 if __name__ == '__main__':
     main()

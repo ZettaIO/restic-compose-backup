@@ -12,4 +12,7 @@ Backs up all docker volumes. This includes both host mapped volumes and actual d
 
 ## Configuration
 
-TODO
+```bash
+RESTIC_REPOSITORY
+RESTIC_PASSWORD
+```

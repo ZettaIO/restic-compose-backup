@@ -2,44 +2,40 @@ import os
 from subprocess import Popen, PIPE, check_call
 
 
-def repo_path(container_name):
-    return "swift:{}:/".format(container_name)
-
-
-def init_repo(container_name):
+def init_repo(repository):
     run_command([
         "restic",
         "-r",
-        repo_path(container_name),
+        repository,
         "init",
     ])
 
 
-def backup_volume(container_name, volume):
+def backup_volume(repository, volume):
     run_command([
         "restic",
         "-r",
-        repo_path(container_name),
+        repository,
         "--verbose",
         "backup",
         volume.destination,
     ])
 
 
-def snapshots(container_name):
+def snapshots(repository):
     run_command([
         "restic",
         "-r",
-        repo_path(container_name),
+        repository,
         "snapshots",
     ])
 
 
-def check(container_name):
+def check(repository):
     run_command([
         "restic",
         "-r",
-        repo_path(container_name),
+        repository,
         "check",
     ])
 
