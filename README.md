@@ -53,7 +53,7 @@ volumes:
 Include
 
 ```yaml
-example:
+  example:
     image: some_image
     labels:
       restic-volume-backup.enabled: true
@@ -74,7 +74,7 @@ volumes:
 Exclude:
 
 ```yaml
-example:
+  example:
     image: some_image
     labels:
       restic-volume-backup.enabled: true
