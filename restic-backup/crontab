@@ -1,0 +1,1 @@
+30 * * * * source /env.sh && python3 restic-backup/backup.py backup >> /backup.log 2>&1
