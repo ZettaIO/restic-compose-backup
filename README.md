@@ -34,7 +34,7 @@ services:
       - some_other_vars.env
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-  some_service:
+  example:
     image: some_image
     # Enable volume backup with label
     labels:
@@ -48,4 +48,45 @@ services:
 
 volumes:
   media:
+```
+
+Include
+
+```yaml
+example:
+    image: some_image
+    labels:
+      restic-volume-backup.enabled: true
+      restic-volume-backup.include: "files,data"
+    volumes:
+      # Source don't match include filter. No backup.
+      - media:/srv/media
+      # Matches include filter
+      - files:/srv/files
+      - /srv/data:/srv/data
+
+volumes:
+  media:
+  files:
+
+```
+
+Exclude:
+
+```yaml
+example:
+    image: some_image
+    labels:
+      restic-volume-backup.enabled: true
+      restic-volume-backup.exclude: "media"
+    volumes:
+      # Excluded by filter
+      - media:/srv/media
+      # Backed up
+      - files:/srv/files
+      - /srv/data:/srv/data
+
+volumes:
+  media:
+  files:
 ```
