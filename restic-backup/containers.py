@@ -12,9 +12,12 @@ class Container:
     def __init__(self, data):
         self.id = data.get('Id')
         self.state = data.get('State')
-        self.labels = data.get('Labels')
-        self.names = data.get('Names')
+        self.labels = data.get('Labels', {})
+        self.names = data.get('Names', [])
         self.mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]
+
+        self.include = self.labels.get('restic-volume-backup.enabled', '').split(',')
+        self.exlude = self.labels.get('restic-volume-backup.exclude', '').split(',')
 
     @property
     def backup_enabled(self):
@@ -133,11 +136,19 @@ class RunningContainers:
 
         for container in self.all_containers:
             # Weed out containers not beloging to this project.
-            if container.project_name == self.backup_container.project_name:
-                # Keep only containers with backup enabled
-                # and not oneoffs (started manually with run or similar)
-                if container.backup_enabled and not container.is_oneoff:
-                    self.containers.append(container)
+            if container.project_name != self.backup_container.project_name:
+                continue
+
+            # Keep only containers with backup enabled
+            if not container.backup_enabled:
+                container
+
+            # and not oneoffs (started manually with run or similar)
+            if container.is_oneoff:
+                continue
+
+            self.containers.append(container)
+
 
     def backup_volumes(self):
         return self.backup_container.mounts
