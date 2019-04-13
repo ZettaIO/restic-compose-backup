@@ -13,7 +13,37 @@ This includes both host mapped volumes and actual docker volumes.
 
 ## Configuration
 
+Required env variables for restic:
+
 ```bash
 RESTIC_REPOSITORY
 RESTIC_PASSWORD
+```
+
+Example compose setup:
+
+```yaml
+version: '3'
+services:
+  backup:
+    build: restic-volume-backup
+    environment:
+      - RESTIC_REPOSITORY=<whatever restic supports>
+      - RESTIC_PASSWORD=hopefullyasecturepw
+    env_file:
+      - some_other_vars.env
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  some_service:
+    image: some_image
+    # Enable volume backup with label
+    labels:
+      restic-volume-backup.enabled: true
+    # These volumes will be backed up
+    volumes:
+      media:/srv/media
+      /srv/files:/srv/files
+
+volumes:
+  media:
 ```
