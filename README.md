@@ -41,8 +41,10 @@ services:
       restic-volume-backup.enabled: true
     # These volumes will be backed up
     volumes:
-      media:/srv/media
-      /srv/files:/srv/files
+      # Docker volume
+      - media:/srv/media
+      # Host map
+      - /srv/files:/srv/files
 
 volumes:
   media:
