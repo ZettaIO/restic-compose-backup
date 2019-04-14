@@ -39,13 +39,31 @@ class Container:
     def is_oneoff(self):
         return self.labels['com.docker.compose.oneoff'] == 'True'
 
+    def filter_mounts(self):
+        """Get all mounts for this container matching filters"""
+        for mount in self.mounts:
+            if self.include:
+                for pattern in self.include:
+                    if pattern in mount.source:
+                        yield mount
+                        continue
+            elif self.exlude:
+                for pattern in self.exlude:
+                    if pattern in mount.source:
+                        continue
+                    yield mount
+            else:
+                yield mount
+
     def to_dict(self):
         return {
             'Id': self.id,
             'Names': self.names,
             'State': self.state,
             'Labels': self.labels,
-            'Mounts': [mnt.data for mnt in self.mounts]
+            'Mounts': [mnt.data for mnt in self.mounts],
+            'include': self.include,
+            'exclude': self.exlude,
         }
 
 
@@ -136,10 +154,6 @@ class RunningContainers:
                 continue
 
             self.containers.append(container)
-
-
-    def backup_volumes(self):
-        return self.backup_container.mounts
 
     def gen_volumes(self, volume_type):
         """Generator yielding volumes of a specific type"""
