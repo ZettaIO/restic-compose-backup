@@ -52,7 +52,7 @@ class Container:
 class Mount:
     """Mount wrapper"""
     def __init__(self, data, container=None):
-        self.data = data
+        self._data = data
         self._container = container
 
     @property
@@ -61,31 +61,19 @@ class Mount:
 
     @property
     def type(self):
-        return self.data.get('Type')
+        return self._data.get('Type')
 
     @property
     def name(self):
-        return self.data.get('Name')
+        return self._data.get('Name')
 
     @property
     def source(self):
-        return self.data.get('Source')
+        return self._data.get('Source')
 
     @property
     def destination(self):
-        return self.data.get('Destination')
-
-    @property
-    def driver(self):
-        return self.data.get('Driver')
-
-    @property
-    def mode(self):
-        return self.data.get('Mode')
-
-    @property
-    def rw(self):
-        return self.data.get('RW')
+        return self._data.get('Destination')
 
     def mount_string(self):
         if self.type == VOLUME_TYPE_VOLUME:
@@ -99,7 +87,7 @@ class Mount:
         return str(self)
 
     def __str__(self):
-        return str(self.data)
+        return str(self._data)
 
     def __hash__(self):
         """Uniquness for a volume"""
