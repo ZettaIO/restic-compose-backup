@@ -3,6 +3,8 @@ import docker
 import json
 import pprint
 
+from restic_volume_backup import utils
+
 DOCKER_BASE_URL = os.environ.get('DOCKER_BASE_URL') or "unix://tmp/docker.sock"
 VOLUME_TYPE_BIND = "bind"
 VOLUME_TYPE_VOLUME = "volume"
@@ -121,10 +123,7 @@ class Mount:
 class RunningContainers:
 
     def __init__(self):
-        client = docker.Client(base_url=DOCKER_BASE_URL)
-        all_containers = client.containers()
-        client.close()
-
+        all_containers = utils.list_containers()
         self.containers = []
         self.this_container = None
 
