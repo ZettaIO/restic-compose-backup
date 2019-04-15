@@ -5,6 +5,7 @@
 
 # python
 __pycache__
+*.egg-info/
 
 # Virtualenvs
 env
