@@ -10,4 +10,7 @@ setup(
     install_requires=[
         'docker-py==1.10.6',
     ],
+    entry_points={'console_scripts': [
+        'restic-volume-backup = restic_volume_backup.cli:main',
+    ]},
 )
