@@ -1,3 +1,5 @@
 .venv/
+.vscode/
 .gitignore
 Dockerfile
+tests/
