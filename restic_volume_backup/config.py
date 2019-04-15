@@ -1,9 +1,4 @@
 import os
-import sys
-from containers import RunningContainers
-import restic
-
-cmds = ['status', 'backup', 'snapshots', 'check']
 
 
 class Config:
