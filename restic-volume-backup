@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /restic-volume-backup
+python3 -m restic_volume_backup.cli $@
