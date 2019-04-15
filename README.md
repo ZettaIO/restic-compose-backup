@@ -92,3 +92,11 @@ volumes:
   media:
   files:
 ```
+
+## Running Tests
+
+```
+python setup.py develop
+pip install -r tests/requirements.txt
+pytest tests
+```
