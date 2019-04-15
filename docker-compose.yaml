@@ -5,5 +5,7 @@ services:
     env_file:
       - restic_volume_backup.env
     volumes:
+      # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ../restic-volume-backup/restic-backup:/restic-backup
+      # Map in project source
+      - .:/restic-volume-backup
