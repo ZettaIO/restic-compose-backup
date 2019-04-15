@@ -100,3 +100,10 @@ python setup.py develop
 pip install -r tests/requirements.txt
 pytest tests
 ```
+
+## TEMP
+
+```
+mysql://user:pw@host:port/dbname
+postgresql://user:pw@host:port/dbname
+```
