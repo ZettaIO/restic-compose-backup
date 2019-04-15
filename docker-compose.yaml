@@ -1,0 +1,9 @@
+version: '3'
+services:
+  backup:
+    build: .
+    env_file:
+      - restic_volume_backup.env
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ../restic-volume-backup/restic-backup:/restic-backup
