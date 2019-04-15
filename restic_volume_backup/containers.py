@@ -5,7 +5,6 @@ import pprint
 
 from restic_volume_backup import utils
 
-DOCKER_BASE_URL = os.environ.get('DOCKER_BASE_URL') or "unix://tmp/docker.sock"
 VOLUME_TYPE_BIND = "bind"
 VOLUME_TYPE_VOLUME = "volume"
 
