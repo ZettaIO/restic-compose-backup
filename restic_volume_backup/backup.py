@@ -3,7 +3,7 @@ import sys
 from containers import RunningContainers
 import restic
 
-cmds = ['volumes', 'backup', 'snapshots', 'check']
+cmds = ['status', 'backup', 'snapshots', 'check']
 
 
 class Config:
@@ -31,20 +31,22 @@ def main():
 
     containers = RunningContainers()
 
-    if mode == 'volumes':
-        volumes = containers.volume_mounts()
-        for vol in volumes:
-            print(vol)
-            print(vol.mount_string())
+    if mode == 'status':
+        containers.print_services()
+        # volumes = containers.volume_mounts()
+        # for vol in volumes:
+        #     print(vol)
+        #     print(vol.mount_string())
 
-        binds = containers.bind_mounts()
-        for vol in binds:
-            print(binds)
-            print(vol.mount_string())
+        # binds = containers.bind_mounts()
+        # for vol in binds:
+        #     print(binds)
+        #     print(vol.mount_string())
 
     if mode == 'backup':
+        print("Starting backup ..")
         # TODO: Errors when repo already exists
-        restic.init_repo(Config.repository)
+        # restic.init_repo(Config.repository)
 
         # for vol in containers.backup_volumes():
         #     restic.backup_volume(Config.repository, vol)

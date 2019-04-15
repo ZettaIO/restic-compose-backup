@@ -1,6 +1,7 @@
 import os
 import docker
 import json
+import pprint
 
 DOCKER_BASE_URL = os.environ.get('DOCKER_BASE_URL') or "unix://tmp/docker.sock"
 VOLUME_TYPE_BIND = "bind"
@@ -125,54 +126,64 @@ class RunningContainers:
         client.close()
 
         self.containers = []
-        self.all_containers = []
-        self.backup_container = None
+        self.this_container = None
 
-        # Read all containers and find this container
-        for entry in all_containers:
-            container = Container(entry)
+        # Find the container we are running in.
+        # If we don't have this information we cannot continue
+        for container_data in all_containers:
+            if container_data.get('Id').startswith(os.environ['HOSTNAME']):
+                self.this_container = Container(container_data)
 
-            if container.id.startswith(os.environ['HOSTNAME']):
-                self.backup_container = container
-            else:
-                self.all_containers.append(container)
-
-        if not self.backup_container:
+        if not self.this_container:
             raise ValueError("Cannot find metadata for backup container")
 
-        for container in self.all_containers:
-            # Weed out containers not beloging to this project.
-            if container.project_name != self.backup_container.project_name:
-                continue
+        # Gather all containers in the current compose setup
+        for container_data in all_containers:
+            # pprint.pprint(container_data, indent=2)
+            container = Container(container_data)
+            if container.project_name == self.this_container.project_name:
+                if container.id != self.this_container.id:
+                    self.containers.append(container)
 
-            # Keep only containers with backup enabled
-            if not container.backup_enabled:
-                continue
+        # for container in self.all_containers:
+        #     # Weed out containers not beloging to this project.
+        #     if container.project_name != self.backup_container.project_name:
+        #         continue
 
-            # and not oneoffs (started manually with run or similar)
-            if container.is_oneoff:
-                continue
+        #     # Keep only containers with backup enabled
+        #     if not container.backup_enabled:
+        #         continue
 
-            self.containers.append(container)
+        #     # and not oneoffs (started manually with run or similar)
+        #     if container.is_oneoff:
+        #         continue
 
-    def gen_volumes(self, volume_type):
-        """Generator yielding volumes of a specific type"""
-        for cont in self.containers:
-            for mnt in cont.mounts:
-                if mnt.type == volume_type:
-                    yield mnt
+        #     self.containers.append(container)
 
-    def volume_mounts(self):
-        """Docker volumes"""
-        return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_VOLUME))
+    # def gen_volumes(self, volume_type):
+    #     """Generator yielding volumes of a specific type"""
+    #     for cont in self.containers:
+    #         for mnt in cont.mounts:
+    #             if mnt.type == volume_type:
+    #                 yield mnt
 
-    def bind_mounts(self):
-        """Host mapped volumes"""
-        return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
+    # def volume_mounts(self):
+    #     """Docker volumes"""
+    #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_VOLUME))
 
-    def print_all(self):
-        print("Backup container:")
-        print(json.dumps(self.backup_container.to_dict(), indent=2))
+    # def bind_mounts(self):
+    #     """Host mapped volumes"""
+    #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
 
-        print("All containers:")
-        print(json.dumps([cnt.to_dict() for cnt in self.containers], indent=2))
+    def print_services(self):
+        print()
+        print("Backup config for compose project '{}'".format(self.this_container.project_name))
+        print()
+
+        for container in self.containers:
+            print('service: {}'.format(container.service_name))
+            mounts = container.filter_mounts()
+            for mount in mounts:
+                print(' - {}'.format(mount.source))
+
+        print()
