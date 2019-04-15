@@ -1,20 +1,18 @@
+import argparse
+import sys
+
 from restic_volume_backup.config import Config
 from restic_volume_backup.containers import RunningContainers
 
 
 def main():
-    if len(sys.argv) < 2:
-        raise ValueError("Missing argument: {}".format(cmds))
-
-    mode = sys.argv[1]
-    if mode not in cmds:
-        raise ValueError("Valid arguments: {}".format(cmds))
+    args = parse_args()
 
     Config.check()
 
     containers = RunningContainers()
 
-    if mode == 'status':
+    if args.action == 'status':
         containers.print_services()
         # volumes = containers.volume_mounts()
         # for vol in volumes:
@@ -26,7 +24,7 @@ def main():
         #     print(binds)
         #     print(vol.mount_string())
 
-    if mode == 'backup':
+    elif args.mode == 'backup':
         print("Starting backup ..")
         # TODO: Errors when repo already exists
         # restic.init_repo(Config.repository)
@@ -34,8 +32,17 @@ def main():
         # for vol in containers.backup_volumes():
         #     restic.backup_volume(Config.repository, vol)
 
-    if mode == 'snapshots':
+    elif args.mode == 'snapshots':
         restic.snapshots(Config.repository)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(prog='restic_volume_backup')
+    parser.add_argument(
+        'action',
+        choices=['status', 'backup'],
+    )
+    return parser.parse_args()
 
 
 if __name__ == '__main__':
