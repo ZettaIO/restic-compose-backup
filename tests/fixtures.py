@@ -1,44 +1,36 @@
 """Generate test fixtures"""
 
 
-def containers(project="default", containers=None):
+def containers(project="default", containers=[]):
     """
     Args:
         project (str): Name of the compose project
         containers (dict):
             {
                 'containers: [
-                    
+                    'service': 'service_name',
+                    'mounts: [{
+                        'Source': '/home/user/stuff',
+                        'Destination': '/srv/stuff',
+                        'Type': 'bind' / 'volume'
+                    }],
                 ]
             }
     """
     def wrapper(*args, **kwargs):
-        return {
+        return [
+        {
             'HostConfig': {'NetworkMode': 'restic-volume-backup_default'},
             'Id': '58d550e8f450129fa757820446e4021822a660918a61437e95115d3dc48ddde8',
             'Image': 'restic-volume-backup_backup',
             'ImageID': 'sha256:4d9a81206af7d65563b85d06be160dc90dc20ade94edcf544261f0e1db4472b3',
             'Labels': {
-                'com.docker.compose.oneoff': 'True',
+                'com.docker.compose.oneoff': 'False',
                 'com.docker.compose.project': project,
-                'com.docker.compose.service': 'backup',
+                'com.docker.compose.service': container['service'],
+                **container.get('labels', {}),
             },
-            'Mounts': [
-                {
-                    'Destination': '/restic-volume-backup',
-                    'Mode': 'rw',
-                    'RW': True,
-                    'Source': '/Users/einarforselv/Documents/projects/contraz/restic-volume-backup',
-                    'Type': 'bind',
-                },
-                {
-                    'Destination': '/tmp/docker.sock',
-                    'Mode': 'ro',
-                    'RW': False,
-                    'Source': '/var/run/docker.sock',
-                    'Type': 'bind',
-                },
-            ],
+            'Mounts': container.get('mounts', []),
             'Names': ['/restic-volume-backup_backup_run_58d1699be0d8'],
             'NetworkSettings': {
                 'Networks': {
@@ -60,6 +52,7 @@ def containers(project="default", containers=None):
                 }
             },
             'State': 'running',
-        },
+        }
+        for container in containers]
 
     return wrapper
