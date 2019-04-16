@@ -11,16 +11,16 @@ def main():
     containers = RunningContainers()
 
     if args.action == 'status':
-        containers.print_services()
-        # volumes = containers.volume_mounts()
-        # for vol in volumes:
-        #     print(vol)
-        #     print(vol.mount_string())
+        print()
+        print("Backup config for compose project '{}'".format(containers.this_container.project_name))
+        print()
 
-        # binds = containers.bind_mounts()
-        # for vol in binds:
-        #     print(binds)
-        #     print(vol.mount_string())
+        for container in containers.containers:
+            print('service: {}'.format(container.service_name))
+            for mount in container.filter_mounts():
+                print(' - {}'.format(mount.source))
+
+        print()
 
     elif args.mode == 'backup':
         print("Starting backup ..")
