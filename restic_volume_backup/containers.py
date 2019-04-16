@@ -173,6 +173,13 @@ class RunningContainers:
     #     """Host mapped volumes"""
     #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
 
+    def get_service(self, name):
+        for container in self.containers:
+            if container.service_name == name:
+                return container
+
+        return None
+
     def print_services(self):
         print()
         print("Backup config for compose project '{}'".format(self.this_container.project_name))
