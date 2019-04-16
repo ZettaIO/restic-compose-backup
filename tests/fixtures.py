@@ -1,4 +1,13 @@
 """Generate test fixtures"""
+from datetime import datetime
+import hashlib
+
+
+def generate_sha256():
+    """Generate a unique sha256"""
+    h = hashlib.sha256()
+    h.update(str(datetime.now().timestamp()).encode())
+    return h.hexdigest()
 
 
 def containers(project="default", containers=[]):
@@ -8,6 +17,7 @@ def containers(project="default", containers=[]):
         containers (dict):
             {
                 'containers: [
+                    'id': 'something'
                     'service': 'service_name',
                     'mounts: [{
                         'Source': '/home/user/stuff',
@@ -21,7 +31,7 @@ def containers(project="default", containers=[]):
         return [
         {
             'HostConfig': {'NetworkMode': 'restic-volume-backup_default'},
-            'Id': '58d550e8f450129fa757820446e4021822a660918a61437e95115d3dc48ddde8',
+            'Id': container.get('id', generate_sha256()),
             'Image': 'restic-volume-backup_backup',
             'ImageID': 'sha256:4d9a81206af7d65563b85d06be160dc90dc20ade94edcf544261f0e1db4472b3',
             'Labels': {
