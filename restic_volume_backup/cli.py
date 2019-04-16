@@ -7,9 +7,7 @@ from restic_volume_backup.containers import RunningContainers
 
 def main():
     args = parse_args()
-
-    Config.check()
-
+    config = Config()
     containers = RunningContainers()
 
     if args.action == 'status':
@@ -33,7 +31,7 @@ def main():
         #     restic.backup_volume(Config.repository, vol)
 
     elif args.mode == 'snapshots':
-        restic.snapshots(Config.repository)
+        restic.snapshots(config.repository)
 
 
 def parse_args():
