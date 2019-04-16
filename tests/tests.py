@@ -78,6 +78,8 @@ class ResticBackupTests(unittest.TestCase):
             result = RunningContainers()
             self.assertEqual(len(result.containers), 3, msg="Three containers expected")
             self.assertNotEqual(result.this_container, None, msg="No backup container found")
+            web_service = result.get_service('web')
+            self.assertEqual(len(web_service.filter_mounts()), 1)
 
     def test_include(self):
         containers = self.createContainers()
