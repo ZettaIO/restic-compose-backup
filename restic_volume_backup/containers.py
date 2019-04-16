@@ -18,8 +18,21 @@ class Container:
         self.names = data.get('Names', [])
         self.mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]
 
-        self.include = self.labels.get('restic-volume-backup.enabled', '').split(',')
-        self.exlude = self.labels.get('restic-volume-backup.exclude', '').split(',')
+        self.include = self._parse_pattern(self.labels.get('restic-volume-backup.include'))
+        self.exclude = self._parse_pattern(self.labels.get('restic-volume-backup.exclude'))
+
+    def _parse_pattern(self, value):
+        if not value:
+            return None
+
+        if type(value) is not str:
+            return None
+
+        value = value.strip()
+        if len(value) == 0:
+            return None
+
+        return value.split(',')
 
     @property
     def backup_enabled(self):
@@ -43,19 +56,23 @@ class Container:
 
     def filter_mounts(self):
         """Get all mounts for this container matching filters"""
-        for mount in self.mounts:
-            if self.include:
+        filtered = []
+        if self.include:
+            for mount in self.mounts:
                 for pattern in self.include:
                     if pattern in mount.source:
-                        yield mount
-                        continue
-            elif self.exlude:
-                for pattern in self.exlude:
-                    if pattern in mount.source:
-                        continue
-                    yield mount
-            else:
-                yield mount
+                        break
+                else:
+                    continue
+
+                filtered.append(mount)
+
+        elif self.exclude:
+            pass
+        else:
+            return self.mounts
+
+        return filtered
 
     def to_dict(self):
         return {
@@ -179,16 +196,3 @@ class RunningContainers:
                 return container
 
         return None
-
-    def print_services(self):
-        print()
-        print("Backup config for compose project '{}'".format(self.this_container.project_name))
-        print()
-
-        for container in self.containers:
-            print('service: {}'.format(container.service_name))
-            mounts = container.filter_mounts()
-            for mount in mounts:
-                print(' - {}'.format(mount.source))
-
-        print()
