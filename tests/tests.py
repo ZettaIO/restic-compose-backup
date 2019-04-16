@@ -103,9 +103,13 @@ class ResticBackupTests(unittest.TestCase):
         ]
         with mock.patch(list_containers_func, fixtures.containers(containers=containers)):
             cnt = RunningContainers()
-            web_service = cnt.get_service('web')
-            self.assertNotEqual(web_service, None, msg="Web service not found")
 
+        web_service = cnt.get_service('web')
+        self.assertNotEqual(web_service, None, msg="Web service not found")
+
+        mounts = list(web_service.filter_mounts())
+        self.assertEqual(len(mounts), 1)
+        raise ValueError(mounts)
 
     def test_exclude(self):
         pass
