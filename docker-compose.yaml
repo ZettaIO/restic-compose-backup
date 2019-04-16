@@ -9,3 +9,10 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       # Map in project source
       - .:/restic-volume-backup
+  web:
+    image: nginx
+    labels:
+      restic-volume-backup.include: "/tests"
+    volumes:
+      - ./tests:/srv/tests
+      - ./.vscode:/srv/code
