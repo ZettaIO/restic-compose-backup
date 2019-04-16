@@ -109,7 +109,7 @@ class ResticBackupTests(unittest.TestCase):
 
         mounts = list(web_service.filter_mounts())
         self.assertEqual(len(mounts), 1)
-        raise ValueError(mounts)
+        self.assertEqual(mounts[0].source, '/srv/files/media')
 
     def test_exclude(self):
         pass
