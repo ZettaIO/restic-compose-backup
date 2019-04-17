@@ -188,21 +188,6 @@ class RunningContainers:
                 if container.id != self.this_container.id:
                     self.containers.append(container)
 
-        # for container in self.all_containers:
-        #     # Weed out containers not beloging to this project.
-        #     if container.project_name != self.backup_container.project_name:
-        #         continue
-
-        #     # Keep only containers with backup enabled
-        #     if not container.backup_enabled:
-        #         continue
-
-        #     # and not oneoffs (started manually with run or similar)
-        #     if container.is_oneoff:
-        #         continue
-
-        #     self.containers.append(container)
-
     # def gen_volumes(self, volume_type):
     #     """Generator yielding volumes of a specific type"""
     #     for cont in self.containers:
