@@ -68,7 +68,12 @@ class Container:
                 filtered.append(mount)
 
         elif self.exclude:
-            pass
+            for mount in self.mounts:
+                for pattern in self.exclude:
+                    if pattern in mount.source:
+                        break
+                else:
+                    filtered.append(mount)
         else:
             return self.mounts
 
