@@ -3,7 +3,7 @@
 
 *WORK IN PROGRESS*
 
-Backup using using https://restic.net/ for a docker-compose setup.
+Backup using https://restic.net/ for a docker-compose setup.
 
 Automatically detects and backs up volumes in a docker-compose setup.
 This includes both host mapped volumes and actual docker volumes.
