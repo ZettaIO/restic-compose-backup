@@ -54,17 +54,17 @@ class Container:
     @property
     def service_name(self):
         """Name of the container/service"""
-        return self.labels['com.docker.compose.service']
+        return self.labels.get('com.docker.compose.service', '')
 
     @property
     def project_name(self):
         """Name of the compose setup"""
-        return self.labels['com.docker.compose.project']
+        return self.labels.get('com.docker.compose.project', {})
 
     @property
     def is_oneoff(self):
         """Was this container started with run command?"""
-        return self.labels['com.docker.compose.oneoff'] == 'True'
+        return self.labels.get('com.docker.compose.oneoff', 'False') == 'True'
 
     def filter_mounts(self):
         """Get all mounts for this container matching include/exclude filters"""
