@@ -3,6 +3,8 @@ import sys
 
 from restic_volume_backup.config import Config
 from restic_volume_backup.containers import RunningContainers
+from restic_volume_backup import backup_runner
+from restic_volume_backup import restic
 
 
 def main():
@@ -22,16 +24,14 @@ def main():
 
         print()
 
-    elif args.mode == 'backup':
+    elif args.action == 'backup':
         print("Starting backup ..")
         # TODO: Errors when repo already exists
-        # restic.init_repo(Config.repository)
+        restic.init_repo(config.repository)
 
+        backup_runner.run()
         # for vol in containers.backup_volumes():
         #     restic.backup_volume(Config.repository, vol)
-
-    elif args.mode == 'snapshots':
-        restic.snapshots(config.repository)
 
 
 def parse_args():

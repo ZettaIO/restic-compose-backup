@@ -8,7 +8,7 @@ setup(
     author_email="eforselv@gmail.com",
     packages=find_namespace_packages(include=['restic_volume_backup']),
     install_requires=[
-        'docker-py==1.10.6',
+        'docker==3.7.2',
     ],
     entry_points={'console_scripts': [
         'restic-volume-backup = restic_volume_backup.cli:main',
