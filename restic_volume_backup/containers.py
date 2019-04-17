@@ -10,6 +10,7 @@ VOLUME_TYPE_VOLUME = "volume"
 
 
 class Container:
+    """Represents a docker container"""
 
     def __init__(self, data):
         self.id = data.get('Id')
@@ -36,26 +37,36 @@ class Container:
 
     @property
     def backup_enabled(self):
+        """Is backup enabled for this container?"""
         return self.labels.get('restic-volume-backup.enabled') == 'True'
 
     @property
+    def is_backup_process_container(self):
+        """Is this container the running backup process?"""
+        return self.labels.get('restic-volume-backup.runner') == 'True'
+
+    @property
     def is_running(self):
+        """Is the container running?"""
         return self.state == 'running'
 
     @property
     def service_name(self):
+        """Name of the container/service"""
         return self.labels['com.docker.compose.service']
 
     @property
     def project_name(self):
+        """Name of the compose setup"""
         return self.labels['com.docker.compose.project']
 
     @property
     def is_oneoff(self):
+        """Was this container started with run command?"""
         return self.labels['com.docker.compose.oneoff'] == 'True'
 
     def filter_mounts(self):
-        """Get all mounts for this container matching filters"""
+        """Get all mounts for this container matching include/exclude filters"""
         filtered = []
         if self.include:
             for mount in self.mounts:
@@ -92,13 +103,14 @@ class Container:
 
 
 class Mount:
-    """Mount wrapper"""
+    """Represents a volume mount (volume or bind)"""
     def __init__(self, data, container=None):
         self._data = data
         self._container = container
 
     @property
     def container(self) -> Container:
+        """The container this mount belongs to"""
         return self._container
 
     @property
@@ -108,14 +120,17 @@ class Mount:
 
     @property
     def name(self) -> str:
+        """Name of the mount"""        
         return self._data.get('Name')
 
     @property
     def source(self) -> str:
+        """Source of the mount. Volume name or path"""
         return self._data.get('Source')
 
     @property
     def destination(self) -> str:
+        """Destionatin path for the volume mount in the container"""
         return self._data.get('Destination')
 
     def mount_string(self) -> str:
@@ -159,6 +174,10 @@ class RunningContainers:
         if not self.this_container:
             raise ValueError("Cannot find metadata for backup container")
 
+        # Detect running backup process container
+
+
+
         # Gather all containers in the current compose setup
         for container_data in all_containers:
             # pprint.pprint(container_data, indent=2)
@@ -198,6 +217,7 @@ class RunningContainers:
     #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
 
     def backup_process_running(self) -> bool:
+        """Is the backup process container running?"""
         return self.backup_process_container is not None
 
     def get_service(self, name) -> Container:
