@@ -144,3 +144,21 @@ class ResticBackupTests(unittest.TestCase):
         mounts = web_service.filter_mounts()
         self.assertEqual(len(mounts), 1)
         self.assertEqual(mounts[0].source, '/srv/files/media')
+
+    def test_find_running_backup_container(self):
+        containers = self.createContainers()
+        with mock.patch(list_containers_func, fixtures.containers(containers=containers)):
+            cnt = RunningContainers()
+            self.assertFalse(cnt.backup_process_running)
+
+        containers += [
+            {
+                'service': 'backup_runner',
+                'labels': {
+                    'restic-volume-backup.runner': 'True',
+                },
+            },
+        ]
+        with mock.patch(list_containers_func, fixtures.containers(containers=containers)):
+            cnt = RunningContainers()
+            self.assertTrue(cnt.backup_process_running)
