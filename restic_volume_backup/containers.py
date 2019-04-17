@@ -174,14 +174,15 @@ class RunningContainers:
         if not self.this_container:
             raise ValueError("Cannot find metadata for backup container")
 
-        # Detect running backup process container
-
-
-
         # Gather all containers in the current compose setup
         for container_data in all_containers:
-            # pprint.pprint(container_data, indent=2)
             container = Container(container_data)
+
+            # Detect running backup process container
+            if container.is_backup_process_container:
+                self.backup_process_container = container
+
+            # Detect containers beloging to the current compose setup
             if container.project_name == self.this_container.project_name:
                 if container.id != self.this_container.id:
                     self.containers.append(container)
@@ -216,6 +217,7 @@ class RunningContainers:
     #     """Host mapped volumes"""
     #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
 
+    @property
     def backup_process_running(self) -> bool:
         """Is the backup process container running?"""
         return self.backup_process_container is not None
