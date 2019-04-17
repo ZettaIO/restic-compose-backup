@@ -25,11 +25,20 @@ def main():
         print()
 
     elif args.action == 'backup':
-        print("Starting backup ..")
+        if containers.backup_process_running:
+            raise ValueError("Backup process alredy running")
+
+        print("Initializing repository")
+
         # TODO: Errors when repo already exists
         restic.init_repo(config.repository)
 
-        backup_runner.run()
+        print("Starting backup container..")
+        backup_runner.run(
+            containers.this_container.image,
+            # "sleep 10",
+            './test.sh',
+        )
         # for vol in containers.backup_volumes():
         #     restic.backup_volume(Config.repository, vol)
 

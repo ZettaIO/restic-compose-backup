@@ -15,6 +15,7 @@ class Container:
     def __init__(self, data):
         self.id = data.get('Id')
         self.state = data.get('State')
+        self.image = data.get('Image')
         self.labels = data.get('Labels', {})
         self.names = data.get('Names', [])
         self.mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]

@@ -1,18 +1,19 @@
 import os
+import time
 import docker
 
 from restic_volume_backup.config import Config
 
-def run():
+
+def run(image: str, command: str):
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
 
     container = client.containers.run(
-        'restic-volume-backup_backup',
-        'echo "Hello"',
+        image,
+        command,
         labels={"restic-volume-backup.backup_process": 'True'},
         auto_remove=True,
-        remove=True,
         detach=True,
         environment={
             'test1': 'value1',
@@ -25,4 +26,14 @@ def run():
         working_dir=os.getcwd(),
     )
 
-    # Pull logs and exist status of container
+    print("Backup process container:", container.name)
+    logs = container.logs(stdout=True, stderr=True, stream=True)
+    try:
+        while True:
+            time.sleep(3)
+            for line in logs:
+                print(line.decode(), end='')
+            # Raises requests.exceptions.HTTPError if continer is dead
+            container.top()
+    except Exception as ex:
+        print("Container stopped")
