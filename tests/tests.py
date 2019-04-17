@@ -155,7 +155,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'backup_runner',
                 'labels': {
-                    'restic-volume-backup.runner': 'True',
+                    'restic-volume-backup.backup_process': 'True',
                 },
             },
         ]

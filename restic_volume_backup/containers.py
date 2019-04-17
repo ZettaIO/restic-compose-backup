@@ -43,7 +43,7 @@ class Container:
     @property
     def is_backup_process_container(self):
         """Is this container the running backup process?"""
-        return self.labels.get('restic-volume-backup.runner') == 'True'
+        return self.labels.get('restic-volume-backup.backup_process') == 'True'
 
     @property
     def is_running(self):
