@@ -98,26 +98,27 @@ class Mount:
         self._container = container
 
     @property
-    def container(self):
+    def container(self) -> Container:
         return self._container
 
     @property
-    def type(self):
+    def type(self) -> str:
+        """bind/volume"""
         return self._data.get('Type')
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._data.get('Name')
 
     @property
-    def source(self):
+    def source(self) -> str:
         return self._data.get('Source')
 
     @property
-    def destination(self):
+    def destination(self) -> str:
         return self._data.get('Destination')
 
-    def mount_string(self):
+    def mount_string(self) -> str:
         if self.type == VOLUME_TYPE_VOLUME:
             return "- {}:{}:ro".format(self.name.split('_')[-1], self.destination)
         elif self.type == VOLUME_TYPE_BIND:
@@ -125,10 +126,10 @@ class Mount:
         else:
             raise ValueError("Uknown volume type: {}".format(self.type))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._data)
 
     def __hash__(self):
@@ -147,6 +148,7 @@ class RunningContainers:
         all_containers = utils.list_containers()
         self.containers = []
         self.this_container = None
+        self.backup_process_container = None
 
         # Find the container we are running in.
         # If we don't have this information we cannot continue
@@ -195,7 +197,10 @@ class RunningContainers:
     #     """Host mapped volumes"""
     #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
 
-    def get_service(self, name):
+    def backup_process_running(self) -> bool:
+        return self.backup_process_container is not None
+
+    def get_service(self, name) -> Container:
         for container in self.containers:
             if container.service_name == name:
                 return container
