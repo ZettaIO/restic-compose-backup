@@ -184,7 +184,7 @@ class RunningContainers:
                 self.backup_process_container = container
 
             # Detect containers beloging to the current compose setup
-            if container.project_name == self.this_container.project_name:
+            if container.project_name == self.this_container.project_name and not container.is_oneoff:
                 if container.id != self.this_container.id:
                     self.containers.append(container)
 
