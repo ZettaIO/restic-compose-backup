@@ -25,8 +25,9 @@ def main():
         print()
 
     elif args.action == 'backup':
+        # Make sure we don't spawn multiple backup processes
         if containers.backup_process_running:
-            raise ValueError("Backup process alredy running")
+            raise ValueError("Backup process already running")        
 
         print("Initializing repository")
 
@@ -35,19 +36,22 @@ def main():
 
         print("Starting backup container..")
         backup_runner.run(
-            containers.this_container.image,
-            # "sleep 10",
-            './test.sh',
+            image=containers.this_container.image,
+            command='restic-volume-backup start-backup-process',
+            volumes={},
+            enviroment={},
         )
-        # for vol in containers.backup_volumes():
-        #     restic.backup_volume(Config.repository, vol)
+
+    # Separate command to avoid spawning infinite containers :)
+    elif args.action == 'start-backup-process':
+        print("start-backup-process")
 
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='restic_volume_backup')
     parser.add_argument(
         'action',
-        choices=['status', 'backup'],
+        choices=['status', 'backup', 'start-backup-process'],
     )
     return parser.parse_args()
 

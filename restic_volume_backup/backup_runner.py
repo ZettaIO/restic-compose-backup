@@ -5,7 +5,7 @@ import docker
 from restic_volume_backup.config import Config
 
 
-def run(image: str, command: str):
+def run(image: str = None, command: str = None, volumes: dict = None, enviroment: dict = None):
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
 
@@ -15,14 +15,8 @@ def run(image: str, command: str):
         labels={"restic-volume-backup.backup_process": 'True'},
         auto_remove=True,
         detach=True,
-        environment={
-            'test1': 'value1',
-            'test2': 'value2',
-        },
-        volumes={
-            '/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},
-            '/var/www': {'bind': '/mnt/vol1', 'mode': 'ro'},
-        },
+        environment={},
+        volumes=volumes,
         working_dir=os.getcwd(),
     )
 
