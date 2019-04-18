@@ -49,12 +49,6 @@ class Container:
         Return volumes for the container in the following format:
             {'/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},}
         """
-        # {'Type': 'bind', 
-        #  'Source': '/Users/einarforselv/Documents/projects/contraz/restic-volume-backup',
-        #  'Destination': '/restic-volume-backup',
-        #  'Mode': 'rw',
-        #  'RW': True,
-        #  'Propagation': 'rprivate'}
         volumes = {}
         for mount in self._mounts:
             volumes[mount.source] = {'bind': mount.destination, 'mode': 'ro'}
