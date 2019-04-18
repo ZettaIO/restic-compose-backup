@@ -77,7 +77,12 @@ def start_backup_process(config, containers):
 
     print("start-backup-process")
     status(config, containers)
+    import time
+    for i in range(5):
+        time.sleep(1)
+        print(i)
 
+    exit(1)
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='restic_volume_backup')
