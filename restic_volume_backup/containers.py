@@ -13,15 +13,93 @@ class Container:
     """Represents a docker container"""
 
     def __init__(self, data):
-        self.id = data.get('Id')
-        self.state = data.get('State')
-        self.image = data.get('Image')
-        self.labels = data.get('Labels', {})
-        self.names = data.get('Names', [])
-        self.mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]
+        self._data = data
+        self.id = data['Id']
+        self.name = data['Name']
 
-        self.include = self._parse_pattern(self.labels.get('restic-volume-backup.include'))
-        self.exclude = self._parse_pattern(self.labels.get('restic-volume-backup.exclude'))
+        self._state = data.get('State')
+        self._config = data.get('Config')
+        self._mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]
+
+        if not self._state:
+            raise ValueError('Container meta missing State')
+        if self._config is None:
+            raise ValueError('Container meta missing Config')
+
+        self._labels = self._config.get('Labels')
+        if self._labels is None:
+            raise ValueError('Container mtea missing Config->Labels')
+
+        self._include = self._parse_pattern(self.get_label('restic-volume-backup.include'))
+        self._exclude = self._parse_pattern(self.get_label('restic-volume-backup.exclude'))
+
+    @property
+    def image(self):
+        """Image name"""
+        return self.get_config('Image')
+
+    @property
+    def backup_enabled(self) -> bool:
+        """Is backup enabled for this container?"""
+        return self.get_label('restic-volume-backup.enabled') == 'True'
+
+    @property
+    def is_backup_process_container(self) -> bool:
+        """Is this container the running backup process?"""
+        return self.get_label('restic-volume-backup.backup_process') == 'True'
+
+    @property
+    def is_running(self) -> bool:
+        """Is the container running?"""
+        return self._state.get('Running', False)
+
+    @property
+    def service_name(self) ->str:
+        """Name of the container/service"""
+        return self.get_label('com.docker.compose.service', default='')
+
+    @property
+    def project_name(self) -> str:
+        """Name of the compose setup"""
+        return self.get_label('com.docker.compose.project', default='')
+
+    @property
+    def is_oneoff(self) -> bool:
+        """Was this container started with run command?"""
+        return self.get_label('com.docker.compose.oneoff', default='False') == 'True'
+
+    def get_config(self, name):
+        """Get value from config dict"""
+        return self._config.get(name)
+
+    def get_label(self, name, default=None):
+        """Get a label by name"""
+        return self._labels.get(name, None)
+
+    def filter_mounts(self):
+        """Get all mounts for this container matching include/exclude filters"""
+        filtered = []
+        if self._include:
+            for mount in self._mounts:
+                for pattern in self._include:
+                    if pattern in mount.source:
+                        break
+                else:
+                    continue
+
+                filtered.append(mount)
+
+        elif self._exclude:
+            for mount in self._mounts:
+                for pattern in self._exclude:
+                    if pattern in mount.source:
+                        break
+                else:
+                    filtered.append(mount)
+        else:
+            return self._mounts
+
+        return filtered
 
     def _parse_pattern(self, value):
         if not value:
@@ -35,61 +113,6 @@ class Container:
             return None
 
         return value.split(',')
-
-    @property
-    def backup_enabled(self):
-        """Is backup enabled for this container?"""
-        return self.labels.get('restic-volume-backup.enabled') == 'True'
-
-    @property
-    def is_backup_process_container(self):
-        """Is this container the running backup process?"""
-        return self.labels.get('restic-volume-backup.backup_process') == 'True'
-
-    @property
-    def is_running(self):
-        """Is the container running?"""
-        return self.state == 'running'
-
-    @property
-    def service_name(self):
-        """Name of the container/service"""
-        return self.labels.get('com.docker.compose.service', '')
-
-    @property
-    def project_name(self):
-        """Name of the compose setup"""
-        return self.labels.get('com.docker.compose.project', {})
-
-    @property
-    def is_oneoff(self):
-        """Was this container started with run command?"""
-        return self.labels.get('com.docker.compose.oneoff', 'False') == 'True'
-
-    def filter_mounts(self):
-        """Get all mounts for this container matching include/exclude filters"""
-        filtered = []
-        if self.include:
-            for mount in self.mounts:
-                for pattern in self.include:
-                    if pattern in mount.source:
-                        break
-                else:
-                    continue
-
-                filtered.append(mount)
-
-        elif self.exclude:
-            for mount in self.mounts:
-                for pattern in self.exclude:
-                    if pattern in mount.source:
-                        break
-                else:
-                    filtered.append(mount)
-        else:
-            return self.mounts
-
-        return filtered
 
     def to_dict(self):
         return {
