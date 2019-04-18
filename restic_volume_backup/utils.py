@@ -4,9 +4,14 @@ from restic_volume_backup.config import Config
 
 
 def list_containers():
-    """Easily mockable container list"""
+    """
+    List all containers.
+
+    Returns:
+        List of raw container json data from the api
+    """
     config = Config()
-    client = docker.APIClient(base_url=config.docker_base_url)
-    all_containers = client.containers()
+    client = docker.DockerClient(base_url=config.docker_base_url)
+    all_containers = client.containers.list()
     client.close()
-    return all_containers
+    return [c.attrs for c in all_containers]
