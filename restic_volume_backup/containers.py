@@ -137,17 +137,6 @@ class Container:
 
         return value.split(',')
 
-    def to_dict(self):
-        return {
-            'Id': self.id,
-            'Names': self.names,
-            'State': self.state,
-            'Labels': self.labels,
-            'Mounts': [mnt.data for mnt in self.mounts],
-            'include': self.include,
-            'exclude': self.exlude,
-        }
-
 
 class Mount:
     """Represents a volume mount (volume or bind)"""
