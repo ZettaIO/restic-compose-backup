@@ -1,4 +1,7 @@
 
+# Project specific
+backup.log
+
 # IDEs
 .vscode
 .idea
