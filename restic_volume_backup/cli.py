@@ -34,10 +34,15 @@ def status(config, containers):
 
     print()
 
-    for container in containers.containers:
-        print('service: {}'.format(container.service_name))
-        for mount in container.filter_mounts():
-            print(' - {}'.format(mount.source))
+    backup_containers = containers.containers_for_backup()
+    for container in backup_containers:
+        if container.backup_enabled:
+            print('service: {}'.format(container.service_name))
+            for mount in container.filter_mounts():
+                print(' - {}'.format(mount.source))
+
+    if len(backup_containers) == 0:
+        print("No containers in the project has 'restic-volume-backup.enabled' label")
 
     print()
 

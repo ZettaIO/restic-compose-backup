@@ -58,7 +58,7 @@ class Container:
     @property
     def backup_enabled(self) -> bool:
         """Is backup enabled for this container?"""
-        return self.get_label('restic-volume-backup.enabled') == 'True'
+        return self.get_label('restic-volume-backup.enabled') is not None
 
     @property
     def is_backup_process_container(self) -> bool:
@@ -224,6 +224,10 @@ class RunningContainers:
     def backup_process_running(self) -> bool:
         """Is the backup process container running?"""
         return self.backup_process_container is not None
+
+    def containers_for_backup(self):
+        """Obtain all containers with backup enabled"""
+        return [container for container in self.containers if container.backup_enabled]
 
     def get_service(self, name) -> Container:
         for container in self.containers:
