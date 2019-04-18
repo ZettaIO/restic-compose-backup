@@ -41,7 +41,25 @@ class Container:
     @property
     def environment(self):
         """All configured env vars for the container"""
-        return self.get_config('Env', default={})
+        return self.get_config('Env', default=[])
+
+    @property
+    def volumes(self):
+        """
+        Return volumes for the container in the following format:
+            {'/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},}
+        """
+        # {'Type': 'bind', 
+        #  'Source': '/Users/einarforselv/Documents/projects/contraz/restic-volume-backup',
+        #  'Destination': '/restic-volume-backup',
+        #  'Mode': 'rw',
+        #  'RW': True,
+        #  'Propagation': 'rprivate'}
+        volumes = {}
+        for mount in self._mounts:
+            volumes[mount.source] = {'bind': mount.destination, 'mode': 'ro'}
+
+        return volumes
 
     @property
     def backup_enabled(self) -> bool:
