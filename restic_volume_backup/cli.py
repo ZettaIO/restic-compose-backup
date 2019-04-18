@@ -27,6 +27,10 @@ def status(config, containers):
     """Outputs the backup config for the compse setup"""
     print()
     print("Backup config for compose project '{}'".format(containers.this_container.project_name))
+    print("Backup service:", containers.this_container.name)
+    print("Backup process:", containers.backup_process_container.name \
+        if containers.backup_process_container else 'Not Running')
+
     print()
 
     for container in containers.containers:
