@@ -44,14 +44,14 @@ class Container:
         return self.get_config('Env', default=[])
 
     @property
-    def volumes(self):
+    def volumes(self, mode='rw'):
         """
         Return volumes for the container in the following format:
             {'/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},}
         """
         volumes = {}
         for mount in self._mounts:
-            volumes[mount.source] = {'bind': mount.destination, 'mode': 'ro'}
+            volumes[mount.source] = {'bind': mount.destination, 'mode': mode}
 
         return volumes
 
