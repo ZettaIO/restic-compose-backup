@@ -34,12 +34,15 @@ def main():
         # TODO: Errors when repo already exists
         restic.init_repo(config.repository)
 
+        print(containers.this_container.environment)
+
         print("Starting backup container..")
         backup_runner.run(
             image=containers.this_container.image,
             command='restic-volume-backup start-backup-process',
             volumes={},
             enviroment={},
+            labels={"restic-volume-backup.backup_process": 'True'},
         )
 
     # Separate command to avoid spawning infinite containers :)
