@@ -39,6 +39,11 @@ class Container:
         return self.get_config('Image')
 
     @property
+    def environment(self):
+        """All configured env vars for the container"""
+        return self.get_config('Env', default={})
+
+    @property
     def backup_enabled(self) -> bool:
         """Is backup enabled for this container?"""
         return self.get_label('restic-volume-backup.enabled') == 'True'
@@ -68,9 +73,9 @@ class Container:
         """Was this container started with run command?"""
         return self.get_label('com.docker.compose.oneoff', default='False') == 'True'
 
-    def get_config(self, name):
+    def get_config(self, name, default=None):
         """Get value from config dict"""
-        return self._config.get(name)
+        return self._config.get(name, default)
 
     def get_label(self, name, default=None):
         """Get a label by name"""
