@@ -5,17 +5,18 @@ import docker
 from restic_volume_backup.config import Config
 
 
-def run(image: str = None, command: str = None, volumes: dict = None, enviroment: dict = None):
+def run(image: str = None, command: str = None, volumes: dict = None,
+    enviroment: dict = None, labels: dict = None):
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
 
     container = client.containers.run(
         image,
         command,
-        labels={"restic-volume-backup.backup_process": 'True'},
+        labels=labels,
         auto_remove=True,
         detach=True,
-        environment={},
+        environment=enviroment,
         volumes=volumes,
         working_dir=os.getcwd(),
     )
