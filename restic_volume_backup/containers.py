@@ -172,14 +172,6 @@ class Mount:
         """Destionatin path for the volume mount in the container"""
         return self._data.get('Destination')
 
-    def mount_string(self) -> str:
-        if self.type == VOLUME_TYPE_VOLUME:
-            return "- {}:{}:ro".format(self.name.split('_')[-1], self.destination)
-        elif self.type == VOLUME_TYPE_BIND:
-            return "- {}:{}:ro".format(self.source, self.destination)
-        else:
-            raise ValueError("Uknown volume type: {}".format(self.type))
-
     def __repr__(self) -> str:
         return str(self)
 
