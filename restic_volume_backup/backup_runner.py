@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import docker
 
@@ -14,21 +15,22 @@ def run(image: str = None, command: str = None, volumes: dict = None,
         image,
         command,
         labels=labels,
-        auto_remove=True,
+        # auto_remove=True,
         detach=True,
         environment=enviroment,
         volumes=volumes,
         working_dir=os.getcwd(),
+        tty=True,
     )
 
     print("Backup process container:", container.name)
-    logs = container.logs(stdout=True, stderr=True, stream=True)
-    try:
-        while True:
-            time.sleep(3)
-            for line in logs:
-                print(line.decode(), end='')
-            # Raises requests.exceptions.HTTPError if continer is dead
-            container.top()
-    except Exception as ex:
-        print("Container stopped")
+    log_generator = container.logs(stdout=True, stderr=True, stream=True, follow=True)
+    with open('backup.log', 'w') as fd:
+        for line in log_generator:
+            line = line.decode()
+            fd.write(line)
+            print(line, end='')
+
+    container.reload()
+    print("ExitCode", container.attrs['State']['ExitCode'])
+    container.remove()
