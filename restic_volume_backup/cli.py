@@ -27,8 +27,8 @@ def status(config, containers):
     """Outputs the backup config for the compse setup"""
     print()
     print("Backup config for compose project '{}'".format(containers.this_container.project_name))
-    print("Backup service:", containers.this_container.name)
-    print("Backup process:", containers.backup_process_container.name \
+    print("Current service:", containers.this_container.name)
+    print("Backup process :", containers.backup_process_container.name \
         if containers.backup_process_container else 'Not Running')
 
     print()
@@ -67,6 +67,13 @@ def backup(config, containers):
 
 def start_backup_process(config, containers):
     """Start the backup process container"""
+    if not containers.backup_process_container or containers.this_container == containers.backup_process_container is False:
+        print(
+            "Cannot run backup process in this container. Use backup command instead. "
+            "This will spawn a new container with the necessary mounts."
+        )
+        return
+
     print("start-backup-process")
     status(config, containers)
 
