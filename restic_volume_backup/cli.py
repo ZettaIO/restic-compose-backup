@@ -13,41 +13,56 @@ def main():
     containers = RunningContainers()
 
     if args.action == 'status':
-        print()
-        print("Backup config for compose project '{}'".format(containers.this_container.project_name))
-        print()
-
-        for container in containers.containers:
-            print('service: {}'.format(container.service_name))
-            for mount in container.filter_mounts():
-                print(' - {}'.format(mount.source))
-
-        print()
+        status(config, containers)
 
     elif args.action == 'backup':
-        # Make sure we don't spawn multiple backup processes
-        if containers.backup_process_running:
-            raise ValueError("Backup process already running")        
-
-        print("Initializing repository")
-
-        # TODO: Errors when repo already exists
-        restic.init_repo(config.repository)
-
-        print("Starting backup container..")
-        backup_runner.run(
-            image=containers.this_container.image,
-            command='restic-volume-backup start-backup-process',
-            volumes=containers.this_container.volumes,
-            enviroment=containers.this_container.environment,
-            labels={"restic-volume-backup.backup_process": 'True'},
-        )
+        backup(config, containers)
 
     # Separate command to avoid spawning infinite containers :)
     elif args.action == 'start-backup-process':
-        print("start-backup-process")
-        import os
-        print(os.environ)
+        start_backup_process(config, containers)
+
+
+def start_backup_process(config, containers):
+    """Start the backup process container"""
+    print("start-backup-process")
+    import os
+    print(os.environ)
+
+
+def status(config, containers):
+    """Outputs the backup config for the compse setup"""
+    print()
+    print("Backup config for compose project '{}'".format(containers.this_container.project_name))
+    print()
+
+    for container in containers.containers:
+        print('service: {}'.format(container.service_name))
+        for mount in container.filter_mounts():
+            print(' - {}'.format(mount.source))
+
+    print()
+
+
+def backup(config, containers):
+    """Start backup"""
+    # Make sure we don't spawn multiple backup processes
+    if containers.backup_process_running:
+        raise ValueError("Backup process already running")        
+
+    print("Initializing repository")
+
+    # TODO: Errors when repo already exists
+    restic.init_repo(config.repository)
+
+    print("Starting backup container..")
+    backup_runner.run(
+        image=containers.this_container.image,
+        command='restic-volume-backup start-backup-process',
+        volumes=containers.this_container.volumes,
+        enviroment=containers.this_container.environment,
+        labels={"restic-volume-backup.backup_process": 'True'},
+    )
 
 
 def parse_args():
