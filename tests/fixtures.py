@@ -1,6 +1,8 @@
 """Generate test fixtures"""
 from datetime import datetime
 import hashlib
+import string
+import random
 
 
 def generate_sha256():
@@ -30,18 +32,19 @@ def containers(project="default", containers=[]):
     def wrapper(*args, **kwargs):
         return [
         {
-            'HostConfig': {'NetworkMode': 'restic-volume-backup_default'},
             'Id': container.get('id', generate_sha256()),
-            'Image': 'restic-volume-backup_backup',
+            'Name': ''.join(random.choice(string.ascii_lowercase) for i in range(16)),
             'ImageID': 'sha256:4d9a81206af7d65563b85d06be160dc90dc20ade94edcf544261f0e1db4472b3',
-            'Labels': {
-                'com.docker.compose.oneoff': 'False',
-                'com.docker.compose.project': project,
-                'com.docker.compose.service': container['service'],
-                **container.get('labels', {}),
+            'Config': {
+                'Image': 'restic-volume-backup_backup',
+                'Labels': {
+                    'com.docker.compose.oneoff': 'False',
+                    'com.docker.compose.project': project,
+                    'com.docker.compose.service': container['service'],
+                    **container.get('labels', {}),
+                },
             },
             'Mounts': container.get('mounts', []),
-            'Names': ['/restic-volume-backup_backup_run_58d1699be0d8'],
             'NetworkSettings': {
                 'Networks': {
                     'restic-volume-backup_default': {
@@ -61,7 +64,10 @@ def containers(project="default", containers=[]):
                     }
                 }
             },
-            'State': 'running',
+            'State': {
+                "Status": "running",
+                "Running": True,
+            }
         }
         for container in containers]
 
