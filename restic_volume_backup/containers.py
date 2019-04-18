@@ -131,6 +131,9 @@ class Container:
 
         return value.split(',')
 
+    def __eq__(self, other):
+        return self.id == other.id
+
 
 class Mount:
     """Represents a volume mount (volume or bind)"""
