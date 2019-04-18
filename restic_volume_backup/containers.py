@@ -234,21 +234,6 @@ class RunningContainers:
                 if container.id != self.this_container.id:
                     self.containers.append(container)
 
-    # def gen_volumes(self, volume_type):
-    #     """Generator yielding volumes of a specific type"""
-    #     for cont in self.containers:
-    #         for mnt in cont.mounts:
-    #             if mnt.type == volume_type:
-    #                 yield mnt
-
-    # def volume_mounts(self):
-    #     """Docker volumes"""
-    #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_VOLUME))
-
-    # def bind_mounts(self):
-    #     """Host mapped volumes"""
-    #     return set(mnt for mnt in self.gen_volumes(VOLUME_TYPE_BIND))
-
     @property
     def backup_process_running(self) -> bool:
         """Is the backup process container running?"""
