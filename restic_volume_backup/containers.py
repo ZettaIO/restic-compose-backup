@@ -132,6 +132,12 @@ class Container:
         return value.split(',')
 
     def __eq__(self, other):
+        if other is None:
+            return False
+
+        if not isinstance(other, Container):
+            return False
+
         return self.id == other.id
 
 
