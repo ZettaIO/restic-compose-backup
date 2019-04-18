@@ -15,7 +15,7 @@ class Container:
     def __init__(self, data):
         self._data = data
         self.id = data['Id']
-        self.name = data['Name']
+        self.name = data['Name'].replace('/', '')
 
         self._state = data.get('State')
         self._config = data.get('Config')
