@@ -23,13 +23,6 @@ def main():
         start_backup_process(config, containers)
 
 
-def start_backup_process(config, containers):
-    """Start the backup process container"""
-    print("start-backup-process")
-    import os
-    print(os.environ)
-
-
 def status(config, containers):
     """Outputs the backup config for the compse setup"""
     print()
@@ -61,8 +54,17 @@ def backup(config, containers):
         command='restic-volume-backup start-backup-process',
         volumes=containers.this_container.volumes,
         enviroment=containers.this_container.environment,
-        labels={"restic-volume-backup.backup_process": 'True'},
+        labels={
+            "restic-volume-backup.backup_process": 'True',
+            "com.docker.compose.project": containers.this_container.project_name,
+        },
     )
+
+
+def start_backup_process(config, containers):
+    """Start the backup process container"""
+    print("start-backup-process")
+    status(config, containers)
 
 
 def parse_args():
