@@ -30,6 +30,7 @@ def status(config, containers):
     print("Current service:", containers.this_container.name)
     print("Backup process :", containers.backup_process_container.name \
         if containers.backup_process_container else 'Not Running')
+    print("Backup running :", containers.backup_process_running)
 
     print()
 
