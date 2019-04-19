@@ -12,7 +12,26 @@ services:
   web:
     image: nginx
     labels:
+      restic-volume-backup.volumes: true
       restic-volume-backup.include: "/tests"
     volumes:
       - ./tests:/srv/tests
       - ./.vscode:/srv/code
+    environment:
+      - SOME_VALUE=test
+      - ANOTHER_VALUE=1
+  mysql:
+    image: mysql
+    labels:
+      restic-volume-backup.mysql: true
+      restic-volume-backup.
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+volumes:
+  mysqldata:
