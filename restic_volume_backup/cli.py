@@ -1,4 +1,5 @@
 import argparse
+import pprint
 import sys
 
 from restic_volume_backup.config import Config
@@ -59,10 +60,19 @@ def backup(config, containers):
     restic.init_repo(config.repository)
 
     print("Starting backup container..")
+
+    # Map all volumes from the backup container into the backup process container
+    volumes = containers.this_container.volumes()
+
+    # Map volumes from other containers we are backing up
+    mounts = containers.generate_backup_mounts('/backup')
+    volumes.update(mounts)
+    pprint.pprint(volumes, indent=2)
+
     backup_runner.run(
         image=containers.this_container.image,
         command='restic-volume-backup start-backup-process',
-        volumes=containers.this_container.volumes,
+        volumes=volumes,
         enviroment=containers.this_container.environment,
         labels={
             "restic-volume-backup.backup_process": 'True',
