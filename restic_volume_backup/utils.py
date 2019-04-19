@@ -2,6 +2,8 @@ import docker
 
 from restic_volume_backup.config import Config
 
+TRUE_VALUES = ['1', 'true', 'True', True, 1]
+
 
 def list_containers():
     """
@@ -15,3 +17,10 @@ def list_containers():
     all_containers = client.containers.list()
     client.close()
     return [c.attrs for c in all_containers]
+
+
+def is_true(self, value):
+    """
+    Evaluates the truthfullness of a bool value in container labels
+    """
+    return value in TRUE_VALUES
