@@ -43,15 +43,18 @@ class Container:
         """All configured env vars for the container"""
         return self.get_config('Env', default=[])
 
-    @property
-    def volumes(self, mode='rw'):
+    property
+    def volumes(self):
         """
         Return volumes for the container in the following format:
             {'/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},}
         """
         volumes = {}
         for mount in self._mounts:
-            volumes[mount.source] = {'bind': mount.destination, 'mode': mode}
+            volumes[mount.source] = {
+                'bind': mount.destination,
+                'mode': 'rw',
+            }
 
         return volumes
 
@@ -117,6 +120,17 @@ class Container:
             return self._mounts
 
         return filtered
+
+    def volumes_for_backup(self, source_prefix='/backup', mode='ro'):
+        mounts = self.filter_mounts()
+        volumes = {}
+        for mount in mounts:
+            volumes[mount.source] = {
+                'bind': '{}{}'.format(source_prefix, mount.source),
+                'mode': mode,
+            }
+
+        return volumes
 
     def _parse_pattern(self, value):
         if not value:
@@ -226,6 +240,13 @@ class RunningContainers:
     def containers_for_backup(self):
         """Obtain all containers with backup enabled"""
         return [container for container in self.containers if container.backup_enabled]
+
+    def generate_backup_mounts(self, dest_prefix):
+        mounts = {}
+        for container in self.containers_for_backup():
+            mounts.update(container.volumes_for_backup(source_prefix=dest_prefix, mode='ro'))
+
+        return mounts
 
     def get_service(self, name) -> Container:
         for container in self.containers:
