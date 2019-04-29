@@ -61,7 +61,23 @@ class Container:
     @property
     def backup_enabled(self) -> bool:
         """Is backup enabled for this container?"""
-        return self.get_label('restic-volume-backup.enabled') is not None
+        return any([
+            self.volume_backup_enabled,
+            self.mysql_backup_enabled,
+            self.postgresql_backup_enabled,
+        ])
+
+    @property
+    def volume_backup_enabled(self):
+        return utils.is_true(self.get_label('restic-volume-backup.volumes'))
+
+    @property
+    def mysql_backup_enabled(self):
+        return utils.is_true(self.get_label('restic-volume-backup.mysql'))
+
+    @property
+    def postgresql_backup_enabled(self):
+        return utils.is_true(self.get_label('restic-volume-backup.postgresql'))
 
     @property
     def is_backup_process_container(self) -> bool:
