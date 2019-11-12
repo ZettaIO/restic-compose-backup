@@ -12,5 +12,6 @@ setup(
     ],
     entry_points={'console_scripts': [
         'restic-volume-backup = restic_volume_backup.cli:main',
+        'rvb = restic_volume_backup.cli:main',
     ]},
 )
