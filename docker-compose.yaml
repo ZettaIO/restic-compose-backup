@@ -24,7 +24,6 @@ services:
     image: mysql
     labels:
       restic-volume-backup.mysql: true
-      restic-volume-backup.
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb
