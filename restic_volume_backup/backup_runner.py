@@ -1,13 +1,11 @@
 import os
-import sys
-import time
 import docker
 
 from restic_volume_backup.config import Config
 
 
 def run(image: str = None, command: str = None, volumes: dict = None,
-    enviroment: dict = None, labels: dict = None):
+        environment: dict = None, labels: dict = None):
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
 
@@ -17,7 +15,7 @@ def run(image: str = None, command: str = None, volumes: dict = None,
         labels=labels,
         # auto_remove=True,
         detach=True,
-        environment=enviroment,
+        environment=environment,
         volumes=volumes,
         working_dir=os.getcwd(),
         tty=True,

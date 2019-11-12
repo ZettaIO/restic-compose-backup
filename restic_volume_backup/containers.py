@@ -1,7 +1,4 @@
 import os
-import docker
-import json
-import pprint
 
 from restic_volume_backup import utils
 
@@ -28,7 +25,7 @@ class Container:
 
         self._labels = self._config.get('Labels')
         if self._labels is None:
-            raise ValueError('Container mtea missing Config->Labels')
+            raise ValueError('Container meta missing Config->Labels')
 
         self._include = self._parse_pattern(self.get_label('restic-volume-backup.include'))
         self._exclude = self._parse_pattern(self.get_label('restic-volume-backup.exclude'))
@@ -43,7 +40,7 @@ class Container:
         """All configured env vars for the container"""
         return self.get_config('Env', default=[])
 
-    property
+    @property
     def volumes(self):
         """
         Return volumes for the container in the following format:
@@ -90,7 +87,7 @@ class Container:
         return self._state.get('Running', False)
 
     @property
-    def service_name(self) ->str:
+    def service_name(self) -> str:
         """Name of the container/service"""
         return self.get_label('com.docker.compose.service', default='')
 
@@ -189,7 +186,7 @@ class Mount:
 
     @property
     def name(self) -> str:
-        """Name of the mount"""        
+        """Name of the mount"""
         return self._data.get('Name')
 
     @property
@@ -199,7 +196,7 @@ class Mount:
 
     @property
     def destination(self) -> str:
-        """Destionatin path for the volume mount in the container"""
+        """Destination path for the volume mount in the container"""
         return self._data.get('Destination')
 
     def __repr__(self) -> str:
@@ -209,13 +206,13 @@ class Mount:
         return str(self._data)
 
     def __hash__(self):
-        """Uniquness for a volume"""
+        """Uniqueness for a volume"""
         if self.type == VOLUME_TYPE_VOLUME:
             return hash(self.name)
         elif self.type == VOLUME_TYPE_BIND:
             return hash(self.source)
         else:
-            raise ValueError("Uknown volume type: {}".format(self.type))
+            raise ValueError("Unknown volume type: {}".format(self.type))
 
 
 class RunningContainers:
@@ -243,8 +240,9 @@ class RunningContainers:
             if container.is_backup_process_container:
                 self.backup_process_container = container
 
-            # Detect containers beloging to the current compose setup
-            if container.project_name == self.this_container.project_name and not container.is_oneoff:
+            # Detect containers belonging to the current compose setup
+            if (container.project_name == self.this_container.project_name
+               and not container.is_oneoff):
                 if container.id != self.this_container.id:
                     self.containers.append(container)
 

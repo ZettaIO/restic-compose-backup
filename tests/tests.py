@@ -14,7 +14,7 @@ class ResticBackupTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Set up basic enviroment variables"""
+        """Set up basic environment variables"""
         os.environ['RESTIC_REPOSITORY'] = "test"
         os.environ['RESTIC_PASSWORD'] = "password"
 

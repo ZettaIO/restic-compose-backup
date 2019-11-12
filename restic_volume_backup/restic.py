@@ -1,5 +1,4 @@
-import os
-from subprocess import Popen, PIPE, check_call
+from subprocess import Popen, PIPE
 
 
 def init_repo(repository):
