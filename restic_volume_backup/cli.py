@@ -2,23 +2,13 @@ import argparse
 import pprint
 import logging
 
+from restic_volume_backup import log
 from restic_volume_backup.config import Config
 from restic_volume_backup.containers import RunningContainers
 from restic_volume_backup import backup_runner
 from restic_volume_backup import restic
 
 logger = logging.getLogger(__name__)
-
-
-def setup_logger(level=logging.INFO):
-    logger.setLevel(level)
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    ch.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-    logger.addHandler(ch)
-
-
-setup_logger()
 
 
 def main():
@@ -42,8 +32,8 @@ def status(config, containers):
 
     logger.info("Backup config for compose project '%s'", containers.this_container.project_name)
     logger.info("Current service: %s", containers.this_container.name)
-    logger.info("Backup process: %s", containers.backup_process_container.name
-                if containers.backup_process_container else 'Not Running')
+    # logger.info("Backup process: %s", containers.backup_process_container.name
+    #             if containers.backup_process_container else 'Not Running')
     logger.info("Backup running: %s", containers.backup_process_running)
 
     backup_containers = containers.containers_for_backup()
@@ -91,23 +81,24 @@ def backup(config, containers):
 
 
 def start_backup_process(config, containers):
-    """Start the backup process container"""
+    """The actual backup process running inside the spawned container"""
     if (not containers.backup_process_container
        or containers.this_container == containers.backup_process_container is False):
-        print(
+        logger.error(
             "Cannot run backup process in this container. Use backup command instead. "
             "This will spawn a new container with the necessary mounts."
         )
         return
 
-    logger.info("start-backup-process")
     status(config, containers)
+    logger.info("start-backup-process")
 
     # Waste a few seconds faking a backup
     print("Fake backup running")
     import time
     for i in range(5):
         time.sleep(1)
+        logger.info('test')
         print(i)
 
     exit(0)

@@ -1,11 +1,15 @@
+import logging
 import os
 import docker
 
 from restic_volume_backup.config import Config
 
+logger = logging.getLogger(__name__)
+
 
 def run(image: str = None, command: str = None, volumes: dict = None,
         environment: dict = None, labels: dict = None):
+    logger.info("Starting backup container")
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
 
@@ -21,14 +25,32 @@ def run(image: str = None, command: str = None, volumes: dict = None,
         tty=True,
     )
 
-    print("Backup process container:", container.name)
+    logger.info("Backup process container: %s", container.name)
     log_generator = container.logs(stdout=True, stderr=True, stream=True, follow=True)
+
+    def readlines(stream):
+        """Read stream line by line"""
+        while True:
+            line = ""
+            while True:
+                try:
+                    line += next(stream).decode()
+                    if line.endswith('\n'):
+                        break
+                except StopIteration:
+                    break
+            if line:
+                yield line.strip()
+            else:
+                break
+
     with open('backup.log', 'w') as fd:
-        for line in log_generator:
+        for line in readlines(log_generator):
             line = line.decode()
             fd.write(line)
-            print(line, end='')
+            logger.info(line)
+
 
     container.reload()
-    print("ExitCode", container.attrs['State']['ExitCode'])
+    logger.info("Container ExitCode %s", container.attrs['State']['ExitCode'])
     container.remove()

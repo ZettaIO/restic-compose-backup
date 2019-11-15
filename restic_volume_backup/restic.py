@@ -52,7 +52,13 @@ def run_command(cmd):
     stdoutdata, stderrdata = child.communicate()
 
     if stdoutdata:
-        print(stdoutdata.decode())
+        logger.info(stdoutdata.decode().strip())
+        logger.info('-' * 28)
 
     if stderrdata:
-        print(stderrdata.decode())
+        logger.info('%s STDERR %s', '-' * 10, '-' * 10)
+        logger.info(stderrdata.decode().strip())
+        logger.info('-' * 28)
+
+    logger.info("returncode %s", child.returncode)
+    return child.returncode
