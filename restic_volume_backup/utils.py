@@ -19,7 +19,7 @@ def list_containers():
     return [c.attrs for c in all_containers]
 
 
-def is_true(self, value):
+def is_true(value):
     """
     Evaluates the truthfullness of a bool value in container labels
     """

@@ -2,6 +2,7 @@ import os
 
 
 class Config:
+    """Bag for config values"""
     def __init__(self, check=True):
         self.repository = os.environ['RESTIC_REPOSITORY']
         self.password = os.environ['RESTIC_PASSWORD']

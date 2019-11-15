@@ -1,7 +1,14 @@
+import logging
 from subprocess import Popen, PIPE
+
+logger = logging.getLogger(__name__)
 
 
 def init_repo(repository):
+    """
+    Attempt to initialize the repository.
+    Doing this after the repository is initialized
+    """
     run_command([
         "restic",
         "-r",
@@ -40,6 +47,7 @@ def check(repository):
 
 
 def run_command(cmd):
+    logger.info('cmd: %s', ' '.join(cmd))
     child = Popen(cmd, stdout=PIPE, stderr=PIPE)
     stdoutdata, stderrdata = child.communicate()
 

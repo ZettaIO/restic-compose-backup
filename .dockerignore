@@ -5,3 +5,5 @@ Dockerfile
 tests/
 docker-compose.yaml
 *.env
+*.egg-info
+__pycache__

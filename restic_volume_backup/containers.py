@@ -9,7 +9,7 @@ VOLUME_TYPE_VOLUME = "volume"
 class Container:
     """Represents a docker container"""
 
-    def __init__(self, data):
+    def __init__(self, data: dict):
         self._data = data
         self.id = data['Id']
         self.name = data['Name'].replace('/', '')
@@ -31,17 +31,17 @@ class Container:
         self._exclude = self._parse_pattern(self.get_label('restic-volume-backup.exclude'))
 
     @property
-    def image(self):
+    def image(self) -> str:
         """Image name"""
         return self.get_config('Image')
 
     @property
-    def environment(self):
+    def environment(self) -> dict:
         """All configured env vars for the container"""
         return self.get_config('Env', default=[])
 
     @property
-    def volumes(self):
+    def volumes(self) -> dict:
         """
         Return volumes for the container in the following format:
             {'/home/user1/': {'bind': '/mnt/vol2', 'mode': 'rw'},}
@@ -65,15 +65,15 @@ class Container:
         ])
 
     @property
-    def volume_backup_enabled(self):
+    def volume_backup_enabled(self) -> bool:
         return utils.is_true(self.get_label('restic-volume-backup.volumes'))
 
     @property
-    def mysql_backup_enabled(self):
+    def mysql_backup_enabled(self) -> bool:
         return utils.is_true(self.get_label('restic-volume-backup.mysql'))
 
     @property
-    def postgresql_backup_enabled(self):
+    def postgresql_backup_enabled(self) -> bool:
         return utils.is_true(self.get_label('restic-volume-backup.postgresql'))
 
     @property
@@ -135,6 +135,7 @@ class Container:
         return filtered
 
     def volumes_for_backup(self, source_prefix='/backup', mode='ro'):
+        """Get volumes configured for backup"""
         mounts = self.filter_mounts()
         volumes = {}
         for mount in mounts:
@@ -255,7 +256,7 @@ class RunningContainers:
         """Obtain all containers with backup enabled"""
         return [container for container in self.containers if container.backup_enabled]
 
-    def generate_backup_mounts(self, dest_prefix):
+    def generate_backup_mounts(self, dest_prefix) -> dict:
         mounts = {}
         for container in self.containers_for_backup():
             mounts.update(container.volumes_for_backup(source_prefix=dest_prefix, mode='ro'))
