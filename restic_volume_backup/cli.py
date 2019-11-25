@@ -95,8 +95,11 @@ def start_backup_process(config, containers):
 
     # Waste a few seconds faking a backup
     print("Fake backup running")
+    
+    # restic.test()
+
     import time
-    for i in range(5):
+    for i in range(3):
         time.sleep(1)
         logger.info('test')
         print(i)

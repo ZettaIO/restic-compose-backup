@@ -3,6 +3,11 @@ from subprocess import Popen, PIPE
 
 logger = logging.getLogger(__name__)
 
+def test():
+    run_command(['pwd'])
+    run_command(['ls', '-l'])
+    run_command(['ls', '/backup'])
+
 
 def init_repo(repository):
     """
