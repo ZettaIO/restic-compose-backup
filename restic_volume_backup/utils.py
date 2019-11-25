@@ -24,3 +24,15 @@ def is_true(value):
     Evaluates the truthfullness of a bool value in container labels
     """
     return value in TRUE_VALUES
+
+
+def strip_root(path):
+    """
+    Removes the root slash in a path.
+    Example: /srv/data becomes srv/data
+    """
+    path = path.strip()
+    if path.startswith('/'):
+        return path[1:]
+
+    return path
