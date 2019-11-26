@@ -82,6 +82,37 @@ class ResticBackupTests(unittest.TestCase):
             self.assertNotEqual(web_service, None)
             self.assertEqual(len(web_service.filter_mounts()), 1)
 
+    def test_volumes_for_backup(self):
+        containers = self.createContainers()
+        containers += [
+            {
+                'service': 'web',
+                'labels': {
+                    'restic-volume-backup.volumes': True,
+                },
+                'mounts': [{
+                    'Source': 'test',
+                    'Destination': 'test',
+                    'Type': 'bind',
+                }]
+            },
+            {
+                'service': 'mysql',
+                'labels': {
+                    'restic-volume-backup.mysql': True,
+                },
+                'mounts': [{
+                    'Source': 'data',
+                    'Destination': 'data',
+                    'Type': 'bind',
+                }]
+            },
+        ]
+        with mock.patch(list_containers_func, fixtures.containers(containers=containers)):
+            cnt = RunningContainers()
+            self.assertTrue(len(cnt.containers_for_backup()) == 2)
+            self.assertEqual(cnt.generate_backup_mounts(), {'test': {'bind': '/backup/web/test', 'mode': 'ro'}})
+
     def test_include(self):
         containers = self.createContainers()
         containers += [
