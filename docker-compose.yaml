@@ -7,6 +7,8 @@ services:
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      # Map backup database locally
+      - ./restic_data:/restic_data
       # Map in project source
       - .:/restic-volume-backup
   web:
