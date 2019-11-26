@@ -47,6 +47,7 @@ def run(image: str = None, command: str = None, volumes: dict = None,
     with open('backup.log', 'w') as fd:
         for line in readlines(log_generator):
             fd.write(line)
+            fd.write('\n')
             logger.info(line)
 
 
