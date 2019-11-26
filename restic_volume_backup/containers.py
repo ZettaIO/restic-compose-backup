@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from restic_volume_backup import utils
 
@@ -140,7 +141,7 @@ class Container:
         volumes = {}
         for mount in mounts:
             volumes[mount.source] = {
-                'bind': '{}{}'.format(source_prefix, mount.source),
+                'bind': str(Path(source_prefix) / self.service_name / Path(utils.strip_root(mount.destination))),
                 'mode': mode,
             }
 
