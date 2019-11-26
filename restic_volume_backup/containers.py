@@ -267,10 +267,11 @@ class RunningContainers:
         """Obtain all containers with backup enabled"""
         return [container for container in self.containers if container.backup_enabled]
 
-    def generate_backup_mounts(self, dest_prefix) -> dict:
+    def generate_backup_mounts(self, dest_prefix='/backup') -> dict:
         mounts = {}
         for container in self.containers_for_backup():
-            mounts.update(container.volumes_for_backup(source_prefix=dest_prefix, mode='ro'))
+            if container.volume_backup_enabled:
+                mounts.update(container.volumes_for_backup(source_prefix=dest_prefix, mode='ro'))
 
         return mounts
 
