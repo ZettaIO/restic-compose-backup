@@ -17,3 +17,5 @@ venv
 
 # misc
 /private/
+restic_data/
+restic_cache/
