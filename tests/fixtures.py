@@ -33,7 +33,7 @@ def containers(project="default", containers=[]):
         return [
         {
             'Id': container.get('id', generate_sha256()),
-            'Name': ''.join(random.choice(string.ascii_lowercase) for i in range(16)),
+            'Name': container.get('service') + '_' + ''.join(random.choice(string.ascii_lowercase) for i in range(16)),
             'Config': {
                 'Image': 'restic-volume-backup_backup',
                 'Labels': {
