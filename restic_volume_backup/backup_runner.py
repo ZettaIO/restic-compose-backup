@@ -40,7 +40,7 @@ def run(image: str = None, command: str = None, volumes: dict = None,
                 except StopIteration:
                     break
             if line:
-                yield line.strip()
+                yield line.rstrip()
             else:
                 break
 
