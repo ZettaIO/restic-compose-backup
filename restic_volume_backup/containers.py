@@ -13,7 +13,6 @@ class Container:
     def __init__(self, data: dict):
         self._data = data
         self.id = data['Id']
-        self.name = data['Name'].replace('/', '')
 
         self._state = data.get('State')
         self._config = data.get('Config')
@@ -86,6 +85,11 @@ class Container:
     def is_running(self) -> bool:
         """Is the container running?"""
         return self._state.get('Running', False)
+
+    @property
+    def name(self) -> str:
+        """Container name"""
+        return self._data['Name'].replace('/', '')
 
     @property
     def service_name(self) -> str:
@@ -168,6 +172,12 @@ class Container:
             return False
 
         return self.id == other.id
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return "<Container {}>".format(self.name)
 
 
 class Mount:
