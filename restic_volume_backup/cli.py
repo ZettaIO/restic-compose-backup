@@ -38,10 +38,14 @@ def status(config, containers):
 
     backup_containers = containers.containers_for_backup()
     for container in backup_containers:
-        if container.backup_enabled:
-            logger.info('service: %s', container.service_name)
+        logger.info('service: %s', container.service_name)
+        if container.volume_backup_enabled:
+
             for mount in container.filter_mounts():
-                logger.info(' - %s', mount.source)
+                logger.info(' - volume: %s', mount.source)
+
+        if container.mysql_backup_enabled:
+            logger.info(' -> mysql %s', container.mysql_backup_enabled)
 
     if len(backup_containers) == 0:
         logger.info("No containers in the project has 'restic-volume-backup.enabled' label")
@@ -93,19 +97,7 @@ def start_backup_process(config, containers):
     status(config, containers)
     logger.info("start-backup-process")
 
-    # Waste a few seconds faking a backup
-    print("Fake backup running")
-    
-    # restic.test()
-
-    import time
-    for i in range(3):
-        time.sleep(1)
-        logger.info('test')
-        print(i)
-
-    exit(0)
-
+    restic.backup_files(config.repository, source='/backup')
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='restic_volume_backup')
