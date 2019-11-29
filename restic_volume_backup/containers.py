@@ -12,7 +12,6 @@ class Container:
 
     def __init__(self, data: dict):
         self._data = data
-
         self._state = data.get('State')
         self._config = data.get('Config')
         self._mounts = [Mount(mnt, container=self) for mnt in data.get('Mounts')]
@@ -45,9 +44,15 @@ class Container:
         return self.get_config('Image')
 
     @property
-    def environment(self) -> dict:
-        """All configured env vars for the container"""
+    def environment(self) -> list:
+        """All configured env vars for the container as a list"""
         return self.get_config('Env', default=[])
+
+    def get_config_env(self, name) -> str:
+        """Get a config environment variable by name"""
+        # convert to dict and fetch env var by name
+        data = {i[0:i.find('=')]: i[i.find('=')+1:] for i in self.environment}
+        return data.get(name)
 
     @property
     def volumes(self) -> dict:
@@ -159,6 +164,14 @@ class Container:
             }
 
         return volumes
+
+    def get_mysql_credentials(self):
+        return {
+            'host': self.hostname,
+            'username': self.get_config_env('MYSQL_USER'),
+            'password': self.get_config_env('MYSQL_PASSWORD'),
+            'port': "3306",
+        }
 
     def _parse_pattern(self, value):
         if not value:
