@@ -24,9 +24,10 @@ services:
       - SOME_VALUE=test
       - ANOTHER_VALUE=1
   mysql:
-    image: mysql
+    image: mysql:5
     labels:
       restic-volume-backup.mysql: true
+      restic-volume-backup.mysql.: true
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb
