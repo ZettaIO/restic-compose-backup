@@ -62,7 +62,7 @@ def backup_mysql_database(repository, host, port, user, password, filename, data
     pass
 
 
-def mysql_ping(host, port, username, password):
+def ping_mysql(host, port, username, password):
     """Check if the database is up and can be reached"""
     return run_command([
         'mysqladmin',
@@ -71,10 +71,9 @@ def mysql_ping(host, port, username, password):
         host,
         '--port',
         port,
-        '-user',
+        '--user',
         username,
-        '--password',
-        password,
+        f'--password={password}',
     ])
 
 def snapshots(repository):
