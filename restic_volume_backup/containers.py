@@ -12,7 +12,6 @@ class Container:
 
     def __init__(self, data: dict):
         self._data = data
-        self.id = data['Id']
 
         self._state = data.get('State')
         self._config = data.get('Config')
@@ -29,6 +28,16 @@ class Container:
 
         self._include = self._parse_pattern(self.get_label('restic-volume-backup.include'))
         self._exclude = self._parse_pattern(self.get_label('restic-volume-backup.exclude'))
+
+    @property
+    def id(self) -> str:
+        """str: The id of the container"""
+        return self._data.get('Id')
+
+    @property
+    def hostname(self) -> str:
+        """12 character hostname based on id"""
+        return self.id[:12]
 
     @property
     def image(self) -> str:
@@ -268,6 +277,7 @@ class RunningContainers:
         return [container for container in self.containers if container.backup_enabled]
 
     def generate_backup_mounts(self, dest_prefix='/backup') -> dict:
+        """Generate mounts for backup for the entire compose setup"""
         mounts = {}
         for container in self.containers_for_backup():
             if container.volume_backup_enabled:
