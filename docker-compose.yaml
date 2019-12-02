@@ -39,7 +39,7 @@ services:
   mariadb:
     image: mariadb:10
     labels:
-      restic-volume-backup.mysql: true
+      restic-volume-backup.mariadb: true
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb

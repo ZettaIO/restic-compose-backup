@@ -75,6 +75,7 @@ class Container:
         return any([
             self.volume_backup_enabled,
             self.mysql_backup_enabled,
+            self.mariadb_backup_enabled,
             self.postgresql_backup_enabled,
         ])
 
@@ -85,6 +86,10 @@ class Container:
     @property
     def mysql_backup_enabled(self) -> bool:
         return utils.is_true(self.get_label('restic-volume-backup.mysql'))
+
+    @property
+    def mariadb_backup_enabled(self) -> bool:
+        return utils.is_true(self.get_label('restic-volume-backup.mariadb'))
 
     @property
     def postgresql_backup_enabled(self) -> bool:
