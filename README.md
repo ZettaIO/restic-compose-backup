@@ -5,11 +5,18 @@
 
 Backup using https://restic.net/ for a docker-compose setup.
 
-Automatically detects and backs up volumes in a docker-compose setup.
+Automatically detects and backs up volumes, mysql, mariadb and postgres databases in a docker-compose setup.
 This includes both host mapped volumes and actual docker volumes.
 
+* Each service in the compose setup is configured with a label
+  to enable backup of volumes or databases
+* When backup starts a new instance of the container is created
+  mapping in all the needed volumes. It will copy networks etc
+  to ensure databases can be reached
+* Volumes are mounter to `/backup/<service_name>/<path>`
+  in the backup process container. `/backup` is pushed into restic
+* Databases are backed up from stdin / dumps
 * Cron triggers backup
-* Volumes for all running containers are backed up
 
 ## Configuration
 
@@ -22,11 +29,12 @@ RESTIC_PASSWORD
 
 Backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
 
-Example compose setup:
+### Volumes
 
 ```yaml
 version: '3'
 services:
+  # The backup service
   backup:
     build: restic-volume-backup
     environment:
@@ -36,6 +44,7 @@ services:
       - some_other_vars.env
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+
   example:
     image: some_image
     # Enable volume backup with label
@@ -52,7 +61,7 @@ volumes:
   media:
 ```
 
-Include
+A simple `include` and `exclude` filter is also available.
 
 ```yaml
   example:
@@ -73,7 +82,7 @@ volumes:
 
 ```
 
-Exclude:
+Exclude
 
 ```yaml
   example:
@@ -93,17 +102,38 @@ volumes:
   files:
 ```
 
+### Databases
+
+Will dump databases directly into restic through stdin.
+They will appear in restic as a separate snapshot with
+path `/backup/<service_name>/dump.sql` or similar.
+
+```yaml
+  mariadb:
+    image: mariadb:10
+    labels:
+      restic-volume-backup.mariadb: true
+```
+
+```yaml
+  mysql:
+    image: mysql:5
+    labels:
+      restic-volume-backup.mysql: true
+```
+
+```yaml
+  postgres:
+    image: postgres
+    labels:
+      restic-volume-backup.postgres: true
+```
+
+
 ## Running Tests
 
 ```
 python setup.py develop
 pip install -r tests/requirements.txt
 pytest tests
-```
-
-## TEMP
-
-```
-mysql://user:pw@host:port/dbname
-postgresql://user:pw@host:port/dbname
 ```
