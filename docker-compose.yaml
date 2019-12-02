@@ -23,11 +23,11 @@ services:
     environment:
       - SOME_VALUE=test
       - ANOTHER_VALUE=1
+
   mysql:
     image: mysql:5
     labels:
       restic-volume-backup.mysql: true
-      restic-volume-backup.mysql.: true
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb
@@ -36,5 +36,18 @@ services:
     volumes:
       - mysqldata:/var/lib/mysql
 
+  mariadb:
+    image: mariadb:10
+    labels:
+      restic-volume-backup.mysql: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
+    volumes:
+      - mariadbdata:/var/lib/mysql
+
 volumes:
   mysqldata:
+  mariadbdata:
