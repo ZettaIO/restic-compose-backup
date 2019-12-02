@@ -1,4 +1,4 @@
-FROM restic/restic:0.9.5
+FROM restic/restic:0.9.6
 
 RUN apk update && apk add python3 dcron mariadb-client postgresql-client
 
