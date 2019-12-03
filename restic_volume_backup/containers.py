@@ -33,6 +33,7 @@ class Container:
     @property
     def instance(self) -> 'Container':
         """Container: Get a service specific subclass instance"""
+        # TODO: Do this smarter in the future (simple registry)
         if self.database_backup_enabled:
             from restic_volume_backup import containers_db
             if self.mariadb_backup_enabled:
