@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 def main():
     """CLI entrypoint"""
     args = parse_args()
+    log.setup(level=args.log_level)
     config = Config()
     containers = RunningContainers()
 
@@ -131,6 +132,12 @@ def parse_args():
     parser.add_argument(
         'action',
         choices=['status', 'backup', 'start-backup-process'],
+    )
+    parser.add_argument(
+        '--log-level',
+        default=None,
+        choices=list(log.LOG_LEVELS.keys()),
+        help="Log level"
     )
     return parser.parse_args()
 
