@@ -2,13 +2,14 @@
 Restic commands
 """
 import logging
+from typing import List
 from subprocess import Popen, PIPE
 from restic_volume_backup import commands
 
 logger = logging.getLogger(__name__)
 
 
-def init_repo(repository):
+def init_repo(repository: str):
     """
     Attempt to initialize the repository.
     Doing this after the repository is initialized
@@ -23,7 +24,7 @@ def init_repo(repository):
     ])
 
 
-def backup_files(repository, source='/backup'):
+def backup_files(repository: str, source='/backup'):
     return commands.run([
         "restic",
         "--cache-dir",
@@ -36,34 +37,27 @@ def backup_files(repository, source='/backup'):
     ])
 
 
-def backup_mysql_all(repository, host, port, user, password, filename):
-    """Backup all mysql databases"""
-    # -h host, -p password
-    return commands.run([
-        'mysqldump',
-        '--host',
-        host,
-        '--port',
-        port,
-        '--user',
-        user,
-        '--password',
-        password,
-        '|',
+def backup_from_stdin(filename: str, source_command: List[str]):
+    """
+    Backs up from stdin running the source_command passed in.
+    It will appear in restic with the filename (including path) passed in.
+    """
+    dest_command = [
         'restic',
+        "--cache-dir",
         'backup',
         '--stdin',
         '--stdin-filename',
-        'dump.sql'
-    ])
+        filename,
+    ]
+
+    # pipe source command into dest command
+    source_process = Popen(source_command, stdout=PIPE)
+    dest_process = Popen(dest_command, stdin=source_process.stdout)
+    return dest_process.communicate()
 
 
-def backup_mysql_database(repository, host, port, user, password, filename, database):
-    """Backup a single database"""
-    pass
-
-
-def snapshots(repository):
+def snapshots(repository: str):
     return commands.run([
         "restic",
         "--cache-dir",
@@ -74,7 +68,7 @@ def snapshots(repository):
     ])
 
 
-def check(repository):
+def check(repository: str):
     return commands.run([
         "restic",
         "--cache-dir",
