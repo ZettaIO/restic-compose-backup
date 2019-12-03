@@ -48,6 +48,18 @@ services:
     volumes:
       - mariadbdata:/var/lib/mysql
 
+  postgres:
+    image: postgres
+    labels:
+      restic-volume-backup.postgres: true
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=pgpassword
+      - POSTGRES_DB=test
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
 volumes:
   mysqldata:
   mariadbdata:
+  pgdata:
