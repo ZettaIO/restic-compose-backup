@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def run(image: str = None, command: str = None, volumes: dict = None,
-        environment: dict = None, labels: dict = None):
+        environment: dict = None, labels: dict = None, source_container_id: str = None):
     logger.info("Starting backup container")
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
@@ -17,10 +17,11 @@ def run(image: str = None, command: str = None, volumes: dict = None,
         image,
         command,
         labels=labels,
-        # auto_remove=True,
+        # auto_remove=True,  # We remove the container further down
         detach=True,
         environment=environment,
         volumes=volumes,
+        network_mode=f'container:{source_container_id}',  # Reuse original container's network stack.
         working_dir=os.getcwd(),
         tty=True,
     )
