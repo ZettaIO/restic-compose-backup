@@ -73,7 +73,7 @@ def backup(config, containers):
     mounts = containers.generate_backup_mounts('/backup')
     volumes.update(mounts)
 
-    backup_runner.run(
+    result = backup_runner.run(
         image=containers.this_container.image,
         command='restic-volume-backup start-backup-process',
         volumes=volumes,
@@ -84,6 +84,8 @@ def backup(config, containers):
             "com.docker.compose.project": containers.this_container.project_name,
         },
     )
+    logger.info('Backup container exit code: %s', result)
+    # TODO: Alert
 
 
 def start_backup_process(config, containers):
@@ -100,14 +102,26 @@ def start_backup_process(config, containers):
     logger.info("start-backup-process")
 
     # Back up volumes
-    restic.backup_files(config.repository, source='/backup')
+    try:
+        vol_result = restic.backup_files(config.repository, source='/backup')
+        logger.info('Volume backup exit code: %s', vol_result)
+        # TODO: Alert
+    except Exception as ex:
+        logger.error(ex)
+        # TODO: Alert
 
     # back up databases
     for container in containers.containers_for_backup():
         if container.database_backup_enabled:
-            instance = container.instance
-            logger.info('Backing up %s in service %s', instance.container_type, instance.service_name)
-            instance.backup()
+            try:
+                instance = container.instance
+                logger.info('Backing up %s in service %s', instance.container_type, instance.service_name)
+                result = instance.backup()
+                logger.info('Exit code: %s', result)
+                # TODO: Alert
+            except Exception as ex:
+                logger.error(ex)
+                # TODO: Alert
 
 
 def parse_args():
