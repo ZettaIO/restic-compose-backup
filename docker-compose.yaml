@@ -49,7 +49,7 @@ services:
       - mariadbdata:/var/lib/mysql
 
   postgres:
-    image: postgres
+    image: postgres:11
     labels:
       restic-volume-backup.postgres: true
     environment:
