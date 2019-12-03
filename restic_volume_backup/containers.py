@@ -31,6 +31,20 @@ class Container:
         self._exclude = self._parse_pattern(self.get_label('restic-volume-backup.exclude'))
 
     @property
+    def instance(self) -> 'Container':
+        """Container: Get a service specific subclass instance"""
+        if self.database_backup_enabled:
+            from restic_volume_backup import containers_db
+            if self.mariadb_backup_enabled:
+                return containers_db.MariadbContainer(self._data)
+            if self.mysql_backup_enabled:
+                return containers_db.MysqlContainer(self._data)
+            if self.postgresql_backup_enabled:
+                return containers_db.PostgresContainer(self._data)
+        else:
+            return self
+
+    @property
     def id(self) -> str:
         """str: The id of the container"""
         return self._data.get('Id')
@@ -102,7 +116,7 @@ class Container:
 
     @property
     def postgresql_backup_enabled(self) -> bool:
-        return utils.is_true(self.get_label('restic-volume-backup.postgresql'))
+        return utils.is_true(self.get_label('restic-volume-backup.postgres'))
 
     @property
     def is_backup_process_container(self) -> bool:
