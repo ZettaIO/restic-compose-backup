@@ -18,6 +18,14 @@ This includes both host mapped volumes and actual docker volumes.
 * Databases are backed up from stdin / dumps
 * Cron triggers backup
 
+## Install
+
+```bash
+docker pull zettaio/restic-compose-backup
+```
+
+.. or clone this repo and build it.
+
 ## Configuration
 
 Required env variables for restic:
