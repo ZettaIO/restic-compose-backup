@@ -1,3 +1,5 @@
+import os
+from contextlib import contextmanager
 import docker
 
 from restic_volume_backup.config import Config
@@ -36,3 +38,17 @@ def strip_root(path):
         return path[1:]
 
     return path
+
+
+@contextmanager
+def environment(name, value):
+    """Tempset env var"""
+    old_val = os.environ.get(name)
+    os.environ[name] = value
+    try:
+        yield
+    finally:
+        if old_val is None:
+            del os.environ[name]
+        else:
+            os.environ[name] = old_val
