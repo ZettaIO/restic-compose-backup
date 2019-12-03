@@ -4,6 +4,7 @@ from restic_volume_backup import (
     commands,
     restic,
 )
+from restic_volume_backup import utils
 
 
 class MariadbContainer(Container):
@@ -102,6 +103,7 @@ class PostgresContainer(Container):
             'username': self.get_config_env('POSTGRES_USER'),
             'password': self.get_config_env('POSTGRES_PASSWORD'),
             'port': "5432",
+            'database': self.get_config_env('POSTGRES_DB'),
         }
 
     def ping(self) -> bool:
@@ -116,7 +118,23 @@ class PostgresContainer(Container):
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
-        raise NotImplementedError("Base container class don't implement this")
+        # NOTE: Backs up a single database from POSTGRES_DB env var
+        creds = self.get_credentials()
+        return [
+            "pg_dump",
+            f"--host={creds['host']}",
+            f"--port={creds['port']}",
+            f"--username={creds['username']}",
+            creds['database'],
+        ]
 
     def backup(self):
-        print("SKIPPING")
+        config = Config()
+        creds = self.get_credentials()
+
+        with utils.environment('PGPASSWORD', creds['password']):
+            return restic.backup_from_stdin(
+                config.repository,
+                f"/backup/{self.service_name}/{creds['database']}.sql",
+                self.dump_command(),
+            )
