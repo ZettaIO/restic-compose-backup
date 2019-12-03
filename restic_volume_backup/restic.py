@@ -1,10 +1,11 @@
+"""
+Restic commands
+"""
 import logging
 from subprocess import Popen, PIPE
+from restic_volume_backup import commands
 
 logger = logging.getLogger(__name__)
-
-def test():
-    return run_command(['ls', '/backup'])
 
 
 def init_repo(repository):
@@ -12,7 +13,7 @@ def init_repo(repository):
     Attempt to initialize the repository.
     Doing this after the repository is initialized
     """
-    return run_command([
+    return commands.run([
         "restic",
         "--cache-dir",
         "/restic_cache",
@@ -23,7 +24,7 @@ def init_repo(repository):
 
 
 def backup_files(repository, source='/backup'):
-    return run_command([
+    return commands.run([
         "restic",
         "--cache-dir",
         "/restic_cache",
@@ -38,7 +39,7 @@ def backup_files(repository, source='/backup'):
 def backup_mysql_all(repository, host, port, user, password, filename):
     """Backup all mysql databases"""
     # -h host, -p password
-    return run_command([
+    return commands.run([
         'mysqldump',
         '--host',
         host,
@@ -62,22 +63,8 @@ def backup_mysql_database(repository, host, port, user, password, filename, data
     pass
 
 
-def ping_mysql(host, port, username, password):
-    """Check if the database is up and can be reached"""
-    return run_command([
-        'mysqladmin',
-        'ping',
-        '--host',
-        host,
-        '--port',
-        port,
-        '--user',
-        username,
-        f'--password={password}',
-    ])
-
 def snapshots(repository):
-    return run_command([
+    return commands.run([
         "restic",
         "--cache-dir",
         "/restic_cache",
@@ -88,7 +75,7 @@ def snapshots(repository):
 
 
 def check(repository):
-    return run_command([
+    return commands.run([
         "restic",
         "--cache-dir",
         "/restic_cache",
@@ -96,21 +83,3 @@ def check(repository):
         repository,
         "check",
     ])
-
-
-def run_command(cmd):
-    logger.info('cmd: %s', ' '.join(cmd))
-    child = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    stdoutdata, stderrdata = child.communicate()
-
-    if stdoutdata:
-        logger.info(stdoutdata.decode().strip())
-        logger.info('-' * 28)
-
-    if stderrdata:
-        logger.info('%s STDERR %s', '-' * 10, '-' * 10)
-        logger.info(stderrdata.decode().strip())
-        logger.info('-' * 28)
-
-    logger.info("returncode %s", child.returncode)
-    return child.returncode
