@@ -1,5 +1,5 @@
 from restic_volume_backup.containers import Container
-from restic_volume_backup.restic
+from restic_volume_backup.restic import commands
 
 
 class MariadbContainer(Container):
@@ -16,7 +16,13 @@ class MariadbContainer(Container):
 
     def ping(self) -> bool:
         """Check the availability of the service"""
-        raise NotImplementedError("Base container class don't implement this")
+        creds = self.get_credentials()
+        return commands.ping_mysql(
+            creds['host'],
+            creds['port'],
+            creds['username'],
+            creds['password'],
+        )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
@@ -37,7 +43,13 @@ class MysqlContainer(Container):
 
     def ping(self) -> bool:
         """Check the availability of the service"""
-        raise NotImplementedError("Base container class don't implement this")
+        creds = self.get_credentials()
+        return commands.ping_mysql(
+            creds['host'],
+            creds['port'],
+            creds['username'],
+            creds['password'],
+        )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
@@ -58,7 +70,8 @@ class PostgresContainer(Container):
 
     def ping(self) -> bool:
         """Check the availability of the service"""
-        raise NotImplementedError("Base container class don't implement this")
+        # raise NotImplementedError("Base container class don't implement this")
+        print("Implement postgres ping!")
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
