@@ -14,27 +14,17 @@ def init_repo(repository: str):
     Attempt to initialize the repository.
     Doing this after the repository is initialized
     """
-    return commands.run([
-        "restic",
-        "--cache-dir",
-        "/restic_cache",
-        "-r",
-        repository,
+    return commands.run(restic(repository, [
         "init",
-    ])
+    ]))
 
 
 def backup_files(repository: str, source='/backup'):
-    return commands.run([
-        "restic",
-        "--cache-dir",
-        "/restic_cache",
-        "-r",
-        repository,
+    return commands.run(restic(repository, [
         "--verbose",
         "backup",
         source,
-    ])
+    ]))
 
 
 def backup_from_stdin(repository: str, filename: str, source_command: List[str]):
@@ -42,14 +32,12 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     Backs up from stdin running the source_command passed in.
     It will appear in restic with the filename (including path) passed in.
     """
-    dest_command = restic(repository,
-        [
-            'backup',
-            '--stdin',
-            '--stdin-filename',
-            filename,
-        ],
-    )
+    dest_command = restic(repository, [
+        'backup',
+        '--stdin',
+        '--stdin-filename',
+        filename,
+    ])
 
     # pipe source command into dest command
     source_process = Popen(source_command, stdout=PIPE)
@@ -58,25 +46,15 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
 
 
 def snapshots(repository: str):
-    return commands.run([
-        "restic",
-        "--cache-dir",
-        "/restic_cache",
-        "-r",
-        repository,
+    return commands.run(restic(repository, [
         "snapshots",
-    ])
+    ]))
 
 
 def check(repository: str):
-    return commands.run([
-        "restic",
-        "--cache-dir",
-        "/restic_cache",
-        "-r",
-        repository,
+    return commands.run(restic(repository, [
         "check",
-    ])
+    ]))
 
 
 def restic(repository: str, args: List[str]):
