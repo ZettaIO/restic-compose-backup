@@ -44,25 +44,10 @@ def status(config, containers):
             for mount in container.filter_mounts():
                 logger.info(' - volume: %s', mount.source)
 
-        if container.mysql_backup_enabled:
-            logger.info(' -> mysql %s', container.mysql_backup_enabled)
-            creds = container.get_mysql_credentials()
-            restic.ping_mysql(
-                creds['host'],
-                creds['port'],
-                creds['username'],
-                creds['password'],
-            )
-
-        if container.mariadb_backup_enabled:
-            logger.info(' -> mariadb %s', container.mysql_backup_enabled)
-            creds = container.get_mysql_credentials()
-            restic.ping_mysql(
-                creds['host'],
-                creds['port'],
-                creds['username'],
-                creds['password'],
-            )
+        if container.database_backup_enabled:
+            instance = container.instance
+            print(instance.container_type)
+            print(instance.ping())
 
     if len(backup_containers) == 0:
         logger.info("No containers in the project has 'restic-volume-backup.enabled' label")
