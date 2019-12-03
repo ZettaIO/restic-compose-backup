@@ -44,7 +44,7 @@ class MariadbContainer(Container):
         config = Config()
         return restic.backup_from_stdin(
             config.repository,
-            f'/backup/{self.service_name}',
+            f'/backup/{self.service_name}/all_databases.sql',
             self.dump_command(),
         )
 
@@ -73,10 +73,23 @@ class MysqlContainer(Container):
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
-        raise NotImplementedError("Base container class don't implement this")
+        creds = self.get_credentials()
+        return [
+            "mysqldump",
+            f"--host={creds['host']}",
+            f"--port={creds['port']}",
+            f"--user={creds['username']}",
+            f"--password={creds['password']}",
+            "--all-databases",
+        ]
 
     def backup(self):
-        print("SKIPPING")
+        config = Config()
+        return restic.backup_from_stdin(
+            config.repository,
+            f'/backup/{self.service_name}/all_databases.sql',
+            self.dump_command(),
+        )
 
 
 class PostgresContainer(Container):
