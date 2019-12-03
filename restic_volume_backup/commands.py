@@ -11,7 +11,7 @@ def test():
 
 def ping_mysql(host, port, username, password) -> int:
     """Check if the database is up and can be reached"""
-    return commands.run([
+    return run([
         'mysqladmin',
         'ping',
         '--host',
@@ -26,7 +26,7 @@ def ping_mysql(host, port, username, password) -> int:
 
 def ping_mariadb(host, port, username, password) -> int:
     """Check if the database is up and can be reached"""
-    return commands.run([
+    return run([
         'mysqladmin',
         'ping',
         '--host',
@@ -40,7 +40,7 @@ def ping_mariadb(host, port, username, password) -> int:
 
 
 def ping_postgres(self) -> int:
-    pass
+    return -1
 
 
 def run(cmd: List[str]) -> int:
