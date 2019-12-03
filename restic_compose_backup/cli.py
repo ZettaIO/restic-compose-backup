@@ -2,11 +2,13 @@ import argparse
 import pprint
 import logging
 
-from restic_volume_backup import log
-from restic_volume_backup.config import Config
-from restic_volume_backup.containers import RunningContainers
-from restic_volume_backup import backup_runner
-from restic_volume_backup import restic
+from restic_compose_backup import (
+    backup_runner,
+    log,
+    restic,
+)
+from restic_compose_backup.config import Config
+from restic_compose_backup.containers import RunningContainers
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +52,7 @@ def status(config, containers):
             logger.info(' - %s (is_ready=%s)', instance.container_type, ping == 0)
 
     if len(backup_containers) == 0:
-        logger.info("No containers in the project has 'restic-volume-backup.enabled' label")
+        logger.info("No containers in the project has 'restic-compose-backup.enabled' label")
 
 
 def backup(config, containers):
@@ -75,12 +77,12 @@ def backup(config, containers):
 
     result = backup_runner.run(
         image=containers.this_container.image,
-        command='restic-volume-backup start-backup-process',
+        command='restic-compose-backup start-backup-process',
         volumes=volumes,
         environment=containers.this_container.environment,
         source_container_id=containers.this_container.id,
         labels={
-            "restic-volume-backup.backup_process": 'True',
+            "restic-compose-backup.backup_process": 'True',
             "com.docker.compose.project": containers.this_container.project_name,
         },
     )
@@ -125,7 +127,7 @@ def start_backup_process(config, containers):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(prog='restic_volume_backup')
+    parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
         choices=['status', 'backup', 'start-backup-process'],

@@ -1,10 +1,10 @@
-from restic_volume_backup.containers import Container
-from restic_volume_backup.config import Config
-from restic_volume_backup import (
+from restic_compose_backup.containers import Container
+from restic_compose_backup.config import Config
+from restic_compose_backup import (
     commands,
     restic,
 )
-from restic_volume_backup import utils
+from restic_compose_backup import utils
 
 
 class MariadbContainer(Container):

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from restic_volume_backup import utils
+from restic_compose_backup import utils
 
 VOLUME_TYPE_BIND = "bind"
 VOLUME_TYPE_VOLUME = "volume"
@@ -27,15 +27,15 @@ class Container:
         if self._labels is None:
             raise ValueError('Container meta missing Config->Labels')
 
-        self._include = self._parse_pattern(self.get_label('restic-volume-backup.include'))
-        self._exclude = self._parse_pattern(self.get_label('restic-volume-backup.exclude'))
+        self._include = self._parse_pattern(self.get_label('restic-compose-backup.volumes.include'))
+        self._exclude = self._parse_pattern(self.get_label('restic-compose-backup.volumes.exclude'))
 
     @property
     def instance(self) -> 'Container':
         """Container: Get a service specific subclass instance"""
         # TODO: Do this smarter in the future (simple registry)
         if self.database_backup_enabled:
-            from restic_volume_backup import containers_db
+            from restic_compose_backup import containers_db
             if self.mariadb_backup_enabled:
                 return containers_db.MariadbContainer(self._data)
             if self.mysql_backup_enabled:
@@ -96,7 +96,7 @@ class Container:
 
     @property
     def volume_backup_enabled(self) -> bool:
-        return utils.is_true(self.get_label('restic-volume-backup.volumes'))
+        return utils.is_true(self.get_label('restic-compose-backup.volumes'))
 
     @property
     def database_backup_enabled(self) -> bool:
@@ -109,20 +109,20 @@ class Container:
 
     @property
     def mysql_backup_enabled(self) -> bool:
-        return utils.is_true(self.get_label('restic-volume-backup.mysql'))
+        return utils.is_true(self.get_label('restic-compose-backup.mysql'))
 
     @property
     def mariadb_backup_enabled(self) -> bool:
-        return utils.is_true(self.get_label('restic-volume-backup.mariadb'))
+        return utils.is_true(self.get_label('restic-compose-backup.mariadb'))
 
     @property
     def postgresql_backup_enabled(self) -> bool:
-        return utils.is_true(self.get_label('restic-volume-backup.postgres'))
+        return utils.is_true(self.get_label('restic-compose-backup.postgres'))
 
     @property
     def is_backup_process_container(self) -> bool:
         """Is this container the running backup process?"""
-        return self.get_label('restic-volume-backup.backup_process') == 'True'
+        return self.get_label('restic-compose-backup.backup_process') == 'True'
 
     @property
     def is_running(self) -> bool:

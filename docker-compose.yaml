@@ -3,7 +3,7 @@ services:
   backup:
     build: .
     env_file:
-      - restic_volume_backup.env
+      - restic_compose_backup.env
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -11,12 +11,12 @@ services:
       - ./restic_data:/restic_data
       - ./restic_cache:/restic_cache
       # Map in project source
-      - .:/restic-volume-backup
+      - .:/restic-compose-backup
   web:
     image: nginx
     labels:
-      restic-volume-backup.volumes: true
-      restic-volume-backup.include: "/tests"
+      restic-compose-backup.volumes: true
+      restic-compose-backup.volumes.include: "/tests"
     volumes:
       - ./tests:/srv/tests
       - ./.vscode:/srv/code
@@ -27,7 +27,7 @@ services:
   mysql:
     image: mysql:5
     labels:
-      restic-volume-backup.mysql: true
+      restic-compose-backup.mysql: true
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb
@@ -39,7 +39,7 @@ services:
   mariadb:
     image: mariadb:10
     labels:
-      restic-volume-backup.mariadb: true
+      restic-compose-backup.mariadb: true
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb
@@ -51,7 +51,7 @@ services:
   postgres:
     image: postgres:11
     labels:
-      restic-volume-backup.postgres: true
+      restic-compose-backup.postgres: true
     environment:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=pgpassword

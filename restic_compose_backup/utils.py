@@ -2,7 +2,7 @@ import os
 from contextlib import contextmanager
 import docker
 
-from restic_volume_backup.config import Config
+from restic_compose_backup.config import Config
 
 TRUE_VALUES = ['1', 'true', 'True', True, 1]
 

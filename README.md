@@ -1,5 +1,5 @@
 
-# restic-volume-backup
+# restic-compose-backup
 
 *WORK IN PROGRESS*
 
@@ -67,8 +67,8 @@ A simple `include` and `exclude` filter is also available.
   example:
     image: some_image
     labels:
-      restic-volume-backup.enabled: true
-      restic-volume-backup.include: "files,data"
+      restic-volume-backup.volumes: true
+      restic-volume-backup.volumes.include: "files,data"
     volumes:
       # Source don't match include filter. No backup.
       - media:/srv/media
@@ -88,8 +88,8 @@ Exclude
   example:
     image: some_image
     labels:
-      restic-volume-backup.enabled: true
-      restic-volume-backup.exclude: "media"
+      restic-volume-backup.volumes: true
+      restic-volume-backup.volumes.exclude: "media"
     volumes:
       # Excluded by filter
       - media:/srv/media

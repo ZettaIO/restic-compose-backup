@@ -35,7 +35,7 @@ def containers(project="default", containers=[]):
             'Id': container.get('id', generate_sha256()),
             'Name': container.get('service') + '_' + ''.join(random.choice(string.ascii_lowercase) for i in range(16)),
             'Config': {
-                'Image': 'restic-volume-backup_backup',
+                'Image': 'restic-compose-backup_backup',
                 'Labels': {
                     'com.docker.compose.oneoff': 'False',
                     'com.docker.compose.project': project,

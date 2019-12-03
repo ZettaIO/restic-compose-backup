@@ -16,7 +16,7 @@ def main():
 
 def send_mail(text):
     msg = MIMEText(text)
-    msg['Subject'] = "Message from restic-volume-backup"
+    msg['Subject'] = "Message from restic-compose-backup"
     msg['From'] = EMAIL_HOST_USER
     msg['To'] = ', '.join(EMAIL_SEND_TO)
 

@@ -2,7 +2,7 @@ import logging
 import os
 import docker
 
-from restic_volume_backup.config import Config
+from restic_compose_backup.config import Config
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ Restic commands
 import logging
 from typing import List
 from subprocess import Popen, PIPE
-from restic_volume_backup import commands
+from restic_compose_backup import commands
 
 logger = logging.getLogger(__name__)
 

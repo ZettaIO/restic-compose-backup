@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 
-logger = logging.getLogger('restic_volume_backup')
+logger = logging.getLogger('restic_compose_backup')
 HOSTNAME = os.environ['HOSTNAME']
 
 level = logging.INFO

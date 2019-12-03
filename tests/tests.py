@@ -3,11 +3,11 @@ import os
 import unittest
 from unittest import mock
 
-from restic_volume_backup import utils
-from restic_volume_backup.containers import RunningContainers
+from restic_compose_backup import utils
+from restic_compose_backup.containers import RunningContainers
 import fixtures
 
-list_containers_func = 'restic_volume_backup.utils.list_containers'
+list_containers_func = 'restic_compose_backup.utils.list_containers'
 
 
 class ResticBackupTests(unittest.TestCase):
@@ -88,7 +88,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
-                    'restic-volume-backup.volumes': True,
+                    'restic-compose-backup.volumes': True,
                 },
                 'mounts': [{
                     'Source': 'test',
@@ -99,7 +99,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'mysql',
                 'labels': {
-                    'restic-volume-backup.mysql': True,
+                    'restic-compose-backup.mysql': True,
                 },
                 'mounts': [{
                     'Source': 'data',
@@ -119,7 +119,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
-                    'restic-volume-backup.include': 'media',
+                    'restic-compose-backup.include': 'media',
                 },
                 'mounts': [
                     {
@@ -151,7 +151,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
-                    'restic-volume-backup.exclude': 'stuff',
+                    'restic-compose-backup.exclude': 'stuff',
                 },
                 'mounts': [
                     {
@@ -187,7 +187,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'backup_runner',
                 'labels': {
-                    'restic-volume-backup.backup_process': 'True',
+                    'restic-compose-backup.backup_process': 'True',
                 },
             },
         ]
