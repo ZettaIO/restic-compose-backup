@@ -5,6 +5,9 @@
 
 Backup using https://restic.net/ for a docker-compose setup.
 
+* [restic-compose-backup on github](https://github.com/ZettaIO/restic-compose-backup)
+* [restic-compose-backup on docker hub](https://hub.docker.com/r/zettaio/restic-compose-backup)
+
 Automatically detects and backs up volumes, mysql, mariadb and postgres databases in a docker-compose setup.
 This includes both host mapped volumes and actual docker volumes.
 
