@@ -37,19 +37,19 @@ def backup_files(repository: str, source='/backup'):
     ])
 
 
-def backup_from_stdin(filename: str, source_command: List[str]):
+def backup_from_stdin(repository: str, filename: str, source_command: List[str]):
     """
     Backs up from stdin running the source_command passed in.
     It will appear in restic with the filename (including path) passed in.
     """
-    dest_command = [
-        'restic',
-        "--cache-dir",
-        'backup',
-        '--stdin',
-        '--stdin-filename',
-        filename,
-    ]
+    dest_command = restic(repository,
+        [
+            'backup',
+            '--stdin',
+            '--stdin-filename',
+            filename,
+        ],
+    )
 
     # pipe source command into dest command
     source_process = Popen(source_command, stdout=PIPE)
@@ -77,3 +77,14 @@ def check(repository: str):
         repository,
         "check",
     ])
+
+
+def restic(repository: str, args: List[str]):
+    """Generate restic command"""
+    return [
+        "restic",
+        "--cache-dir",
+        "/restic_cache",
+        "-r",
+        repository,
+    ] + args

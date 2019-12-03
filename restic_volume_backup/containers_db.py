@@ -1,4 +1,5 @@
 from restic_volume_backup.containers import Container
+from restic_volume_backup.config import Config
 from restic_volume_backup import (
     commands,
     restic,
@@ -40,7 +41,9 @@ class MariadbContainer(Container):
         ]
 
     def backup(self):
+        config = Config()
         return restic.backup_from_stdin(
+            config.repository,
             f'/backup/{self.service_name}',
             self.dump_command(),
         )
