@@ -1,5 +1,8 @@
 from restic_volume_backup.containers import Container
-from restic_volume_backup.restic import commands
+from restic_volume_backup import (
+    commands,
+    restic,
+)
 
 
 class MariadbContainer(Container):
@@ -26,7 +29,21 @@ class MariadbContainer(Container):
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
-        raise NotImplementedError("Base container class don't implement this")
+        creds = self.get_credentials()
+        return [
+            "mysqldump",
+            f"--host={creds['host']}",
+            f"--port={creds['port']}",
+            f"--user={creds['username']}",
+            f"--password={creds['password']}",
+            "--all-databases",
+        ]
+
+    def backup(self):
+        return restic.backup_from_stdin(
+            f'/backup/{self.service_name}',
+            self.dump_command(),
+        )
 
 
 class MysqlContainer(Container):
@@ -55,6 +72,9 @@ class MysqlContainer(Container):
         """list: create a dump command restic and use to send data through stdin"""
         raise NotImplementedError("Base container class don't implement this")
 
+    def backup(self):
+        print("SKIPPING")
+
 
 class PostgresContainer(Container):
     container_type = 'postgres'
@@ -81,3 +101,6 @@ class PostgresContainer(Container):
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
         raise NotImplementedError("Base container class don't implement this")
+
+    def backup(self):
+        print("SKIPPING")
