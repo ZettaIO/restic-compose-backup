@@ -70,8 +70,13 @@ class PostgresContainer(Container):
 
     def ping(self) -> bool:
         """Check the availability of the service"""
-        # raise NotImplementedError("Base container class don't implement this")
-        print("Implement postgres ping!")
+        creds = self.get_credentials()
+        return commands.ping_postgres(
+            creds['host'],
+            creds['port'],
+            creds['username'],
+            creds['password'],
+        )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
