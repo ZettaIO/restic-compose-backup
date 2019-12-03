@@ -72,13 +72,13 @@ def backup(config, containers):
     # Map volumes from other containers we are backing up
     mounts = containers.generate_backup_mounts('/backup')
     volumes.update(mounts)
-    pprint.pprint(volumes, indent=2)
 
     backup_runner.run(
         image=containers.this_container.image,
         command='restic-volume-backup start-backup-process',
         volumes=volumes,
         environment=containers.this_container.environment,
+        source_container_id=containers.this_container.id,
         labels={
             "restic-volume-backup.backup_process": 'True',
             "com.docker.compose.project": containers.this_container.project_name,
@@ -99,7 +99,16 @@ def start_backup_process(config, containers):
     status(config, containers)
     logger.info("start-backup-process")
 
+    # Back up volumes
     restic.backup_files(config.repository, source='/backup')
+
+    # back up databases
+    for container in containers.containers_for_backup():
+        if container.database_backup_enabled:
+            instance = container.instance
+            logger.info('Backing up %s in service %s', instance.container_type, instance.service_name)
+            instance.backup()
+
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='restic_volume_backup')
