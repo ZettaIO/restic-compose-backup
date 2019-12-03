@@ -42,7 +42,11 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     # pipe source command into dest command
     source_process = Popen(source_command, stdout=PIPE)
     dest_process = Popen(dest_command, stdin=source_process.stdout)
-    return dest_process.communicate()
+    dest_process.communicate()
+
+    # Ensure both processes exited with code 0
+    source_exit, dest_exit = source_process.poll(), dest_process.poll()
+    return source_exit == 0 and dest_exit == 0
 
 
 def snapshots(repository: str):
