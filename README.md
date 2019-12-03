@@ -13,7 +13,7 @@ This includes both host mapped volumes and actual docker volumes.
 * When backup starts a new instance of the container is created
   mapping in all the needed volumes. It will copy networks etc
   to ensure databases can be reached
-* Volumes are mounter to `/backup/<service_name>/<path>`
+* Volumes are mounted to `/backup/<service_name>/<path>`
   in the backup process container. `/backup` is pushed into restic
 * Databases are backed up from stdin / dumps
 * Cron triggers backup
@@ -36,7 +36,7 @@ version: '3'
 services:
   # The backup service
   backup:
-    build: restic-volume-backup
+    build: restic-compose-backup
     environment:
       - RESTIC_REPOSITORY=<whatever restic supports>
       - RESTIC_PASSWORD=hopefullyasecturepw
@@ -49,7 +49,7 @@ services:
     image: some_image
     # Enable volume backup with label
     labels:
-      restic-volume-backup.enabled: true
+      restic-compose-backup.volumes: true
     # These volumes will be backed up
     volumes:
       # Docker volume
@@ -67,8 +67,8 @@ A simple `include` and `exclude` filter is also available.
   example:
     image: some_image
     labels:
-      restic-volume-backup.volumes: true
-      restic-volume-backup.volumes.include: "files,data"
+      restic-compose-backup.volumes: true
+      restic-compose-backup.volumes.include: "files,data"
     volumes:
       # Source don't match include filter. No backup.
       - media:/srv/media
@@ -88,8 +88,8 @@ Exclude
   example:
     image: some_image
     labels:
-      restic-volume-backup.volumes: true
-      restic-volume-backup.volumes.exclude: "media"
+      restic-compose-backup.volumes: true
+      restic-compose-backup.volumes.exclude: "media"
     volumes:
       # Excluded by filter
       - media:/srv/media
@@ -112,21 +112,21 @@ path `/backup/<service_name>/dump.sql` or similar.
   mariadb:
     image: mariadb:10
     labels:
-      restic-volume-backup.mariadb: true
+      restic-compose-backup.mariadb: true
 ```
 
 ```yaml
   mysql:
     image: mysql:5
     labels:
-      restic-volume-backup.mysql: true
+      restic-compose-backup.mysql: true
 ```
 
 ```yaml
   postgres:
     image: postgres
     labels:
-      restic-volume-backup.postgres: true
+      restic-compose-backup.postgres: true
 ```
 
 
