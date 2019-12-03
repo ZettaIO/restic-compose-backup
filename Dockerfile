@@ -4,8 +4,7 @@ RUN apk update && apk add python3 dcron mariadb-client postgresql-client
 
 ADD . /restic-compose-backup
 WORKDIR /restic-compose-backup
-RUN pip3 install -U pip setuptools
-RUN pip3 install -e .
+RUN pip3 install -U pip setuptools && pip3 install -e .
 
 ENTRYPOINT []
 CMD ["./entrypoint.sh"]
