@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import List
 
 from restic_volume_backup import utils
 
@@ -9,6 +10,7 @@ VOLUME_TYPE_VOLUME = "volume"
 
 class Container:
     """Represents a docker container"""
+    container_type = None
 
     def __init__(self, data: dict):
         self._data = data
@@ -74,14 +76,21 @@ class Container:
         """Is backup enabled for this container?"""
         return any([
             self.volume_backup_enabled,
-            self.mysql_backup_enabled,
-            self.mariadb_backup_enabled,
-            self.postgresql_backup_enabled,
+            self.database_backup_enabled,
         ])
 
     @property
     def volume_backup_enabled(self) -> bool:
         return utils.is_true(self.get_label('restic-volume-backup.volumes'))
+
+    @property
+    def database_backup_enabled(self) -> bool:
+        """bool: Is database backup enabled in any shape or form?"""
+        return any([
+            self.mysql_backup_enabled,
+            self.mariadb_backup_enabled,
+            self.postgresql_backup_enabled,
+        ])
 
     @property
     def mysql_backup_enabled(self) -> bool:
@@ -170,15 +179,20 @@ class Container:
 
         return volumes
 
-    def get_mysql_credentials(self):
-        return {
-            'host': self.hostname,
-            'username': self.get_config_env('MYSQL_USER'),
-            'password': self.get_config_env('MYSQL_PASSWORD'),
-            'port': "3306",
-        }
+    def get_credentials(self) -> dict:
+        """dict: get credentials for the service"""
+        raise NotImplementedError("Base container class don't implement this")
 
-    def _parse_pattern(self, value):
+    def ping(self) -> bool:
+        """Check the availability of the service"""
+        raise NotImplementedError("Base container class don't implement this")
+
+    def dump_command(self) -> list:
+        """list: create a dump command restic and use to send data through stdin"""
+        raise NotImplementedError("Base container class don't implement this")
+
+    def _parse_pattern(self, value: str) -> List[str]:
+        """list: Safely parse include/exclude pattern from user"""
         if not value:
             return None
 
@@ -192,6 +206,7 @@ class Container:
         return value.split(',')
 
     def __eq__(self, other):
+        """Compare container by id"""
         if other is None:
             return False
 
