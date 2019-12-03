@@ -201,6 +201,10 @@ class Container:
         """Check the availability of the service"""
         raise NotImplementedError("Base container class don't implement this")
 
+    def backup(self):
+        """Back up this service"""
+        raise NotImplementedError("Base container class don't implement this")
+
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
         raise NotImplementedError("Base container class don't implement this")
