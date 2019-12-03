@@ -39,15 +39,15 @@ def status(config, containers):
     backup_containers = containers.containers_for_backup()
     for container in backup_containers:
         logger.info('service: %s', container.service_name)
-        if container.volume_backup_enabled:
 
+        if container.volume_backup_enabled:
             for mount in container.filter_mounts():
                 logger.info(' - volume: %s', mount.source)
 
         if container.database_backup_enabled:
             instance = container.instance
-            print(instance.container_type)
-            print(instance.ping())
+            ping = instance.ping()
+            logger.info(' - %s (is_ready=%s)', instance.container_type, ping == 0)
 
     if len(backup_containers) == 0:
         logger.info("No containers in the project has 'restic-volume-backup.enabled' label")
