@@ -60,10 +60,11 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     return 0 if (source_exit == 0 and dest_exit == 0) else 1
 
 
-def snapshots(repository: str) -> Tuple[str, str]:
-    return commands.run_capture_std(restic(repository, [
-        "snapshots",
-    ]))
+def snapshots(repository: str, last=True) -> Tuple[str, str]:
+    args = ["snapshots"]
+    if last:
+        args.append('--last')        
+    return commands.run_capture_std(restic(repository, args))
 
 
 def check(repository: str):
