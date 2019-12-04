@@ -101,6 +101,14 @@ def backup(config, containers):
     )
     logger.info('Backup container exit code: %s', result)
 
+    # Alert the user if something went wrong
+    if result != 0:
+        alerts.send(
+            subject="Backup process exited with non-zero code",
+            body=open('backup.log').read(),
+            alert_type='ERROR',
+        )
+
 
 def start_backup_process(config, containers):
     """The actual backup process running inside the spawned container"""
@@ -142,13 +150,8 @@ def start_backup_process(config, containers):
                 logger.error(ex)
                 errors = True
 
-    # Alert the user if something went wrong
     if errors:
-        alerts.send(
-            subject="Backup process exited with non-zero code",
-            body=open('backup.log').read(),
-            alert_type='ERROR',
-        )
+        exit(1)
 
 
 def alert(config, containers):
