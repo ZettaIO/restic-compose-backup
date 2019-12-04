@@ -7,8 +7,13 @@ class DiscordWebhookAlert(BaseAlert):
     def __init__(self):
         pass
 
-    def create_from_config(self, config):
-        pass
+    @classmethod
+    def create_from_env(self):
+        return None
 
-    def send(self, self, subject=None, attachment=None, alert_type=ALERT_ERROR):
+    @property
+    def properly_configured(self) -> bool:
+        return False
+
+    def send(self, subject: str = None, attachment: str = None, alert_type: str = None):
         pass
