@@ -37,17 +37,19 @@ class MariadbContainer(Container):
             f"--host={creds['host']}",
             f"--port={creds['port']}",
             f"--user={creds['username']}",
-            f"--password={creds['password']}",
             "--all-databases",
         ]
 
     def backup(self):
         config = Config()
-        return restic.backup_from_stdin(
-            config.repository,
-            f'/databases/{self.service_name}/all_databases.sql',
-            self.dump_command(),
-        )
+        creds = self.get_credentials()
+
+        with utils.environment('MYSQL_PWD', creds['password']):
+            return restic.backup_from_stdin(
+                config.repository,
+                f'/databases/{self.service_name}/all_databases.sql',
+                self.dump_command(),
+            )
 
 
 class MysqlContainer(Container):
@@ -80,17 +82,19 @@ class MysqlContainer(Container):
             f"--host={creds['host']}",
             f"--port={creds['port']}",
             f"--user={creds['username']}",
-            f"--password={creds['password']}",
             "--all-databases",
         ]
 
     def backup(self):
         config = Config()
-        return restic.backup_from_stdin(
-            config.repository,
-            f'/databases/{self.service_name}/all_databases.sql',
-            self.dump_command(),
-        )
+        creds = self.get_credentials()
+
+        with utils.environment('MYSQL_PWD', creds['password']):
+            return restic.backup_from_stdin(
+                config.repository,
+                f'/databases/{self.service_name}/all_databases.sql',
+                self.dump_command(),
+            )
 
 
 class PostgresContainer(Container):
