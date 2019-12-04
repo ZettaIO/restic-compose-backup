@@ -1,19 +1,46 @@
+import os
+import logging
+from urllib.parse import urlparse
+
+import requests
 from restic_compose_backup.alerts.base import BaseAlert
+
+logger = logging.getLogger(__name__)
 
 
 class DiscordWebhookAlert(BaseAlert):
     name = 'discord_webhook'
+    success_codes = [200]
 
-    def __init__(self):
-        pass
+    def __init__(self, webhook_url):
+        self.url = webhook_url
 
     @classmethod
-    def create_from_env(self):
+    def create_from_env(cls):
+        instance = cls(os.environ.get('DISCORD_WEBHOOK'))
+
+        if instance.properly_configured:
+            return instance
+
         return None
 
     @property
     def properly_configured(self) -> bool:
-        return False
+        return isinstance(self.url, str) and self.url.startswith("https://")
 
-    def send(self, subject: str = None, attachment: str = None, alert_type: str = None):
-        pass
+    def send(self, subject: str = None, body: str = None, alert_type: str = None):
+        """Send basic webhook request. Max embed size is 6000"""
+        logger.info("Triggering discord webhook")
+        data = {
+            'embeds': [
+                {
+                    'title': subject,
+                    'description': body[:5000],
+                },
+            ]
+        }
+        response = requests.post(self.url, params={'wait': True}, json=data)
+        if response.status_code not in self.success_codes:
+            log.error("Discord webhook failed: %s: %s", response.status_code, response.content)
+        else:
+            logger.info('Discord webhook successful')
