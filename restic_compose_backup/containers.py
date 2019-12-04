@@ -63,13 +63,24 @@ class Container:
     @property
     def environment(self) -> list:
         """All configured env vars for the container as a list"""
-        return self.get_config('Env', default=[])
+        return self.get_config('Env')
 
     def get_config_env(self, name) -> str:
         """Get a config environment variable by name"""
         # convert to dict and fetch env var by name
         data = {i[0:i.find('=')]: i[i.find('=')+1:] for i in self.environment}
         return data.get(name)
+
+    def set_config_env(self, name, value):
+        """Set an environment variable"""
+        env = self.environment
+        new_value = f'{name}={value}'
+        for i, entry in enumerate(env):
+            if f'{name}=' in entry:
+                env[i] = new_value
+                break
+        else:
+            env.append(new_value)
 
     @property
     def volumes(self) -> dict:

@@ -9,6 +9,9 @@ class Config:
         self.password = os.environ.get('RESTIC_REPOSITORY')
         self.docker_base_url = os.environ.get('DOCKER_BASE_URL') or "unix://tmp/docker.sock"
 
+        # Log
+        self.log_level = os.environ.get('LOG_LEVEL')
+
         # forget / keep
         self.keep_daily = os.environ.get('KEEP_DAILY') or "7"
         self.keep_weekly = os.environ.get('KEEP_WEEKLY') or "4"

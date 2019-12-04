@@ -15,10 +15,6 @@ LOG_LEVELS = {
 
 def setup(level: str = 'warning'):
     """Set up logging"""
-    # Get log level from env if not set directly
-    if level is None:
-        level = os.environ.get('LOG_LEVEL')
-
     level = level or ""
     level = LOG_LEVELS.get(level.lower(), DEFAULT_LOG_LEVEL)
     logger.setLevel(level)
