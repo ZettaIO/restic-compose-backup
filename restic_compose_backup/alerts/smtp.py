@@ -49,7 +49,7 @@ class SMTPAlert(BaseAlert):
             server.ehlo()
             server.login(self.user, self.password)
             server.sendmail(self.user, self.to, msg.as_string())
-            logger.info('Email Sent')
+            logger.info('Email sent')
         except Exception as ex:
             logger.error(ex)
         finally:
