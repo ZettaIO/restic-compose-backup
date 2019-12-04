@@ -111,7 +111,7 @@ class ResticBackupTests(unittest.TestCase):
         with mock.patch(list_containers_func, fixtures.containers(containers=containers)):
             cnt = RunningContainers()
             self.assertTrue(len(cnt.containers_for_backup()) == 2)
-            self.assertEqual(cnt.generate_backup_mounts(), {'test': {'bind': '/backup/web/test', 'mode': 'ro'}})
+            self.assertEqual(cnt.generate_backup_mounts(), {'test': {'bind': '/volumes/web/test', 'mode': 'ro'}})
 
     def test_include(self):
         containers = self.createContainers()
@@ -119,7 +119,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
-                    'restic-compose-backup.include': 'media',
+                    'restic-compose-backup.volumes.include': 'media',
                 },
                 'mounts': [
                     {
@@ -142,6 +142,7 @@ class ResticBackupTests(unittest.TestCase):
         self.assertNotEqual(web_service, None, msg="Web service not found")
 
         mounts = web_service.filter_mounts()
+        print(mounts)
         self.assertEqual(len(mounts), 1)
         self.assertEqual(mounts[0].source, '/srv/files/media')
 
@@ -151,7 +152,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
-                    'restic-compose-backup.exclude': 'stuff',
+                    'restic-compose-backup.volumes.exclude': 'stuff',
                 },
                 'mounts': [
                     {
