@@ -41,8 +41,16 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
 
     # pipe source command into dest command
     source_process = Popen(source_command, stdout=PIPE)
-    dest_process = Popen(dest_command, stdin=source_process.stdout)
-    dest_process.communicate()
+    dest_process = Popen(dest_command, stdin=source_process.stdout, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = dest_process.communicate()
+
+    if stdout:
+        for line in stdout.decode().split('\n'):
+            logger.debug(line)
+
+    if stderr:
+        for line in stderr.decode().split('\n'):
+            logger.error(line)
 
     # Ensure both processes exited with code 0
     source_exit, dest_exit = source_process.poll(), dest_process.poll()
