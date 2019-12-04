@@ -32,12 +32,9 @@ def main():
 
 def status(config, containers):
     """Outputs the backup config for the compose setup"""
-
-    logger.info("Backup config for compose project '%s'", containers.this_container.project_name)
-    logger.info("Current service: %s", containers.this_container.name)
-    # logger.info("Backup process: %s", containers.backup_process_container.name
-    #             if containers.backup_process_container else 'Not Running')
-    logger.info("Backup running: %s", containers.backup_process_running)
+    logger.info("Status for compose project '%s'", containers.this_container.project_name)
+    logger.info("Backup currently running?: %s", containers.backup_process_running)
+    logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
 
     backup_containers = containers.containers_for_backup()
     for container in backup_containers:
@@ -51,9 +48,13 @@ def status(config, containers):
             instance = container.instance
             ping = instance.ping()
             logger.info(' - %s (is_ready=%s)', instance.container_type, ping == 0)
+            if ping != 0:
+                logger.error("Database '%s' in service %s cannot be reached", instance.container_type, container.service_name)
 
     if len(backup_containers) == 0:
         logger.info("No containers in the project has 'restic-compose-backup.enabled' label")
+
+    logger.info("-" * 67)
 
 
 def backup(config, containers):
@@ -102,7 +103,6 @@ def start_backup_process(config, containers):
         return
 
     status(config, containers)
-    logger.info("start-backup-process")
 
     # Back up volumes
     try:
