@@ -3,6 +3,7 @@ import pprint
 import logging
 
 from restic_compose_backup import (
+    alerts,
     backup_runner,
     log,
     restic,
@@ -23,7 +24,7 @@ def main():
     if args.action == 'status':
         status(config, containers)
 
-    if args.action == 'snapshots':
+    elif args.action == 'snapshots':
         snapshots(config, containers)
 
     elif args.action == 'backup':
@@ -32,10 +33,13 @@ def main():
     elif args.action == 'start-backup-process':
         start_backup_process(config, containers)
 
+    elif args.action == 'alert':
+        alert(config, containers)
+
 
 def status(config, containers):
     """Outputs the backup config for the compose setup"""
-    logger.info("Status for compose project '%s'", containers.this_container.project_name)
+    logger.info("Status for compose project '%s'", containers.project_name)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
     logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
 
@@ -92,7 +96,7 @@ def backup(config, containers):
         source_container_id=containers.this_container.id,
         labels={
             "restic-compose-backup.backup_process": 'True',
-            "com.docker.compose.project": containers.this_container.project_name,
+            "com.docker.compose.project": containers.project_name,
         },
     )
     logger.info('Backup container exit code: %s', result)
@@ -139,11 +143,27 @@ def start_backup_process(config, containers):
                 # TODO: Alert
 
 
+def alert(config, containers):
+    """Test alerts"""
+    logger.info("Testing alerts")
+
+    alert_classes = alerts.configured_alert_classes()
+    for instance in alert_classes:
+        logger.info('Configured: %s', instance.name)
+        instance.send(
+            subject="{}: Test Alert".format(containers.project_name),
+            body="Test message",
+        )
+
+    if len(alert_classes) == 0:
+        logger.info("No alerts configured")
+
+
 def parse_args():
     parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
-        choices=['status', 'snapshots', 'backup', 'start-backup-process'],
+        choices=['status', 'snapshots', 'backup', 'start-backup-process', 'alert'],
     )
     parser.add_argument(
         '--log-level',
