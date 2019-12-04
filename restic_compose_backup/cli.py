@@ -150,12 +150,26 @@ def start_backup_process(config, containers):
     if errors:
         exit(1)
 
+    # Only run cleanup if backup was successful
+    result = cleanup(config, container)
+    logger.debug('cleanup exit code: %s', errors)
+    if result != 0:
+        exit(1)
+
 
 def cleanup(config, containers):
-    # restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 12 --keep-yearly 3
-    # restic snapshots 5fecf605
-    logger.info('Running forget/prune')
-
+    """Run forget / prune to minimize storage space"""
+    logger.info('Forget outdated snapshots')
+    forget_result = restic.forget(
+        config.repository,
+        config.keep_daily,
+        config.keep_weekly,
+        config.keep_monthly,
+        config.keep_yearly,
+    )
+    logger.info('Prune stale data freeing storage space')
+    prune_result = restic.prune(config.repository)
+    return forget_result == 0 and prune_result == 0
 
 def snapshots(config, containers):
     """Display restic snapshots"""
