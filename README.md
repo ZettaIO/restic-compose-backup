@@ -51,6 +51,10 @@ services:
     environment:
       - RESTIC_REPOSITORY=<whatever restic supports>
       - RESTIC_PASSWORD=hopefullyasecturepw
+      - RESTIC_KEEP_DAILY=7
+      - RESTIC_KEEP_WEEKLY=4
+      - RESTIC_KEEP_MONTHLY=12
+      - RESTIC_KEEP_YEARLY=3
     env_file:
       - some_other_vars.env
     volumes:
