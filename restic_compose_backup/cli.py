@@ -23,6 +23,9 @@ def main():
     if args.action == 'status':
         status(config, containers)
 
+    if args.action == 'snapshots':
+        snapshots(config, containers)
+
     elif args.action == 'backup':
         backup(config, containers)
 
@@ -55,6 +58,12 @@ def status(config, containers):
         logger.info("No containers in the project has 'restic-compose-backup.enabled' label")
 
     logger.info("-" * 67)
+
+def snapshots(config, containers):
+    """Display restic snapshots"""
+    stdout, stderr = restic.snapshots(config.repository)
+    for line in stdout.decode().split('\n'):
+        logger.info('| %s', line)
 
 
 def backup(config, containers):
@@ -134,7 +143,7 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
-        choices=['status', 'backup', 'start-backup-process'],
+        choices=['status', 'snapshots', 'backup', 'start-backup-process'],
     )
     parser.add_argument(
         '--log-level',

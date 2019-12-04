@@ -2,7 +2,7 @@
 Restic commands
 """
 import logging
-from typing import List
+from typing import List, Tuple
 from subprocess import Popen, PIPE
 from restic_compose_backup import commands
 
@@ -57,8 +57,8 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     return 0 if (source_exit == 0 and dest_exit == 0) else 1
 
 
-def snapshots(repository: str):
-    return commands.run(restic(repository, [
+def snapshots(repository: str) -> Tuple[str, str]:
+    return commands.run_capture_std(restic(repository, [
         "snapshots",
     ]))
 
