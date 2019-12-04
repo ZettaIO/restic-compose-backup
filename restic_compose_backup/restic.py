@@ -97,8 +97,6 @@ def restic(repository: str, args: List[str]):
     """Generate restic command"""
     return [
         "restic",
-        "--cache-dir",
-        "/restic_cache",
         "-r",
         repository,
     ] + args

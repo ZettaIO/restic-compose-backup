@@ -9,8 +9,8 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       # Map backup database locally
       - ./restic_data:/restic_data
-      - ./restic_cache:/restic_cache
-      # Map in project source
+      - ./restic_cache:/cache
+      # Map in project source in dev
       - .:/restic-compose-backup
   web:
     image: nginx
