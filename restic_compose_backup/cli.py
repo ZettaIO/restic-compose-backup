@@ -82,7 +82,7 @@ def backup(config, containers):
     volumes = containers.this_container.volumes
 
     # Map volumes from other containers we are backing up
-    mounts = containers.generate_backup_mounts('/backup')
+    mounts = containers.generate_backup_mounts('/volumes')
     volumes.update(mounts)
 
     result = backup_runner.run(
@@ -123,7 +123,7 @@ def start_backup_process(config, containers):
     # Back up volumes
     try:
         logger.info('Backing up volumes')
-        vol_result = restic.backup_files(config.repository, source='/backup')
+        vol_result = restic.backup_files(config.repository, source='/volumes')
         logger.debug('Volume backup exit code: %s', vol_result)
         if vol_result != 0:
             logger.error('Backup command exited with non-zero code: %s', vol_result)

@@ -16,8 +16,8 @@ This includes both host mapped volumes and actual docker volumes.
 * When backup starts a new instance of the container is created
   mapping in all the needed volumes. It will copy networks etc
   to ensure databases can be reached
-* Volumes are mounted to `/backup/<service_name>/<path>`
-  in the backup process container. `/backup` is pushed into restic
+* Volumes are mounted to `/volumes/<service_name>/<path>`
+  in the backup process container. `/volumes` is pushed into restic
 * Databases are backed up from stdin / dumps
 * Cron triggers backup
 
@@ -117,7 +117,7 @@ volumes:
 
 Will dump databases directly into restic through stdin.
 They will appear in restic as a separate snapshot with
-path `/backup/<service_name>/dump.sql` or similar.
+path `/databases/<service_name>/dump.sql` or similar.
 
 ```yaml
   mariadb:

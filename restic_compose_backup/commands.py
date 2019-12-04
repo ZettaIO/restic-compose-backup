@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def test():
-    return run_command(['ls', '/backup'])
+    return run_command(['ls', '/volumes'])
 
 
 def ping_mysql(host, port, username, password) -> int:

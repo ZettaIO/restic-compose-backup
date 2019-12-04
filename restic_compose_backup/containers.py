@@ -163,6 +163,7 @@ class Container:
         if self._include:
             for mount in self._mounts:
                 for pattern in self._include:
+                    print(pattern, self._include)
                     if pattern in mount.source:
                         break
                 else:
@@ -182,7 +183,7 @@ class Container:
 
         return filtered
 
-    def volumes_for_backup(self, source_prefix='/backup', mode='ro'):
+    def volumes_for_backup(self, source_prefix='/volumes', mode='ro'):
         """Get volumes configured for backup"""
         mounts = self.filter_mounts()
         volumes = {}
@@ -333,7 +334,7 @@ class RunningContainers:
         """Obtain all containers with backup enabled"""
         return [container for container in self.containers if container.backup_enabled]
 
-    def generate_backup_mounts(self, dest_prefix='/backup') -> dict:
+    def generate_backup_mounts(self, dest_prefix='/volumes') -> dict:
         """Generate mounts for backup for the entire compose setup"""
         mounts = {}
         for container in self.containers_for_backup():

@@ -19,7 +19,7 @@ def init_repo(repository: str):
     ]))
 
 
-def backup_files(repository: str, source='/backup'):
+def backup_files(repository: str, source='/volumes'):
     return commands.run(restic(repository, [
         "--verbose",
         "backup",
