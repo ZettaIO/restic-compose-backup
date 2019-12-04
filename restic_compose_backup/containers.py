@@ -320,6 +320,11 @@ class RunningContainers:
                     self.containers.append(container)
 
     @property
+    def project_name(self) -> str:
+        """str: Name of the compose project"""
+        return self.this_container.project_name
+
+    @property
     def backup_process_running(self) -> bool:
         """Is the backup process container running?"""
         return self.backup_process_container is not None
