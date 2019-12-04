@@ -63,12 +63,10 @@ def backup(config, containers):
     if containers.backup_process_running:
         raise ValueError("Backup process already running")
 
-    logger.info("Initializing repository")
+    logger.info("Initializing repository (may fail if already initalized)")
 
     # TODO: Errors when repo already exists
     restic.init_repo(config.repository)
-
-    logger.info("Starting backup container..")
 
     # Map all volumes from the backup container into the backup process container
     volumes = containers.this_container.volumes
@@ -106,9 +104,12 @@ def start_backup_process(config, containers):
 
     # Back up volumes
     try:
+        logger.info('Backing up volumes')
         vol_result = restic.backup_files(config.repository, source='/backup')
-        logger.info('Volume backup exit code: %s', vol_result)
-        # TODO: Alert
+        logger.debug('Volume backup exit code: %s', vol_result)
+        if vol_result != 0:
+            logger.error('Backup command exited with non-zero code: %s', vol_result)
+            # TODO: Alert
     except Exception as ex:
         logger.error(ex)
         # TODO: Alert
@@ -120,8 +121,10 @@ def start_backup_process(config, containers):
                 instance = container.instance
                 logger.info('Backing up %s in service %s', instance.container_type, instance.service_name)
                 result = instance.backup()
-                logger.info('Exit code: %s', result)
-                # TODO: Alert
+                logger.debug('Exit code: %s', result)
+                if result != 0:
+                    logger.error('Backup command exited with non-zero code: %s', result)
+                    # TODO: Alert
             except Exception as ex:
                 logger.error(ex)
                 # TODO: Alert
