@@ -22,12 +22,13 @@ class MariadbContainer(Container):
     def ping(self) -> bool:
         """Check the availability of the service"""
         creds = self.get_credentials()
-        return commands.ping_mysql(
-            creds['host'],
-            creds['port'],
-            creds['username'],
-            creds['password'],
-        )
+
+        with utils.environment('MYSQL_PWD', creds['password']):
+            return commands.ping_mariadb(
+                creds['host'],
+                creds['port'],
+                creds['username'],
+            )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
@@ -67,12 +68,13 @@ class MysqlContainer(Container):
     def ping(self) -> bool:
         """Check the availability of the service"""
         creds = self.get_credentials()
-        return commands.ping_mysql(
-            creds['host'],
-            creds['port'],
-            creds['username'],
-            creds['password'],
-        )
+
+        with utils.environment('MYSQL_PWD', creds['password']):
+            return commands.ping_mysql(
+                creds['host'],
+                creds['port'],
+                creds['username'],
+            )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
