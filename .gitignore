@@ -19,3 +19,4 @@ venv
 /private/
 restic_data/
 restic_cache/
+alerts.env

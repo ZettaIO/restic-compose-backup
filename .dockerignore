@@ -7,3 +7,5 @@ docker-compose.yaml
 *.env
 *.egg-info
 __pycache__
+restic_cache
+restic_data
