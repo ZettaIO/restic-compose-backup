@@ -5,6 +5,7 @@ Dockerfile
 tests/
 docker-compose.yaml
 *.env
+*.log
 *.egg-info
 __pycache__
 restic_cache
