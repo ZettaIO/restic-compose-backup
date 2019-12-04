@@ -67,6 +67,26 @@ def snapshots(repository: str, last=True) -> Tuple[str, str]:
     return commands.run_capture_std(restic(repository, args))
 
 
+def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
+    return restic(repository, [
+        'forget',
+        '--keep-daily',
+        daily,
+        '--keep-weekly',
+        weekly,
+        '--keep-monthly',
+        monthly,
+        '--keep-yearly',
+        yearly,
+    ])
+
+
+def prune(repository: str):
+    return restic(repository, [
+        'prune',
+    ])
+
+
 def check(repository: str):
     return commands.run(restic(repository, [
         "check",

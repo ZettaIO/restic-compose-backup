@@ -167,7 +167,6 @@ class Container:
         if self._include:
             for mount in self._mounts:
                 for pattern in self._include:
-                    print(pattern, self._include)
                     if pattern in mount.source:
                         break
                 else:
