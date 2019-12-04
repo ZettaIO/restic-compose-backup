@@ -33,6 +33,9 @@ def main():
     elif args.action == 'start-backup-process':
         start_backup_process(config, containers)
 
+    elif args.action == 'cleanup':
+        cleanup(config, containers)
+
     elif args.action == 'alert':
         alert(config, containers)
 
@@ -62,12 +65,6 @@ def status(config, containers):
         logger.info("No containers in the project has 'restic-compose-backup.enabled' label")
 
     logger.info("-" * 67)
-
-def snapshots(config, containers):
-    """Display restic snapshots"""
-    stdout, stderr = restic.snapshots(config.repository)
-    for line in stdout.decode().split('\n'):
-        logger.info('| %s', line)
 
 
 def backup(config, containers):
@@ -154,6 +151,19 @@ def start_backup_process(config, containers):
         exit(1)
 
 
+def cleanup(config, containers):
+    # restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 12 --keep-yearly 3
+    # restic snapshots 5fecf605
+    logger.info('Running forget/prune')
+
+
+def snapshots(config, containers):
+    """Display restic snapshots"""
+    stdout, stderr = restic.snapshots(config.repository, last=True)
+    for line in stdout.decode().split('\n'):
+        print(line)
+
+
 def alert(config, containers):
     """Test alerts"""
     logger.info("Testing alerts")
@@ -167,7 +177,7 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
-        choices=['status', 'snapshots', 'backup', 'start-backup-process', 'alert'],
+        choices=['status', 'snapshots', 'backup', 'start-backup-process', 'alert', 'cleanup'],
     )
     parser.add_argument(
         '--log-level',
