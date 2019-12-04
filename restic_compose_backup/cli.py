@@ -100,7 +100,6 @@ def backup(config, containers):
         },
     )
     logger.info('Backup container exit code: %s', result)
-    # TODO: Alert
 
 
 def start_backup_process(config, containers):
@@ -114,6 +113,7 @@ def start_backup_process(config, containers):
         return
 
     status(config, containers)
+    errors = False
 
     # Back up volumes
     try:
@@ -122,10 +122,10 @@ def start_backup_process(config, containers):
         logger.debug('Volume backup exit code: %s', vol_result)
         if vol_result != 0:
             logger.error('Backup command exited with non-zero code: %s', vol_result)
-            # TODO: Alert
+            errors = True
     except Exception as ex:
         logger.error(ex)
-        # TODO: Alert
+        errors = True
 
     # back up databases
     for container in containers.containers_for_backup():
@@ -137,26 +137,27 @@ def start_backup_process(config, containers):
                 logger.debug('Exit code: %s', result)
                 if result != 0:
                     logger.error('Backup command exited with non-zero code: %s', result)
-                    # TODO: Alert
+                    errors = True
             except Exception as ex:
                 logger.error(ex)
-                # TODO: Alert
+                errors = True
+
+    # Alert the user if something went wrong
+    if errors:
+        alerts.send(
+            subject="Backup process exited with non-zero code",
+            body=open('backup.log').read(),
+            alert_type='ERROR',
+        )
 
 
 def alert(config, containers):
     """Test alerts"""
     logger.info("Testing alerts")
-
-    alert_classes = alerts.configured_alert_classes()
-    for instance in alert_classes:
-        logger.info('Configured: %s', instance.name)
-        instance.send(
-            subject="{}: Test Alert".format(containers.project_name),
-            body="Test message",
-        )
-
-    if len(alert_classes) == 0:
-        logger.info("No alerts configured")
+    alerts.send(
+        subject="{}: Test Alert".format(containers.project_name),
+        body="Test message",
+    )
 
 
 def parse_args():
