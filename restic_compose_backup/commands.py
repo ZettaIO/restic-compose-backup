@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Tuple
 from subprocess import Popen, PIPE
 
 logger = logging.getLogger(__name__)
@@ -66,3 +66,10 @@ def run(cmd: List[str]) -> int:
 
     logger.debug("returncode %s", child.returncode)
     return child.returncode
+
+
+def run_capture_std(cmd: List[str]) -> Tuple[str, str]:
+    """Run a command with parameters and return stdout, stderr"""
+    logger.debug('cmd: %s', ' '.join(cmd))
+    child = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    return child.communicate()
