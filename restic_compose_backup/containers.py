@@ -158,8 +158,12 @@ class Container:
         return self._labels.get(name, None)
 
     def filter_mounts(self):
-        """Get all mounts for this container matching include/exclude filters"""
+        """Get all mounts for this container matching include/exclude filters"""            
         filtered = []
+
+        if not self.volume_backup_enabled:
+            return filtered
+
         if self._include:
             for mount in self._mounts:
                 for pattern in self._include:

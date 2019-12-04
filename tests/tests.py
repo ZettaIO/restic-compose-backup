@@ -59,6 +59,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
+                    'restic-compose-backup.volumes': True,
                     'test': 'test',
                 },
                 'mounts': [{
@@ -119,6 +120,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
+                    'restic-compose-backup.volumes': True,
                     'restic-compose-backup.volumes.include': 'media',
                 },
                 'mounts': [
@@ -152,6 +154,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'web',
                 'labels': {
+                    'restic-compose-backup.volumes': True,
                     'restic-compose-backup.volumes.exclude': 'stuff',
                 },
                 'mounts': [
