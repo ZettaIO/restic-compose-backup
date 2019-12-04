@@ -4,8 +4,6 @@ services:
     build: .
     env_file:
       - restic_compose_backup.env
-    # environment:
-    #   - LOG_LEVEL=error
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
