@@ -17,9 +17,13 @@ logger = logging.getLogger(__name__)
 def main():
     """CLI entrypoint"""
     args = parse_args()
-    log.setup(level=args.log_level)
     config = Config()
+    log.setup(level=args.log_level or config.log_level)
     containers = RunningContainers()
+
+    # Ensure log level is propagated to parent container if overridden
+    if args.log_level:
+        containers.this_container.set_config_env('LOG_LEVEL', args.log_level)
 
     if args.action == 'status':
         status(config, containers)
