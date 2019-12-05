@@ -24,3 +24,6 @@ alerts.env
 # docs
 build/
 docs/_build
+
+# tests
+.tox
