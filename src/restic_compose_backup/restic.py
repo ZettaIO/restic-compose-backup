@@ -68,7 +68,7 @@ def snapshots(repository: str, last=True) -> Tuple[str, str]:
 
 
 def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
-    return restic(repository, [
+    return commands.run(restic(repository, [
         'forget',
         '--keep-daily',
         daily,
@@ -78,13 +78,13 @@ def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
         monthly,
         '--keep-yearly',
         yearly,
-    ])
+    ]))
 
 
 def prune(repository: str):
-    return restic(repository, [
+    return commands.run(restic(repository, [
         'prune',
-    ])
+    ]))
 
 
 def check(repository: str):
