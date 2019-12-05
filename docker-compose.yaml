@@ -4,6 +4,7 @@ services:
     build: .
     env_file:
       - restic_compose_backup.env
+      - alerts.env
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
