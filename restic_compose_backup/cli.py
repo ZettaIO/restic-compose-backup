@@ -89,17 +89,27 @@ def backup(config, containers):
     mounts = containers.generate_backup_mounts('/volumes')
     volumes.update(mounts)
 
-    result = backup_runner.run(
-        image=containers.this_container.image,
-        command='restic-compose-backup start-backup-process',
-        volumes=volumes,
-        environment=containers.this_container.environment,
-        source_container_id=containers.this_container.id,
-        labels={
-            "restic-compose-backup.backup_process": 'True',
-            "com.docker.compose.project": containers.project_name,
-        },
-    )
+    try:
+        result = backup_runner.run(
+            image=containers.this_container.image,
+            command='restic-compose-backup start-backup-process',
+            volumes=volumes,
+            environment=containers.this_container.environment,
+            source_container_id=containers.this_container.id,
+            labels={
+                "restic-compose-backup.backup_process": 'True',
+                "com.docker.compose.project": containers.project_name,
+            },
+        )
+    except Exception as ex:
+        logger.exception(ex)
+        alerts.send(
+            subject="Exception during backup",
+            body=str(ex),
+            alert_type='ERROR',
+        )
+        return
+
     logger.info('Backup container exit code: %s', result)
 
     # Alert the user if something went wrong
@@ -133,7 +143,7 @@ def start_backup_process(config, containers):
             logger.error('Backup command exited with non-zero code: %s', vol_result)
             errors = True
     except Exception as ex:
-        logger.error(ex)
+        logger.exception(ex)
         errors = True
 
     # back up databases
@@ -148,7 +158,7 @@ def start_backup_process(config, containers):
                     logger.error('Backup command exited with non-zero code: %s', result)
                     errors = True
             except Exception as ex:
-                logger.error(ex)
+                logger.exception(ex)
                 errors = True
 
     if errors:
