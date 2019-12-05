@@ -49,6 +49,9 @@ def status(config, containers):
     logger.info("Backup currently running?: %s", containers.backup_process_running)
     logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
 
+    logger.info("Initializing repository (may fail if already initalized)")
+    restic.init_repo(config.repository)
+
     backup_containers = containers.containers_for_backup()
     for container in backup_containers:
         logger.info('service: %s', container.service_name)
@@ -76,11 +79,6 @@ def backup(config, containers):
     # Make sure we don't spawn multiple backup processes
     if containers.backup_process_running:
         raise ValueError("Backup process already running")
-
-    logger.info("Initializing repository (may fail if already initalized)")
-
-    # TODO: Errors when repo already exists
-    restic.init_repo(config.repository)
 
     # Map all volumes from the backup container into the backup process container
     volumes = containers.this_container.volumes
