@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def test():
-    return run_command(['ls', '/volumes'])
+    return run(['ls', '/volumes'])
 
 
 def ping_mysql(host, port, username) -> int:
@@ -23,7 +23,7 @@ def ping_mysql(host, port, username) -> int:
     ])
 
 
-def ping_mariadb(host, port, username):  #, password) -> int:
+def ping_mariadb(host, port, username) -> int:
     """Check if the mariadb is up and can be reached"""
     return run([
         'mysqladmin',
@@ -43,7 +43,7 @@ def ping_postgres(host, port, username, password) -> int:
         "pg_isready",
         f"--host={host}",
         f"--port={port}",
-        f"--username={username}", 
+        f"--username={username}",
     ])
 
 

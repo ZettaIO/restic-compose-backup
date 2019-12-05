@@ -63,7 +63,7 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
 def snapshots(repository: str, last=True) -> Tuple[str, str]:
     args = ["snapshots"]
     if last:
-        args.append('--last')        
+        args.append('--last')
     return commands.run_capture_std(restic(repository, args))
 
 

@@ -1,5 +1,4 @@
 import argparse
-import pprint
 import logging
 
 from restic_compose_backup import (
@@ -63,7 +62,8 @@ def status(config, containers):
             ping = instance.ping()
             logger.info(' - %s (is_ready=%s)', instance.container_type, ping == 0)
             if ping != 0:
-                logger.error("Database '%s' in service %s cannot be reached", instance.container_type, container.service_name)
+                logger.error("Database '%s' in service %s cannot be reached",
+                             instance.container_type, container.service_name)
 
     if len(backup_containers) == 0:
         logger.info("No containers in the project has 'restic-compose-backup.enabled' label")
@@ -184,6 +184,7 @@ def cleanup(config, containers):
     logger.info('Prune stale data freeing storage space')
     prune_result = restic.prune(config.repository)
     return forget_result == 0 and prune_result == 0
+
 
 def snapshots(config, containers):
     """Display restic snapshots"""

@@ -13,6 +13,7 @@ LOG_LEVELS = {
     'error': logging.ERROR,
 }
 
+
 def setup(level: str = 'warning'):
     """Set up logging"""
     level = level or ""

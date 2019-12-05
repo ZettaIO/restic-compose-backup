@@ -2,7 +2,6 @@ import logging
 
 from restic_compose_backup.alerts.smtp import SMTPAlert
 from restic_compose_backup.alerts.discord import DiscordWebhookAlert
-from restic_compose_backup.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,7 @@ def configured_alert_types():
 
     for cls in BACKENDS:
         instance = cls.create_from_env()
-        logger.debug("Alert backend '%s' configured: %s", cls.name, instance != None)
+        logger.debug("Alert backend '%s' configured: %s", cls.name, instance is not None)
         if instance:
             entires.append(instance)
 

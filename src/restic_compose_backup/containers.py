@@ -68,7 +68,7 @@ class Container:
     def get_config_env(self, name) -> str:
         """Get a config environment variable by name"""
         # convert to dict and fetch env var by name
-        data = {i[0:i.find('=')]: i[i.find('=')+1:] for i in self.environment}
+        data = {i[0:i.find('=')]: i[i.find('=') + 1:] for i in self.environment}
         return data.get(name)
 
     def set_config_env(self, name, value):
@@ -169,7 +169,7 @@ class Container:
         return self._labels.get(name, None)
 
     def filter_mounts(self):
-        """Get all mounts for this container matching include/exclude filters"""            
+        """Get all mounts for this container matching include/exclude filters"""
         filtered = []
 
         if not self.volume_backup_enabled:

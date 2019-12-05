@@ -1,6 +1,5 @@
 import os
 import logging
-from urllib.parse import urlparse
 
 import requests
 from restic_compose_backup.alerts.base import BaseAlert
@@ -41,6 +40,6 @@ class DiscordWebhookAlert(BaseAlert):
         }
         response = requests.post(self.url, params={'wait': True}, json=data)
         if response.status_code not in self.success_codes:
-            log.error("Discord webhook failed: %s: %s", response.status_code, response.content)
+            logger.error("Discord webhook failed: %s: %s", response.status_code, response.content)
         else:
             logger.info('Discord webhook successful')
