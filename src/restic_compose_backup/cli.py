@@ -66,7 +66,7 @@ def status(config, containers):
                              instance.container_type, container.service_name)
 
     if len(backup_containers) == 0:
-        logger.info("No containers in the project has 'restic-compose-backup.enabled' label")
+        logger.info("No containers in the project has 'restic-compose-backup.*' label")
 
     logger.info("-" * 67)
 
