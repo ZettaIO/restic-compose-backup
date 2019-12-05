@@ -8,7 +8,7 @@ setup(
     author_email="eforselv@gmail.com",
     packages=find_namespace_packages(include=['restic_compose_backup']),
     install_requires=[
-        'docker==3.7.2',
+        'docker==4.1.*',
     ],
     entry_points={'console_scripts': [
         'restic-compose-backup = restic_compose_backup.cli:main',
