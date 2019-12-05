@@ -1,15 +1,24 @@
 
 # restic-compose-backup
 
-*WORK IN PROGRESS*
-
 Backup using https://restic.net/ for a docker-compose setup.
 
-* [restic-compose-backup on github](https://github.com/ZettaIO/restic-compose-backup)
-* [restic-compose-backup on docker hub](https://hub.docker.com/r/zettaio/restic-compose-backup)
+* [restic-compose-backup Documentation](https://restic-compose-backup.readthedocs.io)
+* [restic-compose-backup on Github](https://github.com/ZettaIO/restic-compose-backup)
+* [restic-compose-backup on Docker Hub](https://hub.docker.com/r/zettaio/restic-compose-backup)
+
+Features:
+
+* Back up docker volumes or host binds
+* Back up mariadb postgres
+* Back up mariadb databases
+* Back up mysql databases
+* Notifications over mail/smtp
+* Notifications to Discord through webhooks
+
+Please report issus on [github](https://github.com/ZettaIO/restic-compose-backup/issues).
 
 Automatically detects and backs up volumes, mysql, mariadb and postgres databases in a docker-compose setup.
-This includes both host mapped volumes and actual docker volumes.
 
 * Each service in the compose setup is configured with a label
   to enable backup of volumes or databases
@@ -18,8 +27,8 @@ This includes both host mapped volumes and actual docker volumes.
   to ensure databases can be reached
 * Volumes are mounted to `/volumes/<service_name>/<path>`
   in the backup process container. `/volumes` is pushed into restic
-* Databases are backed up from stdin / dumps
-* Cron triggers backup
+* Databases are backed up from stdin / dumps into restic using path `/databases/<service_name>/dump.sql`
+* Cron triggers backup at 2AM every day
 
 ## Install
 
@@ -39,6 +48,29 @@ RESTIC_PASSWORD
 ```
 
 Backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
+
+Additional env vars:
+
+```bash
+# Prune rules
+RESTIC_KEEP_DAILY=7
+RESTIC_KEEP_WEEKLY=4
+RESTIC_KEEP_MONTHLY=12
+RESTIC_KEEP_YEARLY=3
+
+# Logging level (debug,info,warning,error)
+LOG_LEVEL=info
+
+# SMTP alerts
+EMAIL_HOST=my.mail.host
+EMAIL_PORT=465
+EMAIL_HOST_USER=johndoe
+EMAIL_HOST_PASSWORD=s3cr3tpassw0rd
+EMAIL_SEND_TO=johndoe@gmail.com
+
+# Discord webhook
+DISCORD_WEBHOOK=https://discordapp.com/api/webhooks/...
+```
 
 ### Volumes
 
@@ -147,8 +179,19 @@ path `/databases/<service_name>/dump.sql` or similar.
 
 ## Running Tests
 
-```
+```bash
 python setup.py develop
 pip install -r tests/requirements.txt
 pytest tests
 ```
+
+## Building Docs
+
+```bash
+pip install -r docs/requirements.txt
+python setup.py build_sphinx
+```
+
+## Contributing
+
+Contributions are welcome regardless of experience level. Don't hesitate submitting issues, opening partial or completed pull requests.
