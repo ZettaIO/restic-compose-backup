@@ -15,3 +15,5 @@ __pycache__
 .git
 .pytest_cache
 .dockerignore
+build/
+docs/

@@ -20,3 +20,7 @@ venv
 restic_data/
 restic_cache/
 alerts.env
+
+# docs
+build/
+docs/_build
