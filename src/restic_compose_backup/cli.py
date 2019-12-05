@@ -46,6 +46,7 @@ def main():
 def status(config, containers):
     """Outputs the backup config for the compose setup"""
     logger.info("Status for compose project '%s'", containers.project_name)
+    logger.info("Repository: '%s'", config.repository)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
     logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
 
