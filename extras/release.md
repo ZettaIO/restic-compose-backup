@@ -1,6 +1,7 @@
 # Making a release
 
-- Update version in setup.py
+- Update version in `setup.py`
+- Update version in `docs/conf.py`
 - Build and tag image
 - push: `docker push zettaio/restic-compose-backup:<version>`
 - Ensure RTD has new docs published
