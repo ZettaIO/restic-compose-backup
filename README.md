@@ -38,8 +38,6 @@ Automatically detects and backs up volumes, mysql, mariadb and postgres database
 docker pull zettaio/restic-compose-backup
 ```
 
-.. or clone this repo and build it.
-
 ## Configuration
 
 Required env variables for restic:
@@ -81,7 +79,7 @@ version: '3'
 services:
   # The backup service
   backup:
-    build: restic-compose-backup
+    image: zettaio/restic-compose-backup
     environment:
       - RESTIC_REPOSITORY=<whatever restic supports>
       - RESTIC_PASSWORD=hopefullyasecturepw
@@ -177,7 +175,6 @@ path `/databases/<service_name>/dump.sql` or similar.
     labels:
       restic-compose-backup.postgres: true
 ```
-
 
 ## Running Tests
 
