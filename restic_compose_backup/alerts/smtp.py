@@ -51,6 +51,6 @@ class SMTPAlert(BaseAlert):
             server.sendmail(self.user, self.to, msg.as_string())
             logger.info('Email sent')
         except Exception as ex:
-            logger.error(ex)
+            logger.exception(ex)
         finally:
             server.close()

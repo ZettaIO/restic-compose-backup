@@ -24,6 +24,7 @@ def send(subject: str = None, body: str = None, alert_type: str = 'INFO'):
             )
         except Exception as ex:
             logger.error("Exception raised when sending alert [%s]: %s", instance.name, ex)
+            logger.exception(ex)
 
     if len(alert_classes) == 0:
         logger.info("No alerts configured")
