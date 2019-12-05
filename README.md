@@ -191,7 +191,7 @@ tox
 
 ```bash
 pip install -r docs/requirements.txt
-python setup.py build_sphinx
+python src/setup.py build_sphinx
 ```
 
 ## Contributing
