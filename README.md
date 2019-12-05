@@ -182,9 +182,9 @@ path `/databases/<service_name>/dump.sql` or similar.
 ## Running Tests
 
 ```bash
-python setup.py develop
-pip install -r tests/requirements.txt
-pytest tests
+pip install -e src/
+pip install -r src/tests/requirements.txt
+tox
 ```
 
 ## Building Docs
