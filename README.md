@@ -1,6 +1,8 @@
 
 # restic-compose-backup
 
+![docs](https://readthedocs.org/projects/restic-compose-backup/badge/?version=latest)
+
 Backup using https://restic.net/ for a docker-compose setup.
 
 * [restic-compose-backup Documentation](https://restic-compose-backup.readthedocs.io)
