@@ -1,7 +1,7 @@
 version: '3'
 services:
   backup:
-    build: .
+    build: ./src
     env_file:
       - restic_compose_backup.env
       - alerts.env
@@ -12,7 +12,7 @@ services:
       - ./restic_data:/restic_data
       - ./restic_cache:/cache
       # Map in project source in dev
-      - .:/restic-compose-backup
+      - ./src:/restic-compose-backup
   web:
     image: nginx
     labels:
