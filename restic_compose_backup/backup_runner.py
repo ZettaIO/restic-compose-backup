@@ -51,9 +51,9 @@ def run(image: str = None, command: str = None, volumes: dict = None,
             fd.write('\n')
             logger.info(line)
 
-
     container.reload()
     logger.debug("Container ExitCode %s", container.attrs['State']['ExitCode'])
+    container.stop()
     container.remove()
 
     return container.attrs['State']['ExitCode']
