@@ -35,7 +35,13 @@ def run(image: str = None, command: str = None, volumes: dict = None,
             line = ""
             while True:
                 try:
-                    line += next(stream).decode()
+                    # TODO: figure out why..
+                    # Apparently the stream can be bytes or strings.
+                    data = next(stream)
+                    if isinstance(data, bytes):
+                        line += data.decode()
+                    elif isinstance(data, str):
+                        line += data
                     if line.endswith('\n'):
                         break
                 except StopIteration:
