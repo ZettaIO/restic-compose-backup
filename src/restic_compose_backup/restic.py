@@ -47,17 +47,17 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     dest_process = Popen(dest_command, stdin=source_process.stdout, stdout=PIPE, stderr=PIPE)
     stdout, stderr = dest_process.communicate()
 
-    if stdout:
-        for line in stdout.decode().split('\n'):
-            logger.debug(line)
-
-    if stderr:
-        for line in stderr.decode().split('\n'):
-            logger.error(line)
-
     # Ensure both processes exited with code 0
     source_exit, dest_exit = source_process.poll(), dest_process.poll()
-    return 0 if (source_exit == 0 and dest_exit == 0) else 1
+    exit_code = 0 if (source_exit == 0 and dest_exit == 0) else 1
+
+    if stdout:
+        commands.log_std('stdout', stdout, logging.DEBUG if exit_code == 0 else logging.ERROR)
+
+    if stderr:
+        commands.log_std('stderr', stderr, logging.ERROR)
+
+    return exit_code
 
 
 def snapshots(repository: str, last=True) -> Tuple[str, str]:

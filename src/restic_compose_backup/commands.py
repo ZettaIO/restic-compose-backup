@@ -53,14 +53,12 @@ def run(cmd: List[str]) -> int:
     child = Popen(cmd, stdout=PIPE, stderr=PIPE)
     stdoutdata, stderrdata = child.communicate()
 
-    if stdoutdata:
-        logger.debug(stdoutdata.decode().strip())
-        logger.debug('-' * 28)
+    if stdoutdata.strip():
+        log_std('stdout', stdoutdata.decode(),
+                logging.DEBUG if child.returncode == 0 else logging.ERROR)
 
-    if stderrdata:
-        logger.error('%s STDERR %s', '-' * 10, '-' * 10)
-        logger.error(stderrdata.decode().strip())
-        logger.error('-' * 28)
+    if stderrdata.strip():
+        log_std('stderr', stderrdata.decode(), logging.ERROR)
 
     logger.debug("returncode %s", child.returncode)
     return child.returncode
@@ -71,3 +69,23 @@ def run_capture_std(cmd: List[str]) -> Tuple[str, str]:
     logger.debug('cmd: %s', ' '.join(cmd))
     child = Popen(cmd, stdout=PIPE, stderr=PIPE)
     return child.communicate()
+
+
+def log_std(source: str, data: str, level: int):
+    if isinstance(data, bytes):
+        data = data.decode()
+
+    if not data.strip():
+        return
+
+    log_func = logger.debug if level == logging.DEBUG else logger.error
+    log_func('%s %s %s', '-' * 10, source, '-' * 10)
+
+    lines = data.split('\n')
+    if lines[-1] == '':
+        lines.pop()
+
+    for line in lines:
+        log_func(line)
+
+    log_func('-' * 28)
