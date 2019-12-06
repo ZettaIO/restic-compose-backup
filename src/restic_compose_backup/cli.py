@@ -42,6 +42,10 @@ def main():
     elif args.action == 'alert':
         alert(config, containers)
 
+    elif args.action == 'version':
+        import restic_compose_backup
+        print(restic_compose_backup.__version__)
+
 
 def status(config, containers):
     """Outputs the backup config for the compose setup"""
@@ -205,7 +209,7 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
-        choices=['status', 'snapshots', 'backup', 'start-backup-process', 'alert', 'cleanup'],
+        choices=['status', 'snapshots', 'backup', 'start-backup-process', 'alert', 'cleanup', 'version'],
     )
     parser.add_argument(
         '--log-level',
