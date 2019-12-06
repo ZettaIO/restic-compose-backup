@@ -150,6 +150,7 @@ def start_backup_process(config, containers):
         errors = True
 
     # back up databases
+    logger.info('Backing up databases')
     for container in containers.containers_for_backup():
         if container.database_backup_enabled:
             try:
@@ -165,13 +166,17 @@ def start_backup_process(config, containers):
                 errors = True
 
     if errors:
+        logger.error('Exit code: %s', errors)
         exit(1)
 
     # Only run cleanup if backup was successful
     result = cleanup(config, container)
-    logger.debug('cleanup exit code: %s', errors)
+    logger.debug('cleanup exit code: %s', result)
     if result != 0:
+        logger.error('Exit code: %s', result)
         exit(1)
+
+    logger.info('Backup completed')
 
 
 def cleanup(config, containers):
