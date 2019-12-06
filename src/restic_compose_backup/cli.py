@@ -143,9 +143,10 @@ def start_backup_process(config, containers):
         vol_result = restic.backup_files(config.repository, source='/volumes')
         logger.debug('Volume backup exit code: %s', vol_result)
         if vol_result != 0:
-            logger.error('Backup command exited with non-zero code: %s', vol_result)
+            logger.error('Volume backup exited with non-zero code: %s', vol_result)
             errors = True
     except Exception as ex:
+        logger.error('Exception raised during volume backup')
         logger.exception(ex)
         errors = True
 
