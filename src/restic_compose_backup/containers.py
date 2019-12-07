@@ -66,6 +66,9 @@ class Container:
         """All configured env vars for the container as a list"""
         return self.get_config('Env')
 
+    def remove(self):
+        self._data.remove()
+
     def get_config_env(self, name) -> str:
         """Get a config environment variable by name"""
         # convert to dict and fetch env var by name

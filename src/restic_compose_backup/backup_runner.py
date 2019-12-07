@@ -3,6 +3,7 @@ import os
 import docker
 
 from restic_compose_backup.config import Config
+from restic_compose_backup import utils
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +12,7 @@ def run(image: str = None, command: str = None, volumes: dict = None,
         environment: dict = None, labels: dict = None, source_container_id: str = None):
     logger.info("Starting backup container")
     config = Config()
-    client = docker.DockerClient(base_url=config.docker_base_url)
+    client = utils.docker_client()
 
     container = client.containers.run(
         image,

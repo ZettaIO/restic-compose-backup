@@ -9,6 +9,7 @@ from restic_compose_backup import (
 )
 from restic_compose_backup.config import Config
 from restic_compose_backup.containers import RunningContainers
+from restic_compose_backup import utils
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,9 @@ def status(config, containers):
     logger.info("Repository: '%s'", config.repository)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
     logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
+
+    if containers.stale_backup_process_containers:
+        utils.remove_containers(containers.stale_backup_process_containers)
 
     logger.info("Initializing repository (may fail if already initalized)")
     restic.init_repo(config.repository)
