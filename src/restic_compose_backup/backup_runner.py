@@ -35,8 +35,8 @@ def run(image: str = None, command: str = None, volumes: dict = None,
             line = ""
             while True:
                 try:
-                    # TODO: figure out why..
-                    # Apparently the stream can be bytes or strings.
+                    # Make log streaming work for docker ce 17 and 18.
+                    # For some reason strings are returned instead if bytes.
                     data = next(stream)
                     if isinstance(data, bytes):
                         line += data.decode()
