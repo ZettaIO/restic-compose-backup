@@ -32,6 +32,8 @@ Automatically detects and backs up volumes, mysql, mariadb and postgres database
 * Databases are backed up from stdin / dumps into restic using path `/databases/<service_name>/dump.sql`
 * Cron triggers backup at 2AM every day
 
+Currently tested with docker-ce 17, 18 and 19.
+
 ## Install
 
 ```bash
