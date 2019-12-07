@@ -9,7 +9,7 @@ matrix:
       sudo: true
 
 install: 
-  - pip install -U setuptools
+  - pip install -U setuptools pip wheel
   - pip install -r src/tests/requirements.txt
   - pip install src
 

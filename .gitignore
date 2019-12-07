@@ -21,9 +21,10 @@ restic_data/
 restic_cache/
 alerts.env
 
-# docs
+# build
 build/
 docs/_build
+dist
 
 # tests
 .tox
