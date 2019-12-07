@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 from typing import List
 
-from restic_compose_backup import utils
+from restic_compose_backup import enums, utils
+
 
 VOLUME_TYPE_BIND = "bind"
 VOLUME_TYPE_VOLUME = "volume"
@@ -27,8 +28,8 @@ class Container:
         if self._labels is None:
             raise ValueError('Container meta missing Config->Labels')
 
-        self._include = self._parse_pattern(self.get_label('restic-compose-backup.volumes.include'))
-        self._exclude = self._parse_pattern(self.get_label('restic-compose-backup.volumes.exclude'))
+        self._include = self._parse_pattern(self.get_label(enums.LABEL_VOLUMES_INCLUDE))
+        self._exclude = self._parse_pattern(self.get_label(enums.LABEL_VOLUMES_EXCLUDE))
 
     @property
     def instance(self) -> 'Container':
@@ -108,7 +109,7 @@ class Container:
     @property
     def volume_backup_enabled(self) -> bool:
         """bool: If the ``restic-compose-backup.volumes`` label is set"""
-        return utils.is_true(self.get_label('restic-compose-backup.volumes'))
+        return utils.is_true(self.get_label(enums.LABEL_VOLUMES_ENABLED))
 
     @property
     def database_backup_enabled(self) -> bool:
@@ -122,22 +123,22 @@ class Container:
     @property
     def mysql_backup_enabled(self) -> bool:
         """bool: If the ``restic-compose-backup.mysql`` label is set"""
-        return utils.is_true(self.get_label('restic-compose-backup.mysql'))
+        return utils.is_true(self.get_label(enums.LABEL_MYSQL_ENABLED))
 
     @property
     def mariadb_backup_enabled(self) -> bool:
         """bool: If the ``restic-compose-backup.mariadb`` label is set"""
-        return utils.is_true(self.get_label('restic-compose-backup.mariadb'))
+        return utils.is_true(self.get_label(enums.LABEL_MARIADB_ENABLED))
 
     @property
     def postgresql_backup_enabled(self) -> bool:
         """bool: If the ``restic-compose-backup.postgres`` label is set"""
-        return utils.is_true(self.get_label('restic-compose-backup.postgres'))
+        return utils.is_true(self.get_label(enums.LABEL_POSTGRES_ENABLED))
 
     @property
     def is_backup_process_container(self) -> bool:
         """Is this container the running backup process?"""
-        return self.get_label('restic-compose-backup.backup_process') == 'True'
+        return self.get_label(enums.LABEL_BACKUP_PROCESS) == 'True'
 
     @property
     def is_running(self) -> bool:
@@ -314,6 +315,7 @@ class RunningContainers:
         self.containers = []
         self.this_container = None
         self.backup_process_container = None
+        self.stale_backup_process_containers = []
 
         # Find the container we are running in.
         # If we don't have this information we cannot continue
