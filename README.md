@@ -11,10 +11,10 @@ Backup using https://restic.net/ for a docker-compose setup.
 
 Features:
 
-* Back up docker volumes or host binds
-* Back up mariadb postgres
-* Back up mariadb databases
-* Back up mysql databases
+* Backs up docker volumes or host binds
+* Backs up postgres databases
+* Backs up mariadb databases
+* Backs up mysql databases
 * Notifications over mail/smtp
 * Notifications to Discord through webhooks
 
