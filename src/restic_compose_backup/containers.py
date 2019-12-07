@@ -330,6 +330,12 @@ class RunningContainers:
         for container_data in all_containers:
             container = Container(container_data)
 
+            # Gather stale backup process containers
+            if (self.this_container.image == container.image
+                    and not container.is_running
+                    and container.is_backup_process_container):
+                self.stale_backup_process_containers.append(container)
+
             # We only care about running containers
             if not container.is_running:
                 continue
