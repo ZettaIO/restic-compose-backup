@@ -16,7 +16,7 @@ def list_containers():
     """
     config = Config()
     client = docker.DockerClient(base_url=config.docker_base_url)
-    all_containers = client.containers.list()
+    all_containers = client.containers.list(all=True)
     client.close()
     return [c.attrs for c in all_containers]
 

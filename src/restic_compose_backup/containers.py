@@ -142,7 +142,7 @@ class Container:
 
     @property
     def is_running(self) -> bool:
-        """Is the container running?"""
+        """bool: Is the container running?"""
         return self._state.get('Running', False)
 
     @property
@@ -326,9 +326,13 @@ class RunningContainers:
         if not self.this_container:
             raise ValueError("Cannot find metadata for backup container")
 
-        # Gather all containers in the current compose setup
+        # Gather all running containers in the current compose setup
         for container_data in all_containers:
             container = Container(container_data)
+
+            # We only care about running containers
+            if not container.is_running:
+                continue
 
             # Detect running backup process container
             if container.is_backup_process_container:
