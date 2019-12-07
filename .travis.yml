@@ -11,7 +11,7 @@ matrix:
 install: 
   - pip install -U setuptools pip wheel
   - pip install -r src/tests/requirements.txt
-  - pip install src
+  - pip install ./src
 
 script:
   - tox

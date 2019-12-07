@@ -179,7 +179,7 @@ path `/databases/<service_name>/dump.sql` or similar.
 ## Running Tests
 
 ```bash
-pip install -e src/
+pip install -e ./src/
 pip install -r src/tests/requirements.txt
 tox
 ```
