@@ -107,6 +107,7 @@ class Container:
 
     @property
     def volume_backup_enabled(self) -> bool:
+        """bool: If the ``restic-compose-backup.volumes`` label is set"""
         return utils.is_true(self.get_label('restic-compose-backup.volumes'))
 
     @property
@@ -120,14 +121,17 @@ class Container:
 
     @property
     def mysql_backup_enabled(self) -> bool:
+        """bool: If the ``restic-compose-backup.mysql`` label is set"""
         return utils.is_true(self.get_label('restic-compose-backup.mysql'))
 
     @property
     def mariadb_backup_enabled(self) -> bool:
+        """bool: If the ``restic-compose-backup.mariadb`` label is set"""
         return utils.is_true(self.get_label('restic-compose-backup.mariadb'))
 
     @property
     def postgresql_backup_enabled(self) -> bool:
+        """bool: If the ``restic-compose-backup.postgres`` label is set"""
         return utils.is_true(self.get_label('restic-compose-backup.postgres'))
 
     @property
@@ -358,6 +362,7 @@ class RunningContainers:
         return mounts
 
     def get_service(self, name) -> Container:
+        """Container: Get a service by name"""
         for container in self.containers:
             if container.service_name == name:
                 return container
