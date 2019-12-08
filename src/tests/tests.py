@@ -191,7 +191,7 @@ class ResticBackupTests(unittest.TestCase):
             {
                 'service': 'backup_runner',
                 'labels': {
-                    'restic-compose-backup.backup_process': 'True',
+                    'restic-compose-backup.process-default': 'True',
                 },
             },
         ]
