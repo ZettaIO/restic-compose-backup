@@ -28,7 +28,7 @@ docker pull zettaio/restic-compose-backup
 
 ## Configuration (env vars)
 
-Minimum configuration (env vars)
+Minimum configuration
 
 ```bash
 RESTIC_REPOSITORY
@@ -39,7 +39,11 @@ More config options can be found in the [documentation].
 
 Restic backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
 
-### Compose Example
+## Compose Example
+
+We simply control what should be backed up by adding
+labels to our containers. More details are covered
+in the [documentation].
 
 restic-backup.env
 
@@ -70,7 +74,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       # Persistent storage of restic cache (greatly speeds up all restic operations)
       - cache:/cache
-  example:
+  web:
     image: some_image
     labels:
       # Enables backup of the volumes below
@@ -114,6 +118,36 @@ volumes:
   pgdata:
   cache:
 ```
+
+## The `rcb` command
+
+Everything is controlled using the `rcb` command.
+After configuring backup with labels and restarted
+the affected services we can quickly view the
+result using the `status` subcommand.
+
+```bash
+$ docker-compose run --rm backup rcb status
+INFO: Status for compose project 'myproject'
+INFO: Repository: '<restic repository>'
+INFO: Backup currently running?: False
+INFO: --------------- Detected Config ---------------
+INFO: service: mysql
+INFO:  - mysql (is_ready=True)
+INFO: service: mariadb
+INFO:  - mariadb (is_ready=True)
+INFO: service: postgres
+INFO:  - postgres (is_ready=True)
+INFO: service: web
+INFO:  - volume: media
+INFO:  - volume: /srv/files
+```
+
+The `status` subcommand lists what will be backed up and
+even pings the database services checking their availability.
+The `restic` command can also be used directly in the container.
+
+More `rcb` commands can be found in the [documentation].
 
 ## Running Tests
 
