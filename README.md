@@ -3,10 +3,8 @@
 
 ![docs](https://readthedocs.org/projects/restic-compose-backup/badge/?version=latest)
 
-Automatically detects and backs up volumes, mysql, mariadb and postgres databases in a docker-compose setup.
-Currently tested with docker-ce 17, 18 and 19.
-
 Backup using [restic] for a docker-compose setup.
+Currently tested with docker-ce 17, 18 and 19.
 
 * [restic-compose-backup Documentation](https://restic-compose-backup.readthedocs.io)
 * [restic-compose-backup on Github](https://github.com/ZettaIO/restic-compose-backup)
@@ -47,7 +45,7 @@ in the [documentation].
 
 restic-backup.env
 
-```env
+```bash
 RESTIC_REPOSITORY=<whatever backend restic supports>
 RESTIC_PASSWORD=hopefullyasecturepw
 # snapshot prune rules
