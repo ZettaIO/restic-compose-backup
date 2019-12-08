@@ -30,11 +30,14 @@ class DiscordWebhookAlert(BaseAlert):
     def send(self, subject: str = None, body: str = None, alert_type: str = None):
         """Send basic webhook request. Max embed size is 6000"""
         logger.info("Triggering discord webhook")
+        # NOTE: The title size is 2048
+        #       The max description size is 2048
+        #       Total embed size limit is 6000 characters (per embed)
         data = {
             'embeds': [
                 {
-                    'title': subject,
-                    'description': body[:5000],
+                    'title': subject[-256:],
+                    'description': body[-2048:] if body else "",
                 },
             ]
         }
