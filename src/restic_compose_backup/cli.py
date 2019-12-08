@@ -87,7 +87,15 @@ def backup(config, containers):
     """Request a backup to start"""
     # Make sure we don't spawn multiple backup processes
     if containers.backup_process_running:
-        raise ValueError("Backup process already running")
+        alerts.send(
+            subject="Backup process container already running",
+            body=(
+                "A backup process container is already running. \n"
+                f"Id: {containers.backup_process_container.id}\n"
+                f"Name: {containers.backup_process_container.name}\n"
+            ) 
+        )
+        raise RuntimeError("Backup process already running")
 
     # Map all volumes from the backup container into the backup process container
     volumes = containers.this_container.volumes
