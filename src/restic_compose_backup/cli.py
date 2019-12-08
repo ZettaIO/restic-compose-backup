@@ -1,4 +1,5 @@
 import argparse
+import os
 import logging
 
 from restic_compose_backup import (
@@ -58,9 +59,12 @@ def status(config, containers):
     if containers.stale_backup_process_containers:
         utils.remove_containers(containers.stale_backup_process_containers)
 
-    logger.info("Initializing repository (may fail if already initalized)")
-    restic.init_repo(config.repository)
+    # Check if repository is initialized with restic snapshots
+    if restic.snapshots(config.repository) != 0:
+        logger.info("Initializing repository")
+        restic.init_repo(config.repository)
 
+    # Start making snapshots
     backup_containers = containers.containers_for_backup()
     for container in backup_containers:
         logger.info('service: %s', container.service_name)
@@ -145,23 +149,35 @@ def start_backup_process(config, containers):
             "Cannot run backup process in this container. Use backup command instead. "
             "This will spawn a new container with the necessary mounts."
         )
-        return
+        exit(1)
 
     status(config, containers)
     errors = False
 
-    # Back up volumes
+    # Did we actually get any volumes mounted?
     try:
-        logger.info('Backing up volumes')
-        vol_result = restic.backup_files(config.repository, source='/volumes')
-        logger.debug('Volume backup exit code: %s', vol_result)
-        if vol_result != 0:
-            logger.error('Volume backup exited with non-zero code: %s', vol_result)
+        has_volumes = os.stat('/volumes') is not None
+    except FileNotFoundError:
+        logger.warning("Found no volumes to back up")
+        has_volumes = False
+
+    # Warn if there is nothing to do
+    if len(containers.containers_for_backup()) == 0 and not has_volumes:
+        logger.error("No containers for backup found")
+        exit(1)
+
+    if has_volumes:
+        try:
+            logger.info('Backing up volumes')
+            vol_result = restic.backup_files(config.repository, source='/volumes')
+            logger.debug('Volume backup exit code: %s', vol_result)
+            if vol_result != 0:
+                logger.error('Volume backup exited with non-zero code: %s', vol_result)
+                errors = True
+        except Exception as ex:
+            logger.error('Exception raised during volume backup')
+            logger.exception(ex)
             errors = True
-    except Exception as ex:
-        logger.error('Exception raised during volume backup')
-        logger.exception(ex)
-        errors = True
 
     # back up databases
     logger.info('Backing up databases')
@@ -187,7 +203,14 @@ def start_backup_process(config, containers):
     result = cleanup(config, container)
     logger.debug('cleanup exit code: %s', result)
     if result != 0:
-        logger.error('Exit code: %s', result)
+        logger.error('cleanup exit code: %s', result)
+        exit(1)
+
+    # Test the repository for errors
+    logger.info("Checking the repository for errors")
+    result = restic.check(config.repository)
+    if result != 0:
+        logger.error('Check exit code: %s', result)
         exit(1)
 
     logger.info('Backup completed')
