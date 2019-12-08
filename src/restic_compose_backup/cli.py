@@ -93,7 +93,8 @@ def backup(config, containers):
                 "A backup process container is already running. \n"
                 f"Id: {containers.backup_process_container.id}\n"
                 f"Name: {containers.backup_process_container.name}\n"
-            )
+            ),
+            alert_type='ERROR',
         )
         raise RuntimeError("Backup process already running")
 
