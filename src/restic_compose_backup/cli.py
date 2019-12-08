@@ -10,7 +10,7 @@ from restic_compose_backup import (
 )
 from restic_compose_backup.config import Config
 from restic_compose_backup.containers import RunningContainers
-from restic_compose_backup import utils
+from restic_compose_backup import cron, utils
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +47,9 @@ def main():
     elif args.action == 'version':
         import restic_compose_backup
         print(restic_compose_backup.__version__)
+
+    elif args.action == "crontab":
+        crontab(config)
 
 
 def status(config, containers):
@@ -252,11 +255,25 @@ def alert(config, containers):
     )
 
 
+def crontab(config):
+    """Generate the crontab"""
+    print(cron.generate_crontab(config))
+
+
 def parse_args():
     parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
-        choices=['status', 'snapshots', 'backup', 'start-backup-process', 'alert', 'cleanup', 'version'],
+        choices=[
+            'status',
+            'snapshots',
+            'backup',
+            'start-backup-process',
+            'alert',
+            'cleanup',
+            'version',
+            'crontab',
+        ],
     )
     parser.add_argument(
         '--log-level',
