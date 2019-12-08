@@ -3,7 +3,10 @@
 
 ![docs](https://readthedocs.org/projects/restic-compose-backup/badge/?version=latest)
 
-Backup using https://restic.net/ for a docker-compose setup.
+Automatically detects and backs up volumes, mysql, mariadb and postgres databases in a docker-compose setup.
+Currently tested with docker-ce 17, 18 and 19.
+
+Backup using [restic] for a docker-compose setup.
 
 * [restic-compose-backup Documentation](https://restic-compose-backup.readthedocs.io)
 * [restic-compose-backup on Github](https://github.com/ZettaIO/restic-compose-backup)
@@ -12,27 +15,10 @@ Backup using https://restic.net/ for a docker-compose setup.
 Features:
 
 * Backs up docker volumes or host binds
-* Backs up postgres databases
-* Backs up mariadb databases
-* Backs up mysql databases
-* Notifications over mail/smtp
-* Notifications to Discord through webhooks
+* Backs up postgres, mariadb and mysql databases
+* Notifications over mail/smtp or Discord webhooks
 
 Please report issus on [github](https://github.com/ZettaIO/restic-compose-backup/issues).
-
-Automatically detects and backs up volumes, mysql, mariadb and postgres databases in a docker-compose setup.
-
-* Each service in the compose setup is configured with a label
-  to enable backup of volumes or databases
-* When backup starts a new instance of the container is created
-  mapping in all the needed volumes. It will copy networks etc
-  to ensure databases can be reached
-* Volumes are mounted to `/volumes/<service_name>/<path>`
-  in the backup process container. `/volumes` is pushed into restic
-* Databases are backed up from stdin / dumps into restic using path `/databases/<service_name>/dump.sql`
-* Cron triggers backup at 2AM every day
-
-Currently tested with docker-ce 17, 18 and 19.
 
 ## Install
 
@@ -40,142 +26,93 @@ Currently tested with docker-ce 17, 18 and 19.
 docker pull zettaio/restic-compose-backup
 ```
 
-## Configuration
+## Configuration (env vars)
 
-Required env variables for restic:
+Minimum configuration (env vars)
 
 ```bash
 RESTIC_REPOSITORY
 RESTIC_PASSWORD
 ```
 
-Backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
+More config options can be found in the [documentation].
 
-Additional env vars:
+Restic backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
 
-```bash
-# Prune rules
+### Compose Example
+
+restic-backup.env
+
+```env
+RESTIC_REPOSITORY=<whatever backend restic supports>
+RESTIC_PASSWORD=hopefullyasecturepw
+# snapshot prune rules
 RESTIC_KEEP_DAILY=7
 RESTIC_KEEP_WEEKLY=4
 RESTIC_KEEP_MONTHLY=12
 RESTIC_KEEP_YEARLY=3
-
-# Logging level (debug,info,warning,error)
-LOG_LEVEL=info
-
-# SMTP alerts
-EMAIL_HOST=my.mail.host
-EMAIL_PORT=465
-EMAIL_HOST_USER=johndoe
-EMAIL_HOST_PASSWORD=s3cr3tpassw0rd
-EMAIL_SEND_TO=johndoe@gmail.com
-
-# Discord webhook
-DISCORD_WEBHOOK=https://discordapp.com/api/webhooks/...
+# Cron schedule. Run every day at 1am
+CRON_SCHEDULE="0 1 * * *"
 ```
 
-### Volumes
+docker-compose.yaml
 
 ```yaml
 version: '3'
 services:
   # The backup service
   backup:
-    image: zettaio/restic-compose-backup
-    environment:
-      - RESTIC_REPOSITORY=<whatever restic supports>
-      - RESTIC_PASSWORD=hopefullyasecturepw
-      - RESTIC_KEEP_DAILY=7
-      - RESTIC_KEEP_WEEKLY=4
-      - RESTIC_KEEP_MONTHLY=12
-      - RESTIC_KEEP_YEARLY=3
+    image: zettaio/restic-compose-backup:<version>
     env_file:
-      - some_other_vars.env
+      - restic-backup.env
     volumes:
+      # We need to communicate with docker
       - /var/run/docker.sock:/tmp/docker.sock:ro
-
+      # Persistent storage of restic cache (greatly speeds up all restic operations)
+      - cache:/cache
   example:
     image: some_image
-    # Enable volume backup with label
     labels:
+      # Enables backup of the volumes below
       restic-compose-backup.volumes: true
-    # These volumes will be backed up
     volumes:
-      # Docker volume
       - media:/srv/media
-      # Host map
       - /srv/files:/srv/files
-
-volumes:
-  media:
-```
-
-A simple `include` and `exclude` filter is also available.
-
-```yaml
-  example:
-    image: some_image
-    labels:
-      restic-compose-backup.volumes: true
-      restic-compose-backup.volumes.include: "files,data"
-    volumes:
-      # Source don't match include filter. No backup.
-      - media:/srv/media
-      # Matches include filter
-      - files:/srv/files
-      - /srv/data:/srv/data
-
-volumes:
-  media:
-  files:
-
-```
-
-Exclude
-
-```yaml
-  example:
-    image: some_image
-    labels:
-      restic-compose-backup.volumes: true
-      restic-compose-backup.volumes.exclude: "media"
-    volumes:
-      # Excluded by filter
-      - media:/srv/media
-      # Backed up
-      - files:/srv/files
-      - /srv/data:/srv/data
-
-volumes:
-  media:
-  files:
-```
-
-### Databases
-
-Will dump databases directly into restic through stdin.
-They will appear in restic as a separate snapshot with
-path `/databases/<service_name>/dump.sql` or similar.
-
-```yaml
   mariadb:
     image: mariadb:10
     labels:
+      # Enables backup of this database
       restic-compose-backup.mariadb: true
-```
-
-```yaml
+    env_file:
+      mariadb-credentials.env
+    volumes:
+      - mysqldata:/var/lib/mysql
   mysql:
     image: mysql:5
     labels:
+      # Enables backup of this database
       restic-compose-backup.mysql: true
-```
+    env_file:
+      mysql-credentials.env
+    volumes:
+      - mysqldata:/var/lib/mysql
 
-```yaml
   postgres:
     image: postgres
     labels:
+      # Enables backup of this database
       restic-compose-backup.postgres: true
+    env_file:
+      postgres-credentials.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  media:
+  mysqldata:
+  mariadbdata:
+  pgdata:
+  cache:
 ```
 
 ## Running Tests
@@ -196,3 +133,6 @@ python src/setup.py build_sphinx
 ## Contributing
 
 Contributions are welcome regardless of experience level. Don't hesitate submitting issues, opening partial or completed pull requests.
+
+[restic]: https://restic.net/
+[documentation]: https://restic-compose-backup.readthedocs.io
