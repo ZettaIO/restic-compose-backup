@@ -141,7 +141,7 @@ class Container:
     @property
     def is_backup_process_container(self) -> bool:
         """Is this container the running backup process?"""
-        return self.get_label(enums.LABEL_BACKUP_PROCESS) == 'True'
+        return self.get_label(self.backup_process_label) == 'True'
 
     @property
     def is_running(self) -> bool:
@@ -157,6 +157,11 @@ class Container:
     def service_name(self) -> str:
         """Name of the container/service"""
         return self.get_label('com.docker.compose.service', default='')
+
+    @property
+    def backup_process_label(self) -> str:
+        """str: The unique backup process label for this project"""
+        return f"{enums.LABEL_BACKUP_PROCESS}-{self.project_name}"
 
     @property
     def project_name(self) -> str:
@@ -357,6 +362,11 @@ class RunningContainers:
     def project_name(self) -> str:
         """str: Name of the compose project"""
         return self.this_container.project_name
+
+    @property
+    def backup_process_label(self) -> str:
+        """str: The backup process label for this project"""
+        return self.this_container.backup_process_label
 
     @property
     def backup_process_running(self) -> bool:

@@ -8,4 +8,4 @@ LABEL_MYSQL_ENABLED = 'restic-compose-backup.mysql'
 LABEL_POSTGRES_ENABLED = 'restic-compose-backup.postgres'
 LABEL_MARIADB_ENABLED = 'restic-compose-backup.mariadb'
 
-LABEL_BACKUP_PROCESS = 'restic-compose-backup.backup_process'
+LABEL_BACKUP_PROCESS = 'restic-compose-backup.process'

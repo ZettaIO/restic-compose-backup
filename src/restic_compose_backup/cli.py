@@ -113,7 +113,7 @@ def backup(config, containers):
             environment=containers.this_container.environment,
             source_container_id=containers.this_container.id,
             labels={
-                "restic-compose-backup.backup_process": 'True',
+                containers.backup_process_label: 'True',
                 "com.docker.compose.project": containers.project_name,
             },
         )
