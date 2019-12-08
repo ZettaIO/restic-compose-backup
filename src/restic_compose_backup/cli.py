@@ -54,15 +54,20 @@ def status(config, containers):
     logger.info("Status for compose project '%s'", containers.project_name)
     logger.info("Repository: '%s'", config.repository)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
-    logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
 
     if containers.stale_backup_process_containers:
         utils.remove_containers(containers.stale_backup_process_containers)
 
     # Check if repository is initialized with restic snapshots
-    if restic.snapshots(config.repository) != 0:
-        logger.info("Initializing repository")
-        restic.init_repo(config.repository)
+    if not restic.is_initialized(config.repository):
+        logger.info("Could not get repository info. Attempting to initialize it.")
+        result = restic.init_repo(config.repository)
+        if result == 0:
+            logger.info("Successfully initialized repository: %s", config.repository)
+        else:
+            logger.error("Failed to initialize repository")
+
+    logger.info("%s Detected Config %s", "-" * 25, "-" * 25)
 
     # Start making snapshots
     backup_containers = containers.containers_for_backup()

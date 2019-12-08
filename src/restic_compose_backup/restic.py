@@ -58,10 +58,21 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
 
 
 def snapshots(repository: str, last=True) -> Tuple[str, str]:
+    """Returns the stdout and stderr info"""
     args = ["snapshots"]
     if last:
         args.append('--last')
     return commands.run_capture_std(restic(repository, args))
+
+
+def is_initialized(repository: str) -> bool:
+    """
+    Checks if a repository is initialized using snapshots command.
+    Note that this cannot separate between uninitalized repo
+    and other errors, but this method is reccomended by the restic
+    community.
+    """
+    return commands.run(restic(repository, ["snapshots", '--last'])) == 0
 
 
 def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
