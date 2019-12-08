@@ -87,6 +87,7 @@ def prune(repository: str):
 def check(repository: str):
     return commands.run(restic(repository, [
         "check",
+        # "--with-cache",
     ]))
 
 
