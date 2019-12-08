@@ -40,11 +40,8 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     ])
 
     # pipe source command into dest command
-    # NOTE: Using the default buffer size: io.DEFAULT_BUFFER_SIZE = 8192
-    #       We might want to tweak that to speed up large dumps.
-    #       Actual tests tests must be done.
-    source_process = Popen(source_command, stdout=PIPE)
-    dest_process = Popen(dest_command, stdin=source_process.stdout, stdout=PIPE, stderr=PIPE)
+    source_process = Popen(source_command, stdout=PIPE, bufsize=65536)
+    dest_process = Popen(dest_command, stdin=source_process.stdout, stdout=PIPE, stderr=PIPE, bufsize=65536)
     stdout, stderr = dest_process.communicate()
 
     # Ensure both processes exited with code 0
