@@ -344,7 +344,7 @@ class RunningContainers:
                     and container.is_backup_process_container):
                 self.stale_backup_process_containers.append(container)
 
-            # We only care about running containers
+            # We only care about running containers after this point
             if not container.is_running:
                 continue
 
