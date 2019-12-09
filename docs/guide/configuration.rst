@@ -176,27 +176,87 @@ The location of the docker socket.
 Compose Labels
 --------------
 
-A simple `include` and `exclude` filter is also available.
+What is backed up is controlled by simple labels in the compose
+yaml file. At any point we can verify this configuration
+by running the ``rcb status`` command.
+
+.. code:
+
+    $ docker-compose run --rm backup rcb status
+    INFO: Status for compose project 'myproject'
+    INFO: Repository: '<restic repository>'
+    INFO: Backup currently running?: False
+    INFO: --------------- Detected Config ---------------
+    INFO: service: mysql
+    INFO:  - mysql (is_ready=True)
+    INFO: service: mariadb
+    INFO:  - mariadb (is_ready=True)
+    INFO: service: postgres
+    INFO:  - postgres (is_ready=True)
+    INFO: service: web
+    INFO:  - volume: media
+    INFO:  - volume: /srv/files
+
+Here we can see what volumes and databases are detected for backup.
+
+Volumes
+~~~~~~~
+
+To enable volume backup for a service we simply add the
+`restic-compose-backup.volumes: true` label. The value
+must be ``true``.
+
+Example:
 
 .. code:: yaml
 
-    example:
+    myservice:
       image: some_image
       labels:
         restic-compose-backup.volumes: true
-        restic-compose-backup.volumes.include: "files,data"
       volumes:
-        # Source don't match include filter. No backup.
-        - media:/srv/media
-        # Matches include filter
-        - files:/srv/files
+        - uploaded_media:/srv/media
+        - uploaded_files:/srv/files
         - /srv/data:/srv/data
 
     volumes:
       media:
       files:
 
-Exclude
+This will back up the three volumes mounted to this service.
+Their path in restic will be:
+
+- /volumes/myservice/srv/media
+- /volumes/myservice/srv/files
+- /volumes/myservice/srv/data
+
+A simple `include` and `exclude` filter for what volumes
+should be backed up is also available. Note that this
+includes or excludes entire volumes and are not include/exclude
+patterns for files in the volumes.
+
+.. note:: The ``exclude`` and ``include`` filtering is applied on
+          the source path, not the destination.
+
+Include example including two volumes only:
+
+.. code:: yaml
+
+    myservice:
+      image: some_image
+      labels:
+        restic-compose-backup.volumes: true
+        restic-compose-backup.volumes.include: "uploaded_media,uploaded_files"
+      volumes:
+        - uploaded_media:/srv/media
+        - uploaded_files:/srv/files
+        - /srv/data:/srv/data
+
+    volumes:
+      media:
+      files:
+
+Exclude example achieving the same result as the example above.
 
 .. code:: yaml
 
@@ -204,7 +264,7 @@ Exclude
       image: some_image
       labels:
         restic-compose-backup.volumes: true
-        restic-compose-backup.volumes.exclude: "media"
+        restic-compose-backup.volumes.exclude: "data"
       volumes:
         # Excluded by filter
         - media:/srv/media
@@ -216,8 +276,133 @@ Exclude
       media:
       files:
 
-Databases
+The ``exclude`` and ``include`` tag can be used together
+in more complex situations.
 
-Will dump databases directly into restic through stdin.
-They will appear in restic as a separate snapshot with
-path `/databases/<service_name>/dump.sql` or similar.
+Databases
+---------
+
+mariadb
+~~~~~~~
+
+To enable backup of mariadb simply add the
+``restic-compose-backup.mariadb: true`` label.
+
+Credentials are fetched from the following environment
+variables in the mariadb service. This is the standard
+when using the official mariadb_ image.
+
+.. code::
+
+    MYSQL_USER
+    MYSQL_PASSWORD
+
+Backups are done by dumping all databases directly into
+restic through stdin using ``mysqldump``. It will appear
+in restic as a separate snapshot with path
+``/databases/<service_name>/all_databases.sql``.
+
+.. warning: This will only back up the databases the
+            ``MYSQL_USER` has access to. If you have multiple
+            databases this must be taken into consideration.
+
+Example:
+
+.. code:: yaml
+
+    mariadb:
+      image: mariadb:10
+      labels:
+        restic-compose-backup.mariadb: true
+      env_file:
+        mariadb-credentials.env
+      volumes:
+        - mariadb:/var/lib/mysql
+
+    volumes:
+      mariadb:
+
+mysql
+~~~~~
+
+To enable backup of mysql simply add the
+``restic-compose-backup.mysql: true`` label.
+
+Credentials are fetched from the following environment
+variables in the mysql service. This is the standard
+when using the official mysql_ image.
+
+.. code::
+
+    MYSQL_USER
+    MYSQL_PASSWORD
+
+Backups are done by dumping all databases directly into
+restic through stdin using ``mysqldump``. It will appear
+in restic as a separate snapshot with path
+``/databases/<service_name>/all_databases.sql``.
+
+.. warning: This will only back up the databases the
+            ``MYSQL_USER` has access to. If you have multiple
+            databases this must be taken into consideration.
+
+Example:
+
+.. code:: yaml
+
+    mysql:
+      image: mysql:5
+      labels:
+        restic-compose-backup.mysql: true
+      env_file:
+        mysql-credentials.env
+      volumes:
+        - mysql:/var/lib/mysql
+
+volumes:
+  mysql:
+
+postgres
+~~~~~~~~
+
+To enable backup of mysql simply add the
+``restic-compose-backup.postgres: true`` label.
+
+Credentials are fetched from the following environment
+variables in the postgres service. This is the standard
+when using the official postgres_ image.
+
+.. code::
+
+    POSTGRES_USER
+    POSTGRES_PASSWORD
+    POSTGRES_DB
+
+Backups are done by dumping the ``POSTGRES_DB`` directly into
+restic through stdin using ``pg_dump``. It will appear
+in restic as a separate snapshot with path
+``/databases/<service_name>/<POSTGRES_DB>.sql``.
+
+.. warning:: Currently only the ``POSTGRES_DB`` database
+             is dumped.
+
+Example:
+
+.. code:: yaml
+
+    postgres:
+      image: postgres:11
+      labels:
+        # Enables backup of this database
+        restic-compose-backup.postgres: true
+      env_file:
+        postgres-credentials.env
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+
+    volumes:
+      pgdata:
+
+.. _mariadb: https://hub.docker.com/_/mariadb
+.. _mysql: https://hub.docker.com/_/mysql
+.. _postgres: https://hub.docker.com/_/postgres
