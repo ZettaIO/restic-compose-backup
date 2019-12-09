@@ -1,8 +1,10 @@
 Advanced
-========
+--------
+
+Currently work in progress. These are only notes :D
 
 Temp Notes
-----------
+~~~~~~~~~~
 
 * Quick setup guide from start to end
 * we group snapshots by path when forgetting
@@ -10,9 +12,11 @@ Temp Notes
 * examples of using restic directly
 * Explain what happens during backup process
 * Explain the backup process container
+* cache directory
+* Not displaying passwords in logs
 
 Inner workings
---------------
+~~~~~~~~~~~~~~
 
 * Each service in the compose setup is configured with a label
   to enable backup of volumes or databases
