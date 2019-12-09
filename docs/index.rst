@@ -14,6 +14,7 @@ Simple backup with restic_ for docker-compose setups.
 
    guide/install
    guide/configuration
+   guide/rcb
    guide/advanced
 
 Indices and tables
