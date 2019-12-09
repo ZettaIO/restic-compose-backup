@@ -6,12 +6,15 @@
 Welcome to restic-compose-backup's documentation!
 =================================================
 
-Simple backup with restic for small to medium docker-compose setups.
+Simple backup with restic_ for docker-compose setups.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
+   guide/install
+   guide/configuration
+   guide/advanced
 
 Indices and tables
 ==================
@@ -19,3 +22,5 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _restic: https://restic.net/

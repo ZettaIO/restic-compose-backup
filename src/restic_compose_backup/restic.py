@@ -78,6 +78,8 @@ def is_initialized(repository: str) -> bool:
 def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
     return commands.run(restic(repository, [
         'forget',
+        '--group-by',
+        'paths',
         '--keep-daily',
         daily,
         '--keep-weekly',
