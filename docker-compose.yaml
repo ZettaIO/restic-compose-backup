@@ -20,7 +20,7 @@ services:
       restic-compose-backup.volumes: true
       restic-compose-backup.volumes.include: "/tests"
     volumes:
-      - ./tests:/srv/tests
+      - ./src/tests:/srv/tests
       - ./.vscode:/srv/code
     environment:
       - SOME_VALUE=test
