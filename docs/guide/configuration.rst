@@ -279,9 +279,6 @@ Exclude example achieving the same result as the example above.
 The ``exclude`` and ``include`` tag can be used together
 in more complex situations.
 
-Databases
----------
-
 mariadb
 ~~~~~~~
 
