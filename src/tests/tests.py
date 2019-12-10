@@ -77,7 +77,7 @@ class ResticBackupTests(unittest.TestCase):
         ]
         with mock.patch(list_containers_func, fixtures.containers(containers=containers)):
             result = RunningContainers()
-            self.assertEqual(len(result.containers), 3, msg="Three containers expected")
+            self.assertEqual(len(result.containers), 4, msg="Three containers expected")
             self.assertNotEqual(result.this_container, None, msg="No backup container found")
             web_service = result.get_service('web')
             self.assertNotEqual(web_service, None)
