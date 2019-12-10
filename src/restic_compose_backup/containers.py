@@ -1,9 +1,11 @@
 import os
+import logging
 from pathlib import Path
 from typing import List
 
 from restic_compose_backup import enums, utils
 
+logger = logging.getLogger(__name__)
 
 VOLUME_TYPE_BIND = "bind"
 VOLUME_TYPE_VOLUME = "volume"
@@ -355,7 +357,7 @@ class RunningContainers:
             # Detect containers belonging to the current compose setup
             if (container.project_name == self.this_container.project_name
                and not container.is_oneoff):
-                if container.id != self.this_container.id:
+                if container != self.backup_process_container:
                     self.containers.append(container)
 
     @property

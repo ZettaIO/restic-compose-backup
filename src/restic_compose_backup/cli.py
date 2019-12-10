@@ -117,6 +117,7 @@ def backup(config, containers):
     mounts = containers.generate_backup_mounts('/volumes')
     volumes.update(mounts)
 
+    logger.debug('Starting backup container with image %s', containers.this_container.image)
     try:
         result = backup_runner.run(
             image=containers.this_container.image,
@@ -151,11 +152,17 @@ def backup(config, containers):
 
 def start_backup_process(config, containers):
     """The actual backup process running inside the spawned container"""
-    if (not containers.backup_process_container
-       or containers.this_container == containers.backup_process_container is False):
+    if containers.this_container != containers.backup_process_container:
         logger.error(
             "Cannot run backup process in this container. Use backup command instead. "
             "This will spawn a new container with the necessary mounts."
+        )
+        alerts.send(
+            subject="Cannot run backup process in this container",
+            body=(
+                "Cannot run backup process in this container. Use backup command instead. "
+                "This will spawn a new container with the necessary mounts."
+            )
         )
         exit(1)
 

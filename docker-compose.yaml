@@ -5,6 +5,9 @@ services:
     env_file:
       - restic_compose_backup.env
       - alerts.env
+    labels:
+      restic-compose-backup.volumes: true
+      restic-compose-backup.volumes.include: 'src'
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
