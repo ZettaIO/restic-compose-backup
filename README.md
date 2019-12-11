@@ -168,3 +168,8 @@ Contributions are welcome regardless of experience level. Don't hesitate submitt
 
 [restic]: https://restic.net/
 [documentation]: https://restic-compose-backup.readthedocs.io
+
+---
+This project is sponsored by [zetta.io](https://www.zetta.io)
+
+[![Zetta.IO](https://raw.githubusercontent.com/ZettaIO/restic-compose-backup/master/.github/logo.png)](https://www.zetta.io)
