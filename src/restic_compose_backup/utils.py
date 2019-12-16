@@ -3,7 +3,6 @@ import logging
 from typing import List
 from contextlib import contextmanager
 import docker
-from restic_compose_backup.config import Config
 
 logger = logging.getLogger(__name__)
 
