@@ -14,8 +14,8 @@ main image as well.
 
 ```bash
 docker build src --tag zettaio/restic-compose-backup:0.4
-docker build src --tag zettaio/restic-compose-backup:0.4.1
+docker build src --tag zettaio/restic-compose-backup:0.4.2
 
 docker push zettaio/restic-compose-backup:0.4
-docker push zettaio/restic-compose-backup:0.4.1
+docker push zettaio/restic-compose-backup:0.4.2
 ```
