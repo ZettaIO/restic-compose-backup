@@ -160,7 +160,7 @@
     "OpenStdin": true,
     "StdinOnce": true,
     "Env": [
-      "DOCKER_BASE_URL=unix://tmp/docker.sock",
+      "DOCKER_HOST=unix://tmp/docker.sock",
       "RESTIC_REPOSITORY=/tmp/backup",
       "RESTIC_PASSWORD=password",
       "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
