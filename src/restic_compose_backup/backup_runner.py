@@ -17,7 +17,7 @@ def run(image: str = None, command: str = None, volumes: dict = None,
         labels=labels,
         # auto_remove=True,  # We remove the container further down
         detach=True,
-        environment=environment,
+        environment=environment + ['BACKUP_PROCESS_CONTAINER=true'],
         volumes=volumes,
         network_mode=f'container:{source_container_id}',  # Reuse original container's network stack.
         working_dir=os.getcwd(),

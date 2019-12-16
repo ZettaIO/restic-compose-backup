@@ -57,6 +57,9 @@ def status(config, containers):
     logger.info("Status for compose project '%s'", containers.project_name)
     logger.info("Repository: '%s'", config.repository)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
+    logger.info("Checking docker availability")
+
+    utils.list_containers()
 
     if containers.stale_backup_process_containers:
         utils.remove_containers(containers.stale_backup_process_containers)
@@ -152,7 +155,7 @@ def backup(config, containers):
 
 def start_backup_process(config, containers):
     """The actual backup process running inside the spawned container"""
-    if containers.this_container != containers.backup_process_container:
+    if not utils.is_true(os.environ.get('BACKUP_PROCESS_CONTAINER')):
         logger.error(
             "Cannot run backup process in this container. Use backup command instead. "
             "This will spawn a new container with the necessary mounts."
