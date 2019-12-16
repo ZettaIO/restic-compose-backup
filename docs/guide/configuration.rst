@@ -166,12 +166,27 @@ a webhook that will post embedded messages to a specific channel.
 
 The url usually looks like this: ``https://discordapp.com/api/webhooks/...```
 
-DOCKER_BASE_URL
-~~~~~~~~~~~~~~~
+DOCKER_HOST
+~~~~~~~~~~~
 
 **Default value**: ``unix://tmp/docker.sock``
 
-The location of the docker socket.
+The socket or host of the docker service.
+
+DOCKER_TLS_VERIFY
+~~~~~~~~~~~~~~~~~
+
+If defined verify the host against a CA certificate.
+Path to certs is defined in ``DOCKER_CERT_PATH``
+and can be copied or mapped into this backup container.
+
+DOCKER_CERT_PATH
+~~~~~~~~~~~~~~~~
+
+A path to a directory containing TLS certificates to use when
+connecting to the Docker host. Combined with ``DOCKER_TLS_VERIFY``
+this can be used to talk to docker through TLS in cases
+were we cannot map in the docker socket.
 
 Compose Labels
 --------------
