@@ -11,8 +11,18 @@ TRUE_VALUES = ['1', 'true', 'True', True, 1]
 
 
 def docker_client():
-    config = Config()
-    return docker.DockerClient(base_url=config.docker_base_url)
+    """
+    Create a docker client from the following environment variables::
+
+        DOCKER_HOST=unix://tmp/docker.sock
+        DOCKER_TLS_VERIFY=1
+        DOCKER_CERT_PATH=''
+    """
+    # NOTE: Remove this fallback in 1.0
+    if not os.environ.get('DOCKER_HOST'):
+        os.environ['DOCKER_HOST'] = 'unix://tmp/docker.sock'
+
+    return docker.from_env()
 
 
 def list_containers() -> List[dict]:

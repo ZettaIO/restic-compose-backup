@@ -10,7 +10,6 @@ class Config:
         # Mandatory values
         self.repository = os.environ.get('RESTIC_REPOSITORY')
         self.password = os.environ.get('RESTIC_REPOSITORY')
-        self.docker_base_url = os.environ.get('DOCKER_BASE_URL') or "unix://tmp/docker.sock"
         self.cron_schedule = os.environ.get('CRON_SCHEDULE') or self.default_crontab_schedule
         self.cron_command = os.environ.get('CRON_COMMAND') or self.default_backup_command
 
