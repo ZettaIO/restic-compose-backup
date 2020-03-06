@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  mariadb:
+    image: mariadb:10
+    labels:
+      restic-compose-backup.mariadb: "true"
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
+    volumes:
+      - mariadbdata:/var/lib/mysql
+
+volumes:
+  mariadbdata:
