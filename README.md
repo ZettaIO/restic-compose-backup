@@ -179,7 +179,7 @@ In dev we should ideally start the backup container manually
 ```bash
 docker-compose run --rm backup sh
 # pip install the package in the container in editable mode to auto sync changes from host source
-pip install -e .
+pip3 install -e .
 ```
 
 ## Contributing
