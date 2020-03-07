@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   backup:
     build: ./src
@@ -8,6 +8,9 @@ services:
     labels:
       restic-compose-backup.volumes: true
       restic-compose-backup.volumes.include: 'src'
+    networks:
+      - default
+      - global
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -68,3 +71,7 @@ volumes:
   mysqldata:
   mariadbdata:
   pgdata:
+
+networks:
+  global:
+    external: true

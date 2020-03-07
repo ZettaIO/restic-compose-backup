@@ -10,8 +10,14 @@ services:
       - MYSQL_DATABASE=mydb
       - MYSQL_USER=myuser
       - MYSQL_PASSWORD=mypassword
+    networks:
+      - global
     volumes:
       - mariadbdata:/var/lib/mysql
 
 volumes:
   mariadbdata:
+
+networks:
+  global:
+    external: true
