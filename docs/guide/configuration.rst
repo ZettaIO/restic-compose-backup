@@ -188,6 +188,11 @@ connecting to the Docker host. Combined with ``DOCKER_TLS_VERIFY``
 this can be used to talk to docker through TLS in cases
 were we cannot map in the docker socket.
 
+SWARM_MODE
+~~~~~~~~~~
+
+If defined containers in swarm stacks are also evaluated.
+
 Compose Labels
 --------------
 

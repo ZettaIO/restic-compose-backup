@@ -12,6 +12,7 @@ class Config:
         self.password = os.environ.get('RESTIC_REPOSITORY')
         self.cron_schedule = os.environ.get('CRON_SCHEDULE') or self.default_crontab_schedule
         self.cron_command = os.environ.get('CRON_COMMAND') or self.default_backup_command
+        self.swarm_mode = os.environ.get('SWARM_MODE') or False
 
         # Log
         self.log_level = os.environ.get('LOG_LEVEL')
@@ -31,3 +32,6 @@ class Config:
 
         if not self.password:
             raise ValueError("RESTIC_REPOSITORY env var not set")
+
+
+config = Config()
