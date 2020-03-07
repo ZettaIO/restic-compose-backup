@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 
 from restic_compose_backup import enums, utils
+from restic_compose_backup.config import config
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +72,9 @@ class Container:
     @property
     def service_name(self) -> str:
         """Name of the container/service"""
-        return self.get_label('com.docker.compose.service', default='')
+        name = self.get_label('com.docker.compose.service', default='')
+        if not name:
+            return self.get_label('com.docker.swarm.service.name', default='')
 
     @property
     def backup_process_label(self) -> str:
@@ -359,11 +362,22 @@ class RunningContainers:
             if container.is_backup_process_container:
                 self.backup_process_container = container
 
-            # Detect containers belonging to the current compose setup
-            if (container.project_name == self.this_container.project_name
-               and not container.is_oneoff):
-                if container != self.backup_process_container:
-                    self.containers.append(container)
+            # --- Determine what containers should be evaludated
+
+            # If not swarm mode we need to filter in compose project
+            if not config.swarm_mode:
+                if container.project_name != self.this_container.project_name:
+                    continue
+
+            # Containers started manually are not included
+            if container.is_oneoff:
+                continue
+
+            # Do not include the backup process container
+            if container == self.backup_process_container:
+                continue
+
+            self.containers.append(container)
 
     @property
     def project_name(self) -> str:
