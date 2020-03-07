@@ -64,6 +64,36 @@ class Container:
         return self.get_config('Image')
 
     @property
+    def name(self) -> str:
+        """Container name"""
+        return self._data['Name'].replace('/', '')
+
+    @property
+    def service_name(self) -> str:
+        """Name of the container/service"""
+        return self.get_label('com.docker.compose.service', default='')
+
+    @property
+    def backup_process_label(self) -> str:
+        """str: The unique backup process label for this project"""
+        return f"{enums.LABEL_BACKUP_PROCESS}-{self.project_name}"
+
+    @property
+    def project_name(self) -> str:
+        """str: Name of the compose setup"""
+        return self.get_label('com.docker.compose.project', default='')
+
+    @property
+    def stack_name(self) -> str:
+        """str: Name of the stack is present"""
+        return self.get_label("com.docker.stack.namespace")
+
+    @property
+    def is_oneoff(self) -> bool:
+        """Was this container started with run command?"""
+        return self.get_label('com.docker.compose.oneoff', default='False') == 'True'
+
+    @property
     def environment(self) -> list:
         """All configured env vars for the container as a list"""
         return self.get_config('Env')
@@ -149,31 +179,6 @@ class Container:
     def is_running(self) -> bool:
         """bool: Is the container running?"""
         return self._state.get('Running', False)
-
-    @property
-    def name(self) -> str:
-        """Container name"""
-        return self._data['Name'].replace('/', '')
-
-    @property
-    def service_name(self) -> str:
-        """Name of the container/service"""
-        return self.get_label('com.docker.compose.service', default='')
-
-    @property
-    def backup_process_label(self) -> str:
-        """str: The unique backup process label for this project"""
-        return f"{enums.LABEL_BACKUP_PROCESS}-{self.project_name}"
-
-    @property
-    def project_name(self) -> str:
-        """Name of the compose setup"""
-        return self.get_label('com.docker.compose.project', default='')
-
-    @property
-    def is_oneoff(self) -> bool:
-        """Was this container started with run command?"""
-        return self.get_label('com.docker.compose.oneoff', default='False') == 'True'
 
     def get_config(self, name, default=None):
         """Get value from config dict"""
