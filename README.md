@@ -162,6 +162,26 @@ pip install -r docs/requirements.txt
 python src/setup.py build_sphinx
 ```
 
+# Local dev setup
+
+The git repository contains a simple local setup for development
+
+```bash
+# Create an overlay network to link the compose project and stack
+docker network create --driver overlay --attachable global
+# Start the compose project
+docker-compose up -d
+# Deploy the stack
+docker stack deploy -c swarm-stack.yml test
+```
+
+In dev we should ideally start the backup container manually
+```bash
+docker-compose run --rm backup sh
+# pip install the package in the container in editable mode to auto sync changes from host source
+pip install -e .
+```
+
 ## Contributing
 
 Contributions are welcome regardless of experience level. Don't hesitate submitting issues, opening partial or completed pull requests.
