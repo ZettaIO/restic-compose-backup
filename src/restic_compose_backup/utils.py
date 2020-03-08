@@ -37,6 +37,18 @@ def list_containers() -> List[dict]:
     return [c.attrs for c in all_containers]
 
 
+def get_swarm_nodes():
+    client = docker_client()
+    # NOTE: If not a swarm node docker.errors.APIError is raised
+    #       503 Server Error: Service Unavailable
+    #       ("This node is not a swarm manager. Use "docker swarm init" or
+    #       "docker swarm join" to connect this node to swarm and try again.")
+    try:
+        return client.nodes.list()
+    except docker.errors.APIError:
+        return []
+
+
 def remove_containers(containers: List['Container']):
     client = docker_client()
     logger.info('Attempting to delete stale backup process containers')
