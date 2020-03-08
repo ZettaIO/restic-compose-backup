@@ -182,6 +182,9 @@ docker-compose run --rm backup sh
 pip3 install -e .
 ```
 
+Remember to enable swarm mode with `docker swarm init/join` and disable swarm
+mode with `docker swarm leave --force` when needed in development (single node setup).
+
 ## Contributing
 
 Contributions are welcome regardless of experience level. Don't hesitate submitting issues, opening partial or completed pull requests.
