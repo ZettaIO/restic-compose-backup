@@ -51,6 +51,15 @@ def main():
     elif args.action == "crontab":
         crontab(config)
 
+    # Random test stuff here
+    elif args.action == "test":
+        nodes = utils.get_swarm_nodes()
+        print("Swarm nodes:")
+        for node in nodes:
+            addr = node.attrs['Status']['Addr']
+            state = node.attrs['Status']['State']
+            print(' - {} {} {}'.format(node.id, addr, state))
+
 
 def status(config, containers):
     """Outputs the backup config for the compose setup"""
@@ -283,6 +292,7 @@ def parse_args():
             'cleanup',
             'version',
             'crontab',
+            'test',
         ],
     )
     parser.add_argument(
