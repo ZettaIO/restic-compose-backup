@@ -1,0 +1,93 @@
+{
+    "ID": "k5427pk4t7ss4d7ylacumeavz",
+    "Version": {
+        "Index": 30
+    },
+    "CreatedAt": "2020-03-08T17:25:59.451947759Z",
+    "UpdatedAt": "2020-03-08T17:26:38.552002711Z",
+    "Spec": {
+        "Labels": {},
+        "Role": "manager",
+        "Availability": "active"
+    },
+    "Description": {
+        "Hostname": "docker-desktop",
+        "Platform": {
+            "Architecture": "x86_64",
+            "OS": "linux"
+        },
+        "Resources": {
+            "NanoCPUs": 4000000000,
+            "MemoryBytes": 2085535744
+        },
+        "Engine": {
+            "EngineVersion": "19.03.5",
+            "Plugins": [{
+                "Type": "Log",
+                "Name": "awslogs"
+            }, {
+                "Type": "Log",
+                "Name": "fluentd"
+            }, {
+                "Type": "Log",
+                "Name": "gcplogs"
+            }, {
+                "Type": "Log",
+                "Name": "gelf"
+            }, {
+                "Type": "Log",
+                "Name": "journald"
+            }, {
+                "Type": "Log",
+                "Name": "json-file"
+            }, {
+                "Type": "Log",
+                "Name": "local"
+            }, {
+                "Type": "Log",
+                "Name": "logentries"
+            }, {
+                "Type": "Log",
+                "Name": "splunk"
+            }, {
+                "Type": "Log",
+                "Name": "syslog"
+            }, {
+                "Type": "Network",
+                "Name": "bridge"
+            }, {
+                "Type": "Network",
+                "Name": "host"
+            }, {
+                "Type": "Network",
+                "Name": "ipvlan"
+            }, {
+                "Type": "Network",
+                "Name": "macvlan"
+            }, {
+                "Type": "Network",
+                "Name": "null"
+            }, {
+                "Type": "Network",
+                "Name": "overlay"
+            }, {
+                "Type": "Volume",
+                "Name": "local"
+            }]
+        },
+        "TLSInfo": {
+            "TrustRoot": "-----BEGIN CERTIFICATE-----\nMIIBazCCARCgAwIBAgIUfx7TP8c4SHCrwPPxjSFJQcfTP5QwCgYIKoZIzj0EAwIw\nEzERMA8GA1UEAxMIc3dhcm0tY2EwHhcNMjAwMzA4MTcyMTAwWhcNNDAwMzAzMTcy\nMTAwWjATMREwDwYDVQQDEwhzd2FybS1jYTBZMBMGByqGSM49AgEGCCqGSM49AwEH\nA0IABGOa/9Rdd6qNc24wvuL/I9t5Vt3MJzlwC+WN0R6HrA4Ik1h2dmSRZTQqnCI7\nWh16y+PLaFwIfN0JkN4FrpnUBsyjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMB\nAf8EBTADAQH/MB0GA1UdDgQWBBTAPDjHRwjQhNGUxqE3COHCOQrOkjAKBggqhkjO\nPQQDAgNJADBGAiEAxd/lPEKy3gt3nfZ8DX7kDaaNH8jSPgCBx3ejUs3SoaUCIQD3\nZ8dVxNvG4+Gvn28mDjWhTNLCn0BYW6JFE8eTI0xv4A==\n-----END CERTIFICATE-----\n",
+            "CertIssuerSubject": "MBMxETAPBgNVBAMTCHN3YXJtLWNh",
+            "CertIssuerPublicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEY5r/1F13qo1zbjC+4v8j23lW3cwnOXAL5Y3RHoesDgiTWHZ2ZJFlNCqcIjtaHXrL48toXAh83QmQ3gWumdQGzA=="
+        }
+    },
+    "Status": {
+        "State": "ready",
+        "Addr": "192.168.65.3"
+    },
+    "ManagerStatus": {
+        "Leader": true,
+        "Reachability": "reachable",
+        "Addr": "192.168.65.3:2377"
+    }
+}
