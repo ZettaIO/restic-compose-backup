@@ -176,6 +176,7 @@ docker stack deploy -c swarm-stack.yml test
 ```
 
 In dev we should ideally start the backup container manually
+
 ```bash
 docker-compose run --rm backup sh
 # pip install the package in the container in editable mode to auto sync changes from host source
@@ -187,7 +188,8 @@ mode with `docker swarm leave --force` when needed in development (single node s
 
 ## Contributing
 
-Contributions are welcome regardless of experience level. Don't hesitate submitting issues, opening partial or completed pull requests.
+Contributions are welcome regardless of experience level.
+Don't hesitate submitting issues, opening partial or completed pull requests.
 
 [restic]: https://restic.net/
 [documentation]: https://restic-compose-backup.readthedocs.io
