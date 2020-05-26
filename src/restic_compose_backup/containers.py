@@ -231,6 +231,7 @@ class Container:
         return volumes
 
     def get_volume_backup_destination(self, mount, source_prefix) -> str:
+        """Get the destination path for backups of the given mount"""
         destination = Path(source_prefix)
 
         if utils.is_true(config.include_project_name):
