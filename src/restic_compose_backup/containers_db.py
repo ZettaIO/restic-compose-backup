@@ -1,5 +1,7 @@
+from pathlib import Path
+
 from restic_compose_backup.containers import Container
-from restic_compose_backup.config import Config
+from restic_compose_backup.config import config, Config
 from restic_compose_backup import (
     commands,
     restic,
@@ -53,7 +55,17 @@ class MariadbContainer(Container):
             )
 
     def backup_destination_path(self) -> str:
-        return f'/databases/{self.service_name}/all_databases.sql'
+        destination = Path("/databases")
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != "":
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= "all_databases.sql"
+
+        return destination
 
 
 class MysqlContainer(Container):
@@ -102,7 +114,17 @@ class MysqlContainer(Container):
             )
 
     def backup_destination_path(self) -> str:
-        return f'/databases/{self.service_name}/all_databases.sql'
+        destination = Path("/databases")
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != "":
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= "all_databases.sql"
+
+        return destination
 
 
 class PostgresContainer(Container):
@@ -152,4 +174,14 @@ class PostgresContainer(Container):
             )
 
     def backup_destination_path(self) -> str:
-        return f"/databases/{self.service_name}/{self.get_credentials()['database']}.sql"
+        destination = Path("/databases")
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != "":
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= f"{self.get_credentials()['database']}.sql"
+
+        return destination

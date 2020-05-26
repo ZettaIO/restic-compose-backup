@@ -231,7 +231,17 @@ class Container:
         return volumes
 
     def get_volume_backup_destination(self, mount, source_prefix) -> str:
-        return str(Path(source_prefix) / self.service_name / Path(utils.strip_root(mount.destination)))
+        destination = Path(source_prefix)
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != '':
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= Path(utils.strip_root(mount.destination))
+
+        return str(destination)
 
     def get_credentials(self) -> dict:
         """dict: get credentials for the service"""

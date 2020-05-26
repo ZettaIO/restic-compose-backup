@@ -13,6 +13,7 @@ class Config:
         self.cron_schedule = os.environ.get('CRON_SCHEDULE') or self.default_crontab_schedule
         self.cron_command = os.environ.get('CRON_COMMAND') or self.default_backup_command
         self.swarm_mode = os.environ.get('SWARM_MODE') or False
+        self.include_project_name = os.environ.get('INCLUDE_PROJECT_NAME') or False
 
         # Log
         self.log_level = os.environ.get('LOG_LEVEL')
