@@ -48,9 +48,12 @@ class MariadbContainer(Container):
         with utils.environment('MYSQL_PWD', creds['password']):
             return restic.backup_from_stdin(
                 config.repository,
-                f'/databases/{self.service_name}/all_databases.sql',
+                self.backup_destination_path(),
                 self.dump_command(),
             )
+
+    def backup_destination_path(self) -> str:
+        return f'/databases/{self.service_name}/all_databases.sql'
 
 
 class MysqlContainer(Container):
@@ -94,9 +97,12 @@ class MysqlContainer(Container):
         with utils.environment('MYSQL_PWD', creds['password']):
             return restic.backup_from_stdin(
                 config.repository,
-                f'/databases/{self.service_name}/all_databases.sql',
+                self.backup_destination_path(),
                 self.dump_command(),
             )
+
+    def backup_destination_path(self) -> str:
+        return f'/databases/{self.service_name}/all_databases.sql'
 
 
 class PostgresContainer(Container):
@@ -141,6 +147,9 @@ class PostgresContainer(Container):
         with utils.environment('PGPASSWORD', creds['password']):
             return restic.backup_from_stdin(
                 config.repository,
-                f"/databases/{self.service_name}/{creds['database']}.sql",
+                self.backup_destination_path(),
                 self.dump_command(),
             )
+
+    def backup_destination_path(self) -> str:
+        return f"/databases/{self.service_name}/{self.get_credentials()['database']}.sql"
