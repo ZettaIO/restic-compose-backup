@@ -3,6 +3,9 @@ import os
 import unittest
 from unittest import mock
 
+os.environ['RESTIC_REPOSITORY'] = "test"
+os.environ['RESTIC_PASSWORD'] = "password"
+
 from restic_compose_backup import utils
 from restic_compose_backup.containers import RunningContainers
 import fixtures
@@ -15,8 +18,8 @@ class ResticBackupTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up basic environment variables"""
-        os.environ['RESTIC_REPOSITORY'] = "test"
-        os.environ['RESTIC_PASSWORD'] = "password"
+        # os.environ['RESTIC_REPOSITORY'] = "test"
+        # os.environ['RESTIC_PASSWORD'] = "password"
 
     def createContainers(self):
         backup_hash = fixtures.generate_sha256()
