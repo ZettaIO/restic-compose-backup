@@ -93,12 +93,21 @@ def status(config, containers):
 
         if container.volume_backup_enabled:
             for mount in container.filter_mounts():
-                logger.info(' - volume: %s -> %s', mount.source, container.get_volume_backup_destination(mount, '/volumes'))
+                logger.info(
+                    ' - volume: %s -> %s',
+                    mount.source,
+                    container.get_volume_backup_destination(mount, '/volumes'),
+                )
 
         if container.database_backup_enabled:
             instance = container.instance
             ping = instance.ping()
-            logger.info(' - %s (is_ready=%s) -> %s', instance.container_type, ping == 0, instance.backup_destination_path())
+            logger.info(
+                ' - %s (is_ready=%s) -> %s',
+                instance.container_type,
+                ping == 0,
+                instance.backup_destination_path(),
+            )
             if ping != 0:
                 logger.error("Database '%s' in service %s cannot be reached",
                              instance.container_type, container.service_name)

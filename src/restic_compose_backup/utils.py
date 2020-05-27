@@ -1,8 +1,11 @@
 import os
 import logging
-from typing import List
+from typing import List, TYPE_CHECKING
 from contextlib import contextmanager
 import docker
+
+if TYPE_CHECKING:
+    from restic_compose_backup.containers import Container
 
 logger = logging.getLogger(__name__)
 

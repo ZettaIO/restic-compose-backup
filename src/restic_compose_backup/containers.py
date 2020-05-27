@@ -72,7 +72,8 @@ class Container:
     @property
     def service_name(self) -> str:
         """Name of the container/service"""
-        return self.get_label('com.docker.compose.service', default='') or self.get_label('com.docker.swarm.service.name', default='')
+        return self.get_label('com.docker.compose.service', default='') or \
+            self.get_label('com.docker.swarm.service.name', default='')
 
     @property
     def backup_process_label(self) -> str:
