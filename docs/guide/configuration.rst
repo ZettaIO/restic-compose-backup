@@ -188,6 +188,28 @@ connecting to the Docker host. Combined with ``DOCKER_TLS_VERIFY``
 this can be used to talk to docker through TLS in cases
 were we cannot map in the docker socket.
 
+INCLUDE_PROJECT_NAME
+~~~~~~~~~~~~~~~~~~~~
+
+Define this environment variable if your backup destination
+paths needs project name as a prefix. This is useful
+when running multiple projects.
+
+EXCLUDE_BIND_MOUNTS
+~~~~~~~~~~~~~~~~~~~
+
+Docker has to volumes types. Binds and volumes.
+Volumes are docker volumes (``docker`volume list``).
+Binds are paths mapped into the container from
+the host for example in the ``volumes`` section
+of a service.
+
+If defined all host binds will be ignored globally.
+This is useful when you only care about actual
+docker volumes. Often host binds are only used
+for mapping in configuration. This saves the user
+from manually excluding these bind volumes.
+
 SWARM_MODE
 ~~~~~~~~~~
 
