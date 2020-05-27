@@ -67,6 +67,7 @@ def status(config, containers):
     logger.info("Repository: '%s'", config.repository)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
     logger.info("Include project name in backup path?: %s", utils.is_true(config.include_project_name))
+    logger.debug("Exclude bind mounts from backups?: %s", utils.is_true(config.exclude_bind_mounts))
     logger.info("Checking docker availability")
 
     utils.list_containers()

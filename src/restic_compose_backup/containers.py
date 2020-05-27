@@ -193,11 +193,15 @@ class Container:
         """Get all mounts for this container matching include/exclude filters"""
         filtered = []
 
+        # If exclude_bind_mounts is true, only volume mounts are kept in the list of mounts
+        exclude_bind_mounts = utils.is_true(config.exclude_bind_mounts)
+        mounts = list(filter(lambda m: not exclude_bind_mounts or m.type == "volume", self._mounts))
+
         if not self.volume_backup_enabled:
             return filtered
 
         if self._include:
-            for mount in self._mounts:
+            for mount in mounts:
                 for pattern in self._include:
                     if pattern in mount.source:
                         break
@@ -207,14 +211,14 @@ class Container:
                 filtered.append(mount)
 
         elif self._exclude:
-            for mount in self._mounts:
+            for mount in mounts:
                 for pattern in self._exclude:
                     if pattern in mount.source:
                         break
                 else:
                     filtered.append(mount)
         else:
-            return self._mounts
+            return mounts
 
         return filtered
 

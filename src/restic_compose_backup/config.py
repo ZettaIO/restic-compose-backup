@@ -14,6 +14,7 @@ class Config:
         self.cron_command = os.environ.get('CRON_COMMAND') or self.default_backup_command
         self.swarm_mode = os.environ.get('SWARM_MODE') or False
         self.include_project_name = os.environ.get('INCLUDE_PROJECT_NAME') or False
+        self.exclude_bind_mounts = os.environ.get('EXCLUDE_BIND_MOUNTS') or False
 
         # Log
         self.log_level = os.environ.get('LOG_LEVEL')
