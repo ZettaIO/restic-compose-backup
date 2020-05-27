@@ -66,6 +66,7 @@ def status(config, containers):
     logger.info("Status for compose project '%s'", containers.project_name)
     logger.info("Repository: '%s'", config.repository)
     logger.info("Backup currently running?: %s", containers.backup_process_running)
+    logger.info("Include project name in backup path?: %s", utils.is_true(config.include_project_name))
     logger.info("Checking docker availability")
 
     utils.list_containers()
@@ -91,12 +92,12 @@ def status(config, containers):
 
         if container.volume_backup_enabled:
             for mount in container.filter_mounts():
-                logger.info(' - volume: %s', mount.source)
+                logger.info(' - volume: %s -> %s', mount.source, container.get_volume_backup_destination(mount, '/volumes'))
 
         if container.database_backup_enabled:
             instance = container.instance
             ping = instance.ping()
-            logger.info(' - %s (is_ready=%s)', instance.container_type, ping == 0)
+            logger.info(' - %s (is_ready=%s) -> %s', instance.container_type, ping == 0, instance.backup_destination_path())
             if ping != 0:
                 logger.error("Database '%s' in service %s cannot be reached",
                              instance.container_type, container.service_name)

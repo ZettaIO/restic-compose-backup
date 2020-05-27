@@ -1,5 +1,7 @@
+from pathlib import Path
+
 from restic_compose_backup.containers import Container
-from restic_compose_backup.config import Config
+from restic_compose_backup.config import config, Config
 from restic_compose_backup import (
     commands,
     restic,
@@ -48,9 +50,22 @@ class MariadbContainer(Container):
         with utils.environment('MYSQL_PWD', creds['password']):
             return restic.backup_from_stdin(
                 config.repository,
-                f'/databases/{self.service_name}/all_databases.sql',
+                self.backup_destination_path(),
                 self.dump_command(),
             )
+
+    def backup_destination_path(self) -> str:
+        destination = Path("/databases")
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != "":
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= "all_databases.sql"
+
+        return destination
 
 
 class MysqlContainer(Container):
@@ -94,9 +109,22 @@ class MysqlContainer(Container):
         with utils.environment('MYSQL_PWD', creds['password']):
             return restic.backup_from_stdin(
                 config.repository,
-                f'/databases/{self.service_name}/all_databases.sql',
+                self.backup_destination_path(),
                 self.dump_command(),
             )
+
+    def backup_destination_path(self) -> str:
+        destination = Path("/databases")
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != "":
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= "all_databases.sql"
+
+        return destination
 
 
 class PostgresContainer(Container):
@@ -141,6 +169,19 @@ class PostgresContainer(Container):
         with utils.environment('PGPASSWORD', creds['password']):
             return restic.backup_from_stdin(
                 config.repository,
-                f"/databases/{self.service_name}/{creds['database']}.sql",
+                self.backup_destination_path(),
                 self.dump_command(),
             )
+
+    def backup_destination_path(self) -> str:
+        destination = Path("/databases")
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != "":
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= f"{self.get_credentials()['database']}.sql"
+
+        return destination

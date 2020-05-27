@@ -224,11 +224,25 @@ class Container:
         volumes = {}
         for mount in mounts:
             volumes[mount.source] = {
-                'bind': str(Path(source_prefix) / self.service_name / Path(utils.strip_root(mount.destination))),
+                'bind': self.get_volume_backup_destination(mount, source_prefix),
                 'mode': mode,
             }
 
         return volumes
+
+    def get_volume_backup_destination(self, mount, source_prefix) -> str:
+        """Get the destination path for backups of the given mount"""
+        destination = Path(source_prefix)
+
+        if utils.is_true(config.include_project_name):
+            project_name = self.project_name
+            if project_name != '':
+                destination /= project_name
+
+        destination /= self.service_name
+        destination /= Path(utils.strip_root(mount.destination))
+
+        return str(destination)
 
     def get_credentials(self) -> dict:
         """dict: get credentials for the service"""
@@ -240,6 +254,10 @@ class Container:
 
     def backup(self):
         """Back up this service"""
+        raise NotImplementedError("Base container class don't implement this")
+
+    def backup_destination_path(self) -> str:
+        """Return the path backups will be saved at"""
         raise NotImplementedError("Base container class don't implement this")
 
     def dump_command(self) -> list:
