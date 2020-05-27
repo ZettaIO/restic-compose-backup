@@ -3,7 +3,7 @@ from setuptools import setup, find_namespace_packages
 setup(
     name="restic-compose-backup",
     url="https://github.com/ZettaIO/restic-compose-backup",
-    version="0.5.0",
+    version="0.6.0",
     author="Einar Forselv",
     author_email="eforselv@gmail.com",
     packages=find_namespace_packages(include=['restic_compose_backup']),

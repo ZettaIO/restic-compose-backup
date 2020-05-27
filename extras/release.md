@@ -13,8 +13,8 @@ When releasing a bugfix version we need to update the
 main image as well.
 
 ```bash
-docker build src --tag zettaio/restic-compose-backup:0.5
-docker build src --tag zettaio/restic-compose-backup:0.5.0
+docker build src --tag zettaio/restic-compose-backup:0.6
+docker build src --tag zettaio/restic-compose-backup:0.6.0
 
 docker push zettaio/restic-compose-backup:0.5
 docker push zettaio/restic-compose-backup:0.5.0
