@@ -83,7 +83,7 @@ def forget(repository: str, keeplast: str, hourly: str, daily: str, weekly: str,
         '-keep-last',
         keeplast,
         '--keep-hourly',
-        hourly
+        hourly,
         '--keep-daily',
         daily,
         '--keep-weekly',
@@ -93,7 +93,7 @@ def forget(repository: str, keeplast: str, hourly: str, daily: str, weekly: str,
         '--keep-yearly',
         yearly,
         '--keep-tag',
-        tags
+        tags,
     ]))
 
 
