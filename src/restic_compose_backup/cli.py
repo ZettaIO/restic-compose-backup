@@ -206,18 +206,20 @@ def start_backup_process(config, containers):
 
     if has_volumes:
         logger.info('Backing up volumes')
-        for volume in [f.path for f in os.scandir('/volumes') if f.is_dir()]:
-            try:
-                logger.info('Backing up %s', volume)
-                vol_result = restic.backup_files(config.repository, source=volume)
-                logger.debug('Volume backup exit code: %s', vol_result)
-                if vol_result != 0:
-                    logger.error('Volume backup exited with non-zero code: %s', vol_result)
+        for volume in [f for f in os.scandir('/volumes') if f.is_dir()]:
+            logger.info('Backing up volumes of %s', volume.name)
+            for path in [f.path for f in os.scandir(volume.path) if f.is_dir()]:
+                try:
+                    logger.info('Backing up %s', path)
+                    vol_result = restic.backup_files(config.repository, source=path)
+                    logger.debug('Volume backup exit code: %s', vol_result)
+                    if vol_result != 0:
+                        logger.error('Volume backup exited with non-zero code: %s', vol_result)
+                        errors = True
+                except Exception as ex:
+                    logger.error('Exception raised during volume backup')
+                    logger.exception(ex)
                     errors = True
-            except Exception as ex:
-                logger.error('Exception raised during volume backup')
-                logger.exception(ex)
-                errors = True
 
     # back up databases
     logger.info('Backing up databases')
