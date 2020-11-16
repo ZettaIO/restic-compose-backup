@@ -237,12 +237,12 @@ def start_backup_process(config, containers):
         logger.error('Exit code: %s', errors)
         exit(1)
 
-    # Only run cleanup if backup was successful
-    result = cleanup(config, container)
-    logger.debug('cleanup exit code: %s', result)
-    if result != 0:
-        logger.error('cleanup exit code: %s', result)
-        exit(1)
+    # # Only run cleanup if backup was successful
+    # result = cleanup(config, container)
+    # logger.debug('cleanup exit code: %s', result)
+    # if result != 0:
+    #     logger.error('cleanup exit code: %s', result)
+    #     exit(1)
 
     # Test the repository for errors
     logger.info("Checking the repository for errors")
@@ -259,10 +259,13 @@ def cleanup(config, containers):
     logger.info('Forget outdated snapshots')
     forget_result = restic.forget(
         config.repository,
+        config.keep_last,
+        config.keep_hourly,
         config.keep_daily,
         config.keep_weekly,
         config.keep_monthly,
         config.keep_yearly,
+        config.keep_tags,
     )
     logger.info('Prune stale data freeing storage space')
     prune_result = restic.prune(config.repository)
