@@ -75,11 +75,15 @@ def is_initialized(repository: str) -> bool:
     return commands.run(restic(repository, ["snapshots", '--last'])) == 0
 
 
-def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
+def forget(repository: str, keeplast: str, hourly: str, daily: str, weekly: str, monthly: str, yearly: str, tags: str):
     return commands.run(restic(repository, [
         'forget',
         '--group-by',
-        'paths',
+        'paths,tags',
+        '-keep-last',
+        keeplast,
+        '--keep-hourly',
+        hourly
         '--keep-daily',
         daily,
         '--keep-weekly',
@@ -88,6 +92,8 @@ def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
         monthly,
         '--keep-yearly',
         yearly,
+        '--keep-tag',
+        tags
     ]))
 
 

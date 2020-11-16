@@ -20,10 +20,13 @@ class Config:
         self.log_level = os.environ.get('LOG_LEVEL')
 
         # forget / keep
+        self.keep_last = os.environ.get('KEEP_LAST') or "7"
+        self.keep_hourly = os.environ.get('KEEP_HOURLY') or "24"
         self.keep_daily = os.environ.get('KEEP_DAILY') or "7"
         self.keep_weekly = os.environ.get('KEEP_WEEKLY') or "4"
         self.keep_monthly = os.environ.get('KEEP_MONTHLY') or "12"
         self.keep_yearly = os.environ.get('KEEP_YEARLY') or "3"
+        self.keep_tags = os.environ.get('KEEP_TAGS') or "keep"
 
         if check:
             self.check()
