@@ -38,7 +38,7 @@ ENV XDG_CACHE_HOME=/cache
 # end install
 
 ADD backup.sh /backup.sh
-RUN chmod +x ./backup.sh
+RUN chmod +x /backup.sh
 
 ENTRYPOINT []
 CMD ["./entrypoint.sh"]
