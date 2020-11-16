@@ -156,5 +156,3 @@ else
   log ERROR "Unable to turn saving off. Is the server running?"
   exit 1
 fi
-
-rcb cleanup
