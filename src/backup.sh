@@ -140,23 +140,21 @@ retry 20 10s rcon-cli save-on
 
 
 if retry 5 10s rcon-cli save-off; then
-    # No matter what we were doing, from now on if the script crashes
-    # or gets shut down, we want to make sure saving is on
-    trap 'retry 5 5s rcon-cli save-on' EXIT
+  # No matter what we were doing, from now on if the script crashes
+  # or gets shut down, we want to make sure saving is on
+  trap 'retry 5 5s rcon-cli save-on' EXIT
 
-    retry 5 10s rcon-cli save-all
-    retry 5 10s sync
+  retry 5 10s rcon-cli save-all
+  retry 5 10s sync
 
-    rcb backup
+  rcb backup
 
-    retry 20 10s rcon-cli save-on
-    # Remove our exit trap now
-    trap EXIT
-  else
-    log ERROR "Unable to turn saving off. Is the server running?"
-    exit 1
-  fi
+  retry 20 10s rcon-cli save-on
+  # Remove our exit trap now
+  trap EXIT
+else
+  log ERROR "Unable to turn saving off. Is the server running?"
+  exit 1
+fi
 
-  if (( PRUNE_BACKUPS_DAYS > 0 )); then
-    rcb cleanup
-  fi
+rcb cleanup
