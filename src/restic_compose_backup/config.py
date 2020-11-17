@@ -3,7 +3,7 @@ import os
 
 class Config:
     default_backup_command = ". /env.sh && /backup.sh > /proc/1/fd/1 2>&1"
-    default_crontab_schedule = "0 2 * * *"
+    default_crontab_schedule = "0 */4 * * *"
 
     """Bag for config values"""
     def __init__(self, check=True):
