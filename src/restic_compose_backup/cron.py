@@ -34,10 +34,6 @@ def validate_schedule(schedule: str):
     if len(parts) != 5:
         return False
 
-    for p in parts:
-        if p != '*' and not p.isdigit():
-            return False
-
     minute, hour, day, month, weekday = parts
     try:
         validate_field(minute, 0, 59)
