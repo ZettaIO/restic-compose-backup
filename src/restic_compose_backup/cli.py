@@ -26,6 +26,9 @@ def main():
     if args.log_level:
         containers.this_container.set_config_env('LOG_LEVEL', args.log_level)
 
+    if args.no_cleanup:
+        config.skip_cleanup = True
+
     if args.action == 'status':
         status(config, containers)
 
@@ -171,6 +174,12 @@ def backup(config, containers):
             body=open('backup.log').read(),
             alert_type='ERROR',
         )
+    else:
+        alerts.send(
+            subject="Backup successfully completed",
+            body=open('backup.log').read(),
+            alert_type='INFO'
+        )
 
 
 def start_backup_process(config, containers):
@@ -241,12 +250,13 @@ def start_backup_process(config, containers):
         logger.error('Exit code: %s', errors)
         exit(1)
 
-    # # Only run cleanup if backup was successful
-    # result = cleanup(config, container)
-    # logger.debug('cleanup exit code: %s', result)
-    # if result != 0:
-    #     logger.error('cleanup exit code: %s', result)
-    #     exit(1)
+    # Only run cleanup if backup was successful
+    if not config.skip_cleanup:
+        result = cleanup(config, container)
+        logger.debug('cleanup exit code: %s', result)
+        if result != 0:
+            logger.error('cleanup exit code: %s', result)
+            exit(1)
 
     # Test the repository for errors
     logger.info("Checking the repository for errors")
@@ -318,6 +328,10 @@ def parse_args():
         default=None,
         choices=list(log.LOG_LEVELS.keys()),
         help="Log level"
+    )
+    parser.add_argument(
+        '--no-cleanup',
+        action='store_true'
     )
     return parser.parse_args()
 

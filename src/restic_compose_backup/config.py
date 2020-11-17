@@ -2,7 +2,7 @@ import os
 
 
 class Config:
-    default_backup_command = ". /env.sh && /backup.sh && rcb cleanup > /proc/1/fd/1"
+    default_backup_command = ". /env.sh && /backup.sh && rcb cleanup > /proc/1/fd/1 2>&1"
     default_crontab_schedule = "0 2 * * *"
 
     """Bag for config values"""
@@ -15,6 +15,7 @@ class Config:
         self.swarm_mode = os.environ.get('SWARM_MODE') or False
         self.include_project_name = os.environ.get('INCLUDE_PROJECT_NAME') or False
         self.exclude_bind_mounts = os.environ.get('EXCLUDE_BIND_MOUNTS') or False
+        self.skip_cleanup = os.environ.get('SKIP_CLEANUP') or False
 
         # Log
         self.log_level = os.environ.get('LOG_LEVEL')

@@ -1,2 +1,1 @@
-10 2 * * * . /env.sh && /backup.sh && rcb cleanup > /proc/1/fd/1
-
+10 2 * * * . /env.sh && /backup.sh && rcb cleanup > /proc/1/fd/1 2>&1
