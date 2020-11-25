@@ -28,6 +28,7 @@ class Config:
         self.keep_monthly = os.environ.get('KEEP_MONTHLY') or "12"
         self.keep_yearly = os.environ.get('KEEP_YEARLY') or "3"
         self.keep_tags = os.environ.get('KEEP_TAGS') or "keep"
+        self.filter_tags = os.environ.get('FILTER_TAGS') or ""
 
         if check:
             self.check()

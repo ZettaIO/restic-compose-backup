@@ -316,6 +316,7 @@ def cleanup(config, containers):
         config.keep_monthly,
         config.keep_yearly,
         config.keep_tags,
+        config.filter_tags
     )
     logger.info('Prune stale data freeing storage space')
     prune_result = restic.prune(config.repository)

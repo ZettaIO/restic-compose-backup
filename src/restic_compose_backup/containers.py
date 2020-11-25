@@ -187,6 +187,11 @@ class Container:
         return self.get_label(self.backup_process_label) == 'True'
 
     @property
+    def tags(self) -> str:
+        """Gets all backup tags"""
+        return self.get_label(enums.LABEL_RESTIC_TAGS)
+
+    @property
     def is_running(self) -> bool:
         """bool: Is the container running?"""
         return self._state.get('Running', False)

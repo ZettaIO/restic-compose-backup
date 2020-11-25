@@ -48,6 +48,7 @@ services:
     image: mariadb:10
     labels:
       restic-compose-backup.mariadb: true
+      restic-compose-backup.tags: db,test
     environment:
       - MYSQL_ROOT_PASSWORD=my-secret-pw
       - MYSQL_DATABASE=mydb
@@ -71,6 +72,7 @@ services:
     image: itzg/minecraft-server
     labels:
       restic-compose-backup.minecraft: true
+      restic-compose-backup.tags: "test,foo,bar"
       restic-compose-backup.volumes.include: "minecraft"
     environment:
       - RCON_PASSWORD=minecraft

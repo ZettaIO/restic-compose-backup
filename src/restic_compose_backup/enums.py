@@ -11,3 +11,5 @@ LABEL_MARIADB_ENABLED = 'restic-compose-backup.mariadb'
 LABEL_BACKUP_PROCESS = 'restic-compose-backup.process'
 
 LABEL_MINECRAFT_ENABLED = 'restic-compose-backup.minecraft'
+
+LABEL_RESTIC_TAGS = 'restic-compose-backup.tags'

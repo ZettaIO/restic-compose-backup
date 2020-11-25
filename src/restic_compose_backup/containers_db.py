@@ -54,6 +54,7 @@ class MariadbContainer(Container):
                 config.repository,
                 self.backup_destination_path(),
                 self.dump_command(),
+                tags=self.tags
             )
 
     def backup_destination_path(self) -> str:
@@ -115,6 +116,7 @@ class MysqlContainer(Container):
                 config.repository,
                 self.backup_destination_path(),
                 self.dump_command(),
+                tags=self.tags
             )
 
     def backup_destination_path(self) -> str:
@@ -175,6 +177,7 @@ class PostgresContainer(Container):
                 config.repository,
                 self.backup_destination_path(),
                 self.dump_command(),
+                tags=self.tags
             )
 
     def backup_destination_path(self) -> str:

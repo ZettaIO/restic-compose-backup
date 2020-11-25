@@ -64,7 +64,7 @@ class MinecraftContainer(Container):
                 for mount in self.filter_mounts():
                     backup_data = self.get_volume_backup_destination(mount, '/minecraft')
                     logger.info('Backing up %s', mount.source)
-                    vol_result = restic.backup_files(config.repository, source=backup_data)
+                    vol_result = restic.backup_files(config.repository, source=backup_data, tags=self.tags)
                     logger.debug('Minecraft backup exit code: %s', vol_result)
                     if vol_result != 0:
                         logger.error('Minecraft backup exited with non-zero code: %s', vol_result)
