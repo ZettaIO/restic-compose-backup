@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 """
 # ┌───────────── minute (0 - 59)
 # │ ┌───────────── hour (0 - 23)
@@ -30,16 +34,23 @@ def generate_crontab(config):
 
 def validate_schedule(schedule: str):
     """Validate crontab format"""
+    logger.debug(f"validating crontab schedule {schedule}")
     parts = schedule.split()
     if len(parts) != 5:
+        logger.debug(f"crontab has only {len(parts)}/5 parts")
         return False
 
     minute, hour, day, month, weekday = parts
     try:
+        logger.debug(f"[crontab] validating minute: {minute}")
         validate_field(minute, 0, 59)
+        logger.debug(f"[crontab] validating hour: {hour}")
         validate_field(hour, 0, 23)
+        logger.debug(f"[crontab] validating day: {day}")
         validate_field(day, 1, 31)
+        logger.debug(f"[crontab] validating month: {month}")
         validate_field(month, 1, 12)
+        logger.debug(f"[crontab] validating weekday: {weekday}")
         validate_field(weekday, 0, 6)
     except ValueError:
         return False
@@ -49,8 +60,28 @@ def validate_schedule(schedule: str):
 
 def validate_field(value, min, max):
     if value == '*':
+        logger.debug("[crontab] validation success: *")
         return
+    elif "," in value:
+        items = value.split(",")
+        logger.debug(f"[crontab] recursive validation of {items}")
+        return all(validate_field(val, min, max) for val in items)
+    elif "*/" in value:
+        logger.debug(f"[crontab] validating */ pattern")
+        i = int(value.split("/")[1])
+        logger.debug(f"[crontab] got {i} from {value}")
+        return min <= i <= max
+    elif "-" in value:
+        logger.debug("[crontab] validating range")
+        split = value.split("-")
+        if len(split) < 2:
+            logger.debug(f"[crontab] validation error: {value} has has a one sided range")
+            return False
+        minVal = int(split[0])
+        maxVal = int(split[1])
+        return (min <= minVal <= maxVal) and (minVal <= maxVal <= max)
 
+    logger.debug(f"[crontab] validating simple number {value}")
     i = int(value)
     return min <= i <= max
 
