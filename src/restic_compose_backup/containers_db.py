@@ -37,6 +37,8 @@ class MariadbContainer(Container):
         creds = self.get_credentials()
         return [
             "mysqldump",
+            f"--single-transaction",
+            f"--skip-lock-tables",
             f"--host={creds['host']}",
             f"--port={creds['port']}",
             f"--user={creds['username']}",
@@ -96,6 +98,8 @@ class MysqlContainer(Container):
         creds = self.get_credentials()
         return [
             "mysqldump",
+            f"--single-transaction",
+            f"--skip-lock-tables",
             f"--host={creds['host']}",
             f"--port={creds['port']}",
             f"--user={creds['username']}",
