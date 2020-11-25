@@ -48,7 +48,6 @@ class MinecraftContainer(Container):
                 )
         except Exception as ex:
             logger.error('[rcon-cli] unable to contact minecraft server %s', self.service_name)
-            logger.exception(ex)
             return 1
 
     def backup(self) -> bool:
