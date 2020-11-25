@@ -142,6 +142,8 @@ def backup(config, containers):
     # Map volumes from other containers we are backing up
     mounts = containers.generate_backup_mounts('/volumes')
     volumes.update(mounts)
+    mounts = containers.generate_minecraft_mounts('/minecraft')
+    volumes.update(mounts)
 
     logger.debug('Starting backup container with image %s', containers.this_container.image)
     try:
@@ -208,25 +210,41 @@ def start_backup_process(config, containers):
         logger.warning("Found no volumes to back up")
         has_volumes = False
 
+    try:
+        has_minecraft_volumes = os.stat('/minecraft') is not None
+    except FileNotFoundError:
+        logger.warning("Found no minecraft servers to back up")
+        has_minecraft_volumes = False
+
     # Warn if there is nothing to do
-    if len(containers.containers_for_backup()) == 0 and not has_volumes:
+    backup_containers = containers.containers_for_backup()
+    if len(backup_containers) == 0 and not has_volumes:
         logger.error("No containers for backup found")
         exit(1)
 
     if has_volumes:
-        logger.info('Backing up volumes')
-        for volume in [f for f in os.scandir('/volumes') if f.is_dir()]:
-            logger.info('Backing up volumes of %s', volume.name)
-            for path in [f.path for f in os.scandir(volume.path) if f.is_dir()]:
+        try:
+            logger.info('Backing up volumes')
+            vol_result = restic.backup_files(config.repository, source='/volumes')
+            logger.debug('Volume backup exit code: %s', vol_result)
+            if vol_result != 0:
+                logger.error('Volume backup exited with non-zero code: %s', vol_result)
+                errors = True
+        except Exception as ex:
+            logger.error('Exception raised during volume backup')
+            logger.exception(ex)
+            errors = True
+
+    if has_minecraft_volumes:
+        logger.info('Backing up minecraft servers')
+        for container in containers.containers_for_backup():
+            if container.minecraft_backup_enabled:
                 try:
-                    logger.info('Backing up %s', path)
-                    vol_result = restic.backup_files(config.repository, source=path)
-                    logger.debug('Volume backup exit code: %s', vol_result)
-                    if vol_result != 0:
-                        logger.error('Volume backup exited with non-zero code: %s', vol_result)
+                    result = backup_container_instance(container)
+                    if result != 0:
+                        logger.error('Backup command exited with non-zero code: %s', result)
                         errors = True
                 except Exception as ex:
-                    logger.error('Exception raised during volume backup')
                     logger.exception(ex)
                     errors = True
 
@@ -235,10 +253,7 @@ def start_backup_process(config, containers):
     for container in containers.containers_for_backup():
         if container.database_backup_enabled:
             try:
-                instance = container.instance
-                logger.info('Backing up %s in service %s', instance.container_type, instance.service_name)
-                result = instance.backup()
-                logger.debug('Exit code: %s', result)
+                result = backup_container_instance(container)
                 if result != 0:
                     logger.error('Backup command exited with non-zero code: %s', result)
                     errors = True
@@ -267,6 +282,12 @@ def start_backup_process(config, containers):
 
     logger.info('Backup completed')
 
+def backup_container_instance(container: Container) -> int:
+    instance = container.instance
+    logger.info('Backing up %s in service %s', instance.container_type, instance.service_name)
+    result = instance.backup()
+    logger.debug('Exit code: %s', result)
+    return result
 
 def cleanup(config, containers):
     """Run forget / prune to minimize storage space"""

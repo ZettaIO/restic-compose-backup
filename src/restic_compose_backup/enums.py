@@ -9,3 +9,5 @@ LABEL_POSTGRES_ENABLED = 'restic-compose-backup.postgres'
 LABEL_MARIADB_ENABLED = 'restic-compose-backup.mariadb'
 
 LABEL_BACKUP_PROCESS = 'restic-compose-backup.process'
+
+LABEL_MINECRAFT_ENABLED = 'restic-compose-backup.minecraft'
