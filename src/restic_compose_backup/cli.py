@@ -9,7 +9,7 @@ from restic_compose_backup import (
     restic,
 )
 from restic_compose_backup.config import Config
-from restic_compose_backup.containers import RunningContainers
+from restic_compose_backup.containers import RunningContainers, Container
 from restic_compose_backup import cron, utils
 
 logger = logging.getLogger(__name__)
@@ -93,6 +93,21 @@ def status(config, containers):
     backup_containers = containers.containers_for_backup()
     for container in backup_containers:
         logger.info('service: %s', container.service_name)
+
+        if container.minecraft_backup_enabled:
+            instance = container.instance
+            ping = instance.ping()
+            logger.info(
+                ' - %s (is_ready=%s):',
+                instance.container_type,
+                ping == 0
+            )
+            for mount in container.filter_mounts():
+                logger.info(
+                    '   - volume: %s -> %s',
+                    mount.source,
+                    container.get_volume_backup_destination(mount, '/minecraft'),
+                )
 
         if container.volume_backup_enabled:
             for mount in container.filter_mounts():

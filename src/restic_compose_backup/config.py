@@ -2,8 +2,8 @@ import os
 
 
 class Config:
-    default_backup_command = ". /env.sh && /backup.sh > /proc/1/fd/1 2>&1"
-    default_crontab_schedule = "0 */4 * * *"
+    default_backup_command = "source /env.sh && rcb backup > /proc/1/fd/1"
+    default_crontab_schedule = "10 2 * * *"
 
     """Bag for config values"""
     def __init__(self, check=True):

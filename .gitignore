@@ -20,6 +20,7 @@ venv
 restic_data/
 restic_cache/
 alerts.env
+minecraft/
 
 # build
 build/

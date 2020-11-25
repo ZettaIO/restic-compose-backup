@@ -144,6 +144,7 @@ class Container:
         return any([
             self.volume_backup_enabled,
             self.database_backup_enabled,
+            self.minecraft_backup_enabled
         ])
 
     @property
@@ -206,7 +207,7 @@ class Container:
         exclude_bind_mounts = utils.is_true(config.exclude_bind_mounts)
         mounts = list(filter(lambda m: not exclude_bind_mounts or m.type == "volume", self._mounts))
 
-        if not self.volume_backup_enabled:
+        if not self.volume_backup_enabled and not self.minecraft_backup_enabled:
             return filtered
 
         if self._include:

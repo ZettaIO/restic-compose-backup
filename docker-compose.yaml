@@ -67,6 +67,17 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  minecraft:
+    image: itzg/minecraft-server
+    labels:
+      restic-compose-backup.minecraft: true
+      restic-compose-backup.volumes.include: "minecraft"
+    environment:
+      - RCON_PASSWORD=minecraft
+      - EULA=TRUE
+    volumes:
+      - ./minecraft:/data
+
 volumes:
   mysqldata:
   mariadbdata:

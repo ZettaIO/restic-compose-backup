@@ -8,25 +8,26 @@ from restic_compose_backup import (
     commands,
     containers
 )
+from restic_compose_backup import utils
 
 logger = logging.getLogger(__name__)
 
 def rcon_cli(host, port, cmd: str) -> int:
     exit_code = commands.run([
         "rcon-cli",
-        f"--host {host}",
-        f"--port {port}",
+        f"--host={host}",
+        f"--port={port}",
         cmd
     ])
 
     if exit_code != 0:
-        raise RconException("rcon-cli %s exited with a non-zero exit code: %s", cmd, exit_code)
+        raise RconException(f"rcon-cli {cmd} exited with a non-zero exit code: {exit_code}")
 
     return exit_code
 
 def is_online(host, port) -> int:
     """Check if rcon can be reached"""
-    return rcon_cli(host, port, "version")
+    return rcon_cli(host, port, "help")
 
 def save_off(host, port) -> int:
     """Turn saving off"""
