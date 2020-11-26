@@ -14,6 +14,7 @@ Features:
 
 * Backs up docker volumes or host binds
 * Backs up postgres, mariadb and mysql databases
+* Backups up minecraft server volumes pausing save before backup
 * Notifications over mail/smtp or Discord webhooks
 
 Please report issus on [github](https://github.com/ZettaIO/restic-compose-backup/issues).
@@ -108,6 +109,18 @@ services:
       postgres-credentials.env
     volumes:
       - pgdata:/var/lib/postgresql/data
+      
+  minecraft:
+    image: itzg/minecraft-server
+    labels:
+      restic-compose-backup.minecraft: true
+      restic-compose-backup.tags: "test,foo,bar"
+      restic-compose-backup.volumes.include: "minecraft"
+    environment:
+      - RCON_PASSWORD=minecraft
+      - EULA=TRUE
+    volumes:
+      - ./minecraft:/data
 
 volumes:
   media:
