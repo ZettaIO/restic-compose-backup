@@ -2,6 +2,7 @@
 Restic commands
 """
 import logging
+import os.path
 from typing import List, Tuple
 from subprocess import Popen, PIPE
 from restic_compose_backup import commands, utils
@@ -25,6 +26,11 @@ def backup_files(repository: str, source='/volumes', tags=''):
         "backup",
         source
     ]
+
+    excludes_file = os.path.join(source, "excludes.txt")
+    if os.path.isfile(excludes_file):
+        args.extend(['--exclude-file', excludes_file])
+
     args.extend(utils.format_tags(tags))
     return commands.run(restic(repository, args))
 
