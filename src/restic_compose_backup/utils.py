@@ -63,6 +63,16 @@ def remove_containers(containers: List['Container']):
         except Exception as ex:
             logger.exception(ex)
 
+def join_file_content(file):
+    if not os.path.isfile(file):
+        return ""
+    with open(file) as c:
+        output = ""
+        lines = c.readlines()
+        for i in range(len(lines)):
+            output += lines[i] + ","
+        return output
+
 
 def is_true(value):
     """

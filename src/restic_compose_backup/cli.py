@@ -103,19 +103,41 @@ def status(config, containers):
                 ping == 0
             )
             for mount in container.filter_mounts():
+                source = container.get_volume_backup_destination(mount, '/minecraft')
                 logger.info(
                     '   - volume: %s -> %s',
                     mount.source,
-                    container.get_volume_backup_destination(mount, '/minecraft'),
+                    source,
                 )
+                excludes_file = os.path.join(source, "excludes.txt")
+                logger.debug(
+                    'excludes_file location: %s',
+                    excludes_file
+                )
+                if os.path.isfile(excludes_file):
+                    logger.info(
+                        '     excluding: %s',
+                        utils.join_file_content(excludes_file)
+                    )
 
         if container.volume_backup_enabled:
             for mount in container.filter_mounts():
+                source = container.get_volume_backup_destination(mount, '/volumes')
                 logger.info(
                     ' - volume: %s -> %s',
                     mount.source,
-                    container.get_volume_backup_destination(mount, '/volumes'),
+                    source,
                 )
+                excludes_file = os.path.join(source, "excludes.txt")
+                logger.debug(
+                    'excludes_file location: %s',
+                    excludes_file
+                )
+                if os.path.isfile(excludes_file):
+                    logger.info(
+                        '     excluding: %s',
+                        utils.join_file_content(excludes_file)
+                    )
 
         if container.database_backup_enabled:
             instance = container.instance
