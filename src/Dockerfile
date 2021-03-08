@@ -1,4 +1,4 @@
-FROM alpine AS builder
+FROM alpine-sdk AS builder
 
 RUN mkdir -p /opt
 
@@ -11,11 +11,23 @@ ADD https://github.com/itzg/rcon-cli/releases/download/${RCON_CLI_VERSION}/rcon-
 RUN tar x -f /tmp/rcon-cli.tar.gz -C /opt/ && \
     chmod +x /opt/rcon-cli
 
+RUN apk -U --no-cache add \
+    build-base \
+    mariadb-dev \
+    makec
+
+ADD mydumper /usr/src/
+WORKDIR /usr/src
+
+RUN \
+  cmake . && \
+  make && \
+  make install
+
 FROM restic/restic
 
 RUN apk -U --no-cache add \
     bash \
-    mydumper \
     coreutils \
     openssh-client \
     python3 py3-pip \
@@ -24,6 +36,7 @@ RUN apk -U --no-cache add \
     postgresql-client
 
 COPY --from=builder /opt/rcon-cli /opt/rcon-cli
+COPY --from=builder /usr/bin/mydumper /usr/bin/mydumper
 
 RUN ln -s /opt/rcon-cli /usr/bin
 
