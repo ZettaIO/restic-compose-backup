@@ -131,7 +131,6 @@ class MysqlContainer(Container):
                 destination /= project_name
 
         destination /= self.service_name
-        destination /= "all_databases.sql"
 
         return destination
 

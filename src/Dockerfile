@@ -11,25 +11,6 @@ ADD https://github.com/itzg/rcon-cli/releases/download/${RCON_CLI_VERSION}/rcon-
 RUN tar x -f /tmp/rcon-cli.tar.gz -C /opt/ && \
     chmod +x /opt/rcon-cli
 
-RUN apk -U --no-cache add \
-    build-base \
-    build-dependencies \
-    gcc \
-    wget \
-    git \
-    curl \
-    openssl-dev \
-    mariadb-dev \
-    makec
-
-ADD mydumper /usr/src/
-WORKDIR /usr/src
-
-RUN \
-  cmake . && \
-  make && \
-  make install
-
 FROM restic/restic
 
 RUN apk -U --no-cache add \
@@ -41,8 +22,27 @@ RUN apk -U --no-cache add \
     mariadb-client \
     postgresql-client
 
+RUN apk -U --no-cache add \
+    build-base \
+    gcc \
+    wget \
+    git \
+    curl \
+    openssl-dev \
+    mariadb-dev \
+    cmake \
+    glib-dev \
+    zlib-dev \
+    pcre-dev
+
+ADD mydumper /usr/src/
+WORKDIR /usr/src
+
+RUN cmake . && \
+   make && \
+   make install
+
 COPY --from=builder /opt/rcon-cli /opt/rcon-cli
-COPY --from=builder /usr/bin/mydumper /usr/bin/mydumper
 
 RUN ln -s /opt/rcon-cli /usr/bin
 
@@ -51,7 +51,7 @@ RUN ln -s /opt/rcon-cli /usr/bin
 ADD . /restic-compose-backup
 WORKDIR /restic-compose-backup
 
-RUN pip3 install -U pip setuptools wheel && pip3 install -e .
+RUN pip install -U pip setuptools wheel && pip install -e .
 ENV XDG_CACHE_HOME=/cache
 
 # end install

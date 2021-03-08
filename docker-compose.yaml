@@ -4,7 +4,6 @@ services:
     build: ./src
     env_file:
       - restic_compose_backup.env
-      - alerts.env
     labels:
       restic-compose-backup.volumes: true
       restic-compose-backup.volumes.include: 'src'
