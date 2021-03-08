@@ -16,8 +16,8 @@ class MariadbContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('MYSQL_USER'),
-            'password': self.get_config_env('MYSQL_PASSWORD'),
+            'username': 'root',
+            'password': self.get_config_env('MYSQL_ROOT_PASSWORD'),
             'port': "3306",
         }
 
@@ -91,8 +91,8 @@ class MysqlContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('MYSQL_USER'),
-            'password': self.get_config_env('MYSQL_PASSWORD'),
+            'username': 'root',
+            'password': self.get_config_env('MYSQL_ROOT_PASSWORD'),
             'port': "3306",
         }
 
