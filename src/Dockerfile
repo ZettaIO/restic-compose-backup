@@ -1,4 +1,4 @@
-FROM alpine-sdk AS builder
+FROM alpine AS builder
 
 RUN mkdir -p /opt
 
@@ -13,6 +13,12 @@ RUN tar x -f /tmp/rcon-cli.tar.gz -C /opt/ && \
 
 RUN apk -U --no-cache add \
     build-base \
+    build-dependencies \
+    gcc \
+    wget \
+    git \
+    curl \
+    openssl-dev \
     mariadb-dev \
     makec
 
