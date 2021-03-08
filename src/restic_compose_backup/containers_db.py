@@ -16,8 +16,8 @@ class MariadbContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('MYSQL_USER'),
-            'password': self.get_config_env('MYSQL_PASSWORD'),
+            'username': self.get_config_env('BACKUP_MYSQL_USER'),
+            'password': self.get_config_env('BACKUP_MYSQL_PASSWORD'),
             'port': "3306",
         }
 
@@ -90,8 +90,8 @@ class MysqlContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('MYSQL_USER'),
-            'password': self.get_config_env('MYSQL_PASSWORD'),
+            'username': self.get_config_env('BACKUP_MYSQL_USER'),
+            'password': self.get_config_env('BACKUP_MYSQL_PASSWORD'),
             'port': "3306",
         }
 
@@ -165,10 +165,10 @@ class PostgresContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('POSTGRES_USER'),
-            'password': self.get_config_env('POSTGRES_PASSWORD'),
+            'username': self.get_config_env('BACKUP_POSTGRES_USER'),
+            'password': self.get_config_env('BACKUP_POSTGRES_PASSWORD'),
             'port': "5432",
-            'database': self.get_config_env('POSTGRES_DB'),
+            'database': self.get_config_env('BACKUP_POSTGRES_DB'),
         }
 
     def ping(self) -> bool:
