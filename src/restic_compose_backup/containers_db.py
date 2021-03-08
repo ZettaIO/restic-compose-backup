@@ -55,12 +55,18 @@ class MariadbContainer(Container):
 
     def backup(self):
         config = Config()
+        destination = self.backup_destination_path()
 
+        commands.run([
+            "mkdir",
+            "-p",
+            f"{destination}"
+        ])
         commands.run(self.dump_command())
 
         return restic.backup_files(
             config.repository,
-            self.backup_destination_path(),
+            destination,
             tags=self.tags
         )
 
@@ -124,12 +130,18 @@ class MysqlContainer(Container):
 
     def backup(self):
         config = Config()
+        destination = self.backup_destination_path()
 
+        commands.run([
+            "mkdir",
+            "-p",
+            f"{destination}"
+        ])
         commands.run(self.dump_command())
 
         return restic.backup_files(
             config.repository,
-            self.backup_destination_path(),
+            destination,
             tags=self.tags
         )
 
