@@ -25,7 +25,7 @@ class MariadbContainer(Container):
         """Check the availability of the service"""
         creds = self.get_credentials()
 
-        with utils.environment('MYSQL_PWD', creds['password']):
+        with utils.environment('BACKUP_MYSQL_PASSWORD', creds['password']):
             return commands.ping_mariadb(
                 creds['host'],
                 creds['port'],
@@ -99,7 +99,7 @@ class MysqlContainer(Container):
         """Check the availability of the service"""
         creds = self.get_credentials()
 
-        with utils.environment('MYSQL_PWD', creds['password']):
+        with utils.environment('BACKUP_MYSQL_PASSWORD', creds['password']):
             return commands.ping_mysql(
                 creds['host'],
                 creds['port'],
