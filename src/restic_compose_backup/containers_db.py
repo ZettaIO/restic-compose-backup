@@ -50,7 +50,7 @@ class MariadbContainer(Container):
             f"{destination}",
             "--no-views",
             "--compress",
-            "--regex '^(?!(mysql\.))'"
+            "'^(?!(mysql\.))'"
         ]
 
     def backup(self):
@@ -118,7 +118,8 @@ class MysqlContainer(Container):
             f"{destination}",
             "--no-views",
             "--compress",
-            "--regex '^(?!(mysql\.))'"
+            "--regex",
+            "'^(?!(mysql\.))'"
         ]
 
     def backup(self):
