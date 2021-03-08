@@ -47,7 +47,7 @@ class MariadbContainer(Container):
             "--port",
             creds['port'],
             "--outputdir",
-            outputdir,
+            destination,
             "--no-views",
             "--compress",
             "--regex '^(?!(mysql\.))'"
@@ -115,7 +115,7 @@ class MysqlContainer(Container):
             "--port",
             creds['port'],
             "--outputdir",
-            outputdir,
+            destination,
             "--no-views",
             "--compress",
             "--regex '^(?!(mysql\.))'"
