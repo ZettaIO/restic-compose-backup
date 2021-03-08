@@ -38,11 +38,16 @@ class MariadbContainer(Container):
         destination = self.backup_destination_path()
         return [
             "mydumper",
-            f"--user {creds['username']}",
-            f"--password {creds['password']}",
-            f"--host {creds['host']}",
-            f"--port {creds['port']}",
-            f"--outputdir {destination}",
+            "--user",
+            creds['username'],
+            "--password",
+            creds['password'],
+            "--host",
+            creds['host'],
+            "--port",
+            creds['port'],
+            "--outputdir",
+            outputdir,
             "--no-views",
             "--compress",
             "--regex '^(?!(mysql\.))'"
@@ -101,11 +106,16 @@ class MysqlContainer(Container):
         destination = self.backup_destination_path()
         return [
             "mydumper",
-            f"--user {creds['username']}",
-            f"--password {creds['password']}",
-            f"--host {creds['host']}",
-            f"--port {creds['port']}",
-            f"--outputdir {destination}",
+            "--user",
+            creds['username'],
+            "--password",
+            creds['password'],
+            "--host",
+            creds['host'],
+            "--port",
+            creds['port'],
+            "--outputdir",
+            outputdir,
             "--no-views",
             "--compress",
             "--regex '^(?!(mysql\.))'"
