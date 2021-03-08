@@ -50,6 +50,7 @@ class MariadbContainer(Container):
             f"{destination}",
             "--no-views",
             "--compress",
+            "--regex",
             "'^(?!(mysql\.))'"
         ]
 
