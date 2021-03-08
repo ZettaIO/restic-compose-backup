@@ -38,7 +38,7 @@ RUN apk -U --no-cache add \
 ADD mydumper /usr/src/
 WORKDIR /usr/src
 
-RUN cmake . && \
+RUN cmake -DWITH_SSL=OFF . && \
    make && \
    make install
 
