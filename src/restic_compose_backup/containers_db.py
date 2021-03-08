@@ -35,27 +35,29 @@ class MariadbContainer(Container):
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
         creds = self.get_credentials()
+        destination = self.backup_destination_path()
         return [
-            "mysqldump",
-            f"--single-transaction",
-            f"--skip-lock-tables",
-            f"--host={creds['host']}",
-            f"--port={creds['port']}",
-            f"--user={creds['username']}",
-            "--all-databases",
+            "mydumper",
+            f"--user {creds['username']}",
+            f"--password {creds['password']}",
+            f"--host {creds['host']}",
+            f"--port {creds['port']}",
+            f"--outputdir {destination}",
+            "--no-views",
+            "--compress",
+            "--regex '^(?!(mysql\.))'"
         ]
 
     def backup(self):
         config = Config()
-        creds = self.get_credentials()
 
-        with utils.environment('MYSQL_PWD', creds['password']):
-            return restic.backup_from_stdin(
-                config.repository,
-                self.backup_destination_path(),
-                self.dump_command(),
-                tags=self.tags
-            )
+        commands.run(self.dump_command())
+
+        return restic.backup_files(
+            config.repository,
+            self.backup_destination_path(),
+            tags=self.tags
+        )
 
     def backup_destination_path(self) -> str:
         destination = Path("/databases")
@@ -66,7 +68,6 @@ class MariadbContainer(Container):
                 destination /= project_name
 
         destination /= self.service_name
-        destination /= "all_databases.sql"
 
         return destination
 
@@ -97,27 +98,29 @@ class MysqlContainer(Container):
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
         creds = self.get_credentials()
+        destination = self.backup_destination_path()
         return [
-            "mysqldump",
-            f"--single-transaction",
-            f"--skip-lock-tables",
-            f"--host={creds['host']}",
-            f"--port={creds['port']}",
-            f"--user={creds['username']}",
-            "--all-databases",
+            "mydumper",
+            f"--user {creds['username']}",
+            f"--password {creds['password']}",
+            f"--host {creds['host']}",
+            f"--port {creds['port']}",
+            f"--outputdir {destination}",
+            "--no-views",
+            "--compress",
+            "--regex '^(?!(mysql\.))'"
         ]
 
     def backup(self):
         config = Config()
-        creds = self.get_credentials()
 
-        with utils.environment('MYSQL_PWD', creds['password']):
-            return restic.backup_from_stdin(
-                config.repository,
-                self.backup_destination_path(),
-                self.dump_command(),
-                tags=self.tags
-            )
+        commands.run(self.dump_command())
+
+        return restic.backup_files(
+            config.repository,
+            self.backup_destination_path(),
+            tags=self.tags
+        )
 
     def backup_destination_path(self) -> str:
         destination = Path("/databases")

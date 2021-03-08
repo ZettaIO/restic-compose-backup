@@ -11,11 +11,11 @@ ADD https://github.com/itzg/rcon-cli/releases/download/${RCON_CLI_VERSION}/rcon-
 RUN tar x -f /tmp/rcon-cli.tar.gz -C /opt/ && \
     chmod +x /opt/rcon-cli
 
-
 FROM restic/restic
 
 RUN apk -U --no-cache add \
     bash \
+    mydumper \
     coreutils \
     openssh-client \
     python3 py3-pip \
