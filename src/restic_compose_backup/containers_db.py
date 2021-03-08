@@ -16,8 +16,8 @@ class MariadbContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('BACKUP_MYSQL_USER'),
-            'password': self.get_config_env('BACKUP_MYSQL_PASSWORD'),
+            'username': self.get_config_env('MYSQL_USER'),
+            'password': self.get_config_env('MYSQL_PASSWORD'),
             'port': "3306",
         }
 
@@ -25,7 +25,7 @@ class MariadbContainer(Container):
         """Check the availability of the service"""
         creds = self.get_credentials()
 
-        with utils.environment('BACKUP_MYSQL_PASSWORD', creds['password']):
+        with utils.environment('MYSQL_PASSWORD', creds['password']):
             return commands.ping_mariadb(
                 creds['host'],
                 creds['port'],
@@ -90,8 +90,8 @@ class MysqlContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('BACKUP_MYSQL_USER'),
-            'password': self.get_config_env('BACKUP_MYSQL_PASSWORD'),
+            'username': self.get_config_env('MYSQL_USER'),
+            'password': self.get_config_env('MYSQL_PASSWORD'),
             'port': "3306",
         }
 
@@ -99,7 +99,7 @@ class MysqlContainer(Container):
         """Check the availability of the service"""
         creds = self.get_credentials()
 
-        with utils.environment('BACKUP_MYSQL_PASSWORD', creds['password']):
+        with utils.environment('MYSQL_PASSWORD', creds['password']):
             return commands.ping_mysql(
                 creds['host'],
                 creds['port'],
@@ -165,10 +165,10 @@ class PostgresContainer(Container):
         """dict: get credentials for the service"""
         return {
             'host': self.hostname,
-            'username': self.get_config_env('BACKUP_POSTGRES_USER'),
-            'password': self.get_config_env('BACKUP_POSTGRES_PASSWORD'),
+            'username': self.get_config_env('POSTGRES_USER'),
+            'password': self.get_config_env('POSTGRES_PASSWORD'),
             'port': "5432",
-            'database': self.get_config_env('BACKUP_POSTGRES_DB'),
+            'database': self.get_config_env('POSTGRES_DB'),
         }
 
     def ping(self) -> bool:
