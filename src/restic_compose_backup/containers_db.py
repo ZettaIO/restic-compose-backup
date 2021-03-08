@@ -66,7 +66,7 @@ class MariadbContainer(Container):
 
         return restic.backup_files(
             config.repository,
-            destination,
+            f"{destination}",
             tags=self.tags
         )
 
@@ -141,7 +141,7 @@ class MysqlContainer(Container):
 
         return restic.backup_files(
             config.repository,
-            destination,
+            f"{destination}",
             tags=self.tags
         )
 
