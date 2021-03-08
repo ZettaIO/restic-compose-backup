@@ -25,12 +25,12 @@ class MariadbContainer(Container):
         """Check the availability of the service"""
         creds = self.get_credentials()
 
-        with utils.environment('MYSQL_PASSWORD', creds['password']):
-            return commands.ping_mariadb(
-                creds['host'],
-                creds['port'],
-                creds['username'],
-            )
+        return commands.ping_mariadb(
+            creds['host'],
+            creds['port'],
+            creds['username'],
+            creds['password']
+        )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""
@@ -100,12 +100,12 @@ class MysqlContainer(Container):
         """Check the availability of the service"""
         creds = self.get_credentials()
 
-        with utils.environment('MYSQL_PASSWORD', creds['password']):
-            return commands.ping_mysql(
-                creds['host'],
-                creds['port'],
-                creds['username'],
-            )
+        return commands.ping_mysql(
+            creds['host'],
+            creds['port'],
+            creds['username'],
+            creds['password']
+        )
 
     def dump_command(self) -> list:
         """list: create a dump command restic and use to send data through stdin"""

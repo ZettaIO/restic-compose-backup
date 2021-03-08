@@ -9,7 +9,7 @@ def test():
     return run(['ls', '/volumes'])
 
 
-def ping_mysql(host, port, username) -> int:
+def ping_mysql(host, port, username, password) -> int:
     """Check if the mysql is up and can be reached"""
     return run([
         'mysqladmin',
@@ -20,6 +20,8 @@ def ping_mysql(host, port, username) -> int:
         port,
         '--user',
         username,
+        '--password',
+        password
     ])
 
 
@@ -34,6 +36,8 @@ def ping_mariadb(host, port, username) -> int:
         port,
         '--user',
         username,
+        '--password',
+        password
     ])
 
 
