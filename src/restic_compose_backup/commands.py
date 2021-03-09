@@ -14,14 +14,10 @@ def ping_mysql(host, port, username, password) -> int:
     return run([
         'mysqladmin',
         'ping',
-        '--host',
-        host,
-        '--port',
-        port,
-        '--user',
-        username,
-        '--password',
-        password
+        f"--host={host}",
+        f"--port={port}",
+        f"--user={username}",
+        f"--password={password}"
     ])
 
 
@@ -30,14 +26,10 @@ def ping_mariadb(host, port, username, password) -> int:
     return run([
         'mysqladmin',
         'ping',
-        '--host',
-        host,
-        '--port',
-        port,
-        '--user',
-        username,
-        '--password',
-        password
+        f"--host={host}",
+        f"--port={port}",
+        f"--user={username}",
+        f"--password={password}"
     ])
 
 
