@@ -38,7 +38,7 @@ class MariadbContainer(Container):
         destination = self.backup_destination_path()
         
         verbosity = 2
-        if self.get_config.log_level == 'debug':
+        if self.get_config('log_level') == 'debug':
             verbosity = 3
 
         return [
@@ -120,7 +120,7 @@ class MysqlContainer(Container):
         destination = self.backup_destination_path()
 
         verbosity = 2
-        if self.get_config.log_level == 'debug':
+        if self.get_config('log_level') == 'debug':
             verbosity = 3
 
         return [
