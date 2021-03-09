@@ -38,12 +38,6 @@ class MariadbContainer(Container):
         """list: create a dump command restic and use to send data through stdin"""
         creds = self.get_credentials()
         destination = self.backup_destination_path()
-        
-        logger.debug('log_level: %s', self.get_config('log_level'))
-
-        verbosity = 3
-        if self.get_config('log_level') == 'debug':
-            verbosity = 3
 
         return [
             "mydumper",
@@ -59,10 +53,8 @@ class MariadbContainer(Container):
             f"{destination}",
             "--no-views",
             "--compress",
-            "--regex",
-            "'^(?!(mysql\.))'",
             "--verbose",
-            f"{verbosity}"
+            "3"
         ]
 
     def backup(self):
@@ -122,12 +114,6 @@ class MysqlContainer(Container):
         """list: create a dump command restic and use to send data through stdin"""
         creds = self.get_credentials()
         destination = self.backup_destination_path()
-        
-        logger.debug('log_level: %s', self.get_config('log_level'))
-
-        verbosity = 3
-        if self.get_config('log_level') == 'debug':
-            verbosity = 3
 
         return [
             "mydumper",
@@ -143,10 +129,8 @@ class MysqlContainer(Container):
             f"{destination}",
             "--no-views",
             "--compress",
-            "--regex",
-            "'^(?!(mysql\.))'",
             "--verbose",
-            f"{verbosity}"
+            "3"
         ]
 
     def backup(self):
