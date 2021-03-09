@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from restic_compose_backup.containers import Container
@@ -8,6 +9,7 @@ from restic_compose_backup import (
 )
 from restic_compose_backup import utils
 
+logger = logging.getLogger(__name__)
 
 class MariadbContainer(Container):
     container_type = 'mariadb'
