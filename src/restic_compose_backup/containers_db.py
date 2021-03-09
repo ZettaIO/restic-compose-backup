@@ -37,7 +37,9 @@ class MariadbContainer(Container):
         creds = self.get_credentials()
         destination = self.backup_destination_path()
         
-        verbosity = 2
+        logger.debug('log_level: %s', self.get_config('log_level'))
+
+        verbosity = 3
         if self.get_config('log_level') == 'debug':
             verbosity = 3
 
@@ -118,8 +120,10 @@ class MysqlContainer(Container):
         """list: create a dump command restic and use to send data through stdin"""
         creds = self.get_credentials()
         destination = self.backup_destination_path()
+        
+        logger.debug('log_level: %s', self.get_config('log_level'))
 
-        verbosity = 2
+        verbosity = 3
         if self.get_config('log_level') == 'debug':
             verbosity = 3
 
