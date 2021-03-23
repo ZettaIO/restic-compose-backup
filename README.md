@@ -52,7 +52,7 @@ services:
     env_file:
       - restic-backup.env
     volumes:
-      - ./cacerts/:/usr/local/share/ca-certificates
+      - ./cacerts:/usr/local/share/ca-certificates
       # We need to communicate with docker
       - /var/run/docker.sock:/tmp/docker.sock:ro
       # Persistent storage of restic cache (greatly speeds up all restic operations)
