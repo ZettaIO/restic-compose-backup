@@ -9,6 +9,6 @@ ENV XDG_CACHE_HOME=/cache
 
 VOLUME ["/usr/local/share/ca-certificates"]
 
-ENTRYPOINT ["./update-ca.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["./entrypoint.sh"]
+CMD []
