@@ -1,11 +1,14 @@
 FROM restic/restic:0.9.6
 
-RUN apk update && apk add python3 dcron mariadb-client postgresql-client
+RUN apk update && apk add ca-certificates python3 dcron mariadb-client postgresql-client && rm -rf /var/cache/apk/*
 
 ADD . /restic-compose-backup
 WORKDIR /restic-compose-backup
 RUN pip3 install -U pip setuptools wheel && pip3 install -e .
 ENV XDG_CACHE_HOME=/cache
 
-ENTRYPOINT []
-CMD ["./entrypoint.sh"]
+VOLUME ["/usr/local/share/ca-certificates"]
+
+ENTRYPOINT ["./entrypoint.sh"]
+
+CMD []
