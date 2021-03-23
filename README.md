@@ -37,6 +37,31 @@ More config options can be found in the [documentation].
 
 Restic backend specific env vars : https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables
 
+## Private CA certificates
+
+Private CA certificates at volume /usr/local/share/ca-certificates
+
+docker-compose.yaml
+
+```yaml
+version: '3'
+services:
+  # The backup service
+  backup:
+    image: zettaio/restic-compose-backup:<version>
+    env_file:
+      - restic-backup.env
+    volumes:
+      - ./cacerts/:/usr/local/share/ca-certificates
+      # We need to communicate with docker
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      # Persistent storage of restic cache (greatly speeds up all restic operations)
+      - cache:/cache
+
+volumes:
+  cache:
+```
+
 ## Compose Example
 
 We simply control what should be backed up by adding
