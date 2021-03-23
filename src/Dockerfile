@@ -7,5 +7,7 @@ WORKDIR /restic-compose-backup
 RUN pip3 install -U pip setuptools wheel && pip3 install -e .
 ENV XDG_CACHE_HOME=/cache
 
+VOLUME ["/usr/local/share/ca-certificates"]
+
 ENTRYPOINT []
 CMD ["./entrypoint.sh"]
