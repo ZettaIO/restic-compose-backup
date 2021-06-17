@@ -15,7 +15,7 @@ class SMTPAlert(BaseAlert):
         self.host = host
         self.port = port
         self.user = user
-        self.password = password
+        self.password = password or ""
         self.to = to
 
     @classmethod
@@ -34,7 +34,7 @@ class SMTPAlert(BaseAlert):
 
     @property
     def properly_configured(self) -> bool:
-        return self.host and self.port and self.user and self.password and len(self.to) > 0
+        return self.host and self.port and self.user and len(self.to) > 0
 
     def send(self, subject: str = None, body: str = None, alert_type: str = 'INFO'):
         # send_mail("Hello world!")
