@@ -1,6 +1,9 @@
 import argparse
 import os
 import logging
+from importlib import import_module
+from pkgutil import iter_modules
+from typing import Dict, List
 
 from restic_compose_backup import (
     alerts,
@@ -11,13 +14,29 @@ from restic_compose_backup import (
 from restic_compose_backup.config import Config
 from restic_compose_backup.containers import RunningContainers
 from restic_compose_backup import cron, utils
-
+from restic_compose_backup import commands
+from restic_compose_backup.commands.base import BaseCommand
 logger = logging.getLogger(__name__)
+
+
+def get_commands() -> Dict[str, BaseCommand]:
+    """Return the list of available command classes"""
+    _commands = {}
+    for module_info in iter_modules(commands.__path__):
+        module = import_module(f'restic_compose_backup.commands.{module_info.name}')
+        if hasattr(module, 'Command'):
+            _commands[module_info.name] = module.Command
+    return _commands
 
 
 def main():
     """CLI entrypoint"""
-    args = parse_args()
+    commands = get_commands()
+    args = parse_args(sorted(commands.keys()))
+    command = commands[args.action]()
+    command.run()
+    return
+
     config = Config()
     log.setup(level=args.log_level or config.log_level)
     containers = RunningContainers()
@@ -101,7 +120,8 @@ def status(config, containers):
 
         if container.database_backup_enabled:
             instance = container.instance
-            ping = instance.ping()
+            # ping = instance.ping()
+            ping = 0
             logger.info(
                 ' - %s (is_ready=%s) -> %s',
                 instance.container_type,
@@ -290,21 +310,11 @@ def crontab(config):
     print(cron.generate_crontab(config))
 
 
-def parse_args():
+def parse_args(choices: List[str]):
     parser = argparse.ArgumentParser(prog='restic_compose_backup')
     parser.add_argument(
         'action',
-        choices=[
-            'status',
-            'snapshots',
-            'backup',
-            'start-backup-process',
-            'alert',
-            'cleanup',
-            'version',
-            'crontab',
-            'test',
-        ],
+        choices=choices,
     )
     parser.add_argument(
         '--log-level',
