@@ -1,9 +1,7 @@
 import argparse
 import os
 import logging
-from importlib import import_module
-from pkgutil import iter_modules
-from typing import Dict, List
+from typing import List
 
 from restic_compose_backup import (
     alerts,
@@ -13,27 +11,16 @@ from restic_compose_backup import (
 )
 from restic_compose_backup.config import Config
 from restic_compose_backup.containers import RunningContainers
-from restic_compose_backup import cron, utils
+from restic_compose_backup import utils
 from restic_compose_backup import commands
-from restic_compose_backup.commands.base import BaseCommand
+
 logger = logging.getLogger(__name__)
 
 
-def get_commands() -> Dict[str, BaseCommand]:
-    """Return the list of available command classes"""
-    _commands = {}
-    for module_info in iter_modules(commands.__path__):
-        module = import_module(f'restic_compose_backup.commands.{module_info.name}')
-        if hasattr(module, 'Command'):
-            _commands[module_info.name] = module.Command
-    return _commands
-
-
 def main():
-    """CLI entrypoint"""
-    commands = get_commands()
-    args = parse_args(sorted(commands.keys()))
-    command = commands[args.action]()
+    """Main entry point for the application"""
+    args = parse_args(sorted(commands.COMMANDS.keys()))
+    command = commands.COMMANDS[args.action](args)
     command.run()
     return
 
@@ -62,13 +49,6 @@ def main():
 
     elif args.action == 'alert':
         alert(config, containers)
-
-    elif args.action == 'version':
-        import restic_compose_backup
-        print(restic_compose_backup.__version__)
-
-    elif args.action == "crontab":
-        crontab(config)
 
     # Random test stuff here
     elif args.action == "test":
@@ -294,20 +274,6 @@ def snapshots(config, containers):
     stdout, stderr = restic.snapshots(config.repository, last=True)
     for line in stdout.decode().split('\n'):
         print(line)
-
-
-def alert(config, containers):
-    """Test alerts"""
-    logger.info("Testing alerts")
-    alerts.send(
-        subject="{}: Test Alert".format(containers.project_name),
-        body="Test message",
-    )
-
-
-def crontab(config):
-    """Generate the crontab"""
-    print(cron.generate_crontab(config))
 
 
 def parse_args(choices: List[str]):

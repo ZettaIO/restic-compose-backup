@@ -1,12 +1,30 @@
+import logging
 from restic_compose_backup.config import Config
+from restic_compose_backup.containers import RunningContainers
+from restic_compose_backup import log
 
 
 class BaseCommand:
     """Base class for all commands"""
     name = "base"
 
-    def __init__(self):
+    def __init__(self, cli_args, *args, **kwargs):
+        self.cli_args = cli_args
+        self.log_level = cli_args.log_level
         self.config = Config()
-    
+        self.logger = logging.getLogger(__name__)
+        log.setup(level=self.log_level or self.config.log_level)
+
+    def get_containers(self):
+        """Get running containers"""
+        return RunningContainers()
+
     def run(self):
+        """Run the command"""
         raise NotImplementedError
+
+    def run_command(self, command: str):
+        """Run a command by name and return the result"""
+        from . import COMMANDS
+        command = COMMANDS[command]
+        command(self.cli_args).run()

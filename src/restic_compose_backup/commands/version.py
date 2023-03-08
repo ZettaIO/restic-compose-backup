@@ -6,4 +6,5 @@ class Command(BaseCommand):
     name = "version"
 
     def run(self):
-        print("Version!")
+        import restic_compose_backup
+        print(restic_compose_backup.__version__)
