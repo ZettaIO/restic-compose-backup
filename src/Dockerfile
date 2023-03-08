@@ -1,6 +1,7 @@
-FROM restic/restic:0.9.6
+FROM restic/restic:0.15.1
 
-RUN apk update && apk add python3 dcron mariadb-client postgresql-client
+RUN apk update && apk add python3 py3-pip dcron
+# mariadb-client postgresql-client
 
 ADD . /restic-compose-backup
 WORKDIR /restic-compose-backup

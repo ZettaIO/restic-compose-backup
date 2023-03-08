@@ -4,13 +4,13 @@ services:
     build: ./src
     env_file:
       - restic_compose_backup.env
-      - alerts.env
+      # - alerts.env
     labels:
       restic-compose-backup.volumes: true
       restic-compose-backup.volumes.include: 'src'
-    networks:
-      - default
-      - global
+    # networks:
+    #   - default
+    #   - global
     volumes:
       # Map in docker socket
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -67,11 +67,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  # InfluxDB OSS
+  # influxdb:
+  #   image: influxdb:1.8
+
 volumes:
   mysqldata:
   mariadbdata:
   pgdata:
+  # influx_data:
 
-networks:
-  global:
-    external: true
+# networks:
+#   global:
+#     external: true
