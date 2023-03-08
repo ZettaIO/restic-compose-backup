@@ -64,9 +64,9 @@ def remove_containers(containers: List['Container']):
             logger.exception(ex)
 
 
-def is_true(value):
+def is_true(value) -> True:
     """
-    Evaluates the truthfullness of a bool value in container labels
+    Evaluates the truthfulness of a bool value in container labels
     """
     return value in TRUE_VALUES
 
@@ -85,7 +85,7 @@ def strip_root(path):
 
 @contextmanager
 def environment(name, value):
-    """Tempset env var"""
+    """Temp-set environment variables"""
     old_val = os.environ.get(name)
     os.environ[name] = value
     try:
