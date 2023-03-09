@@ -4,7 +4,7 @@ Restic commands
 import logging
 from typing import List, Tuple
 from subprocess import Popen, PIPE
-from restic_compose_backup import commands
+from restic_compose_backup import utils
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +14,13 @@ def init_repo(repository: str):
     Attempt to initialize the repository.
     Doing this after the repository is initialized
     """
-    return commands.run(restic(repository, [
+    return utils.run(restic(repository, [
         "init",
     ]))
 
 
 def backup_files(repository: str, source='/volumes'):
-    return commands.run(restic(repository, [
+    return utils.run(restic(repository, [
         "--verbose",
         "backup",
         source,
@@ -49,10 +49,10 @@ def backup_from_stdin(repository: str, filename: str, source_command: List[str])
     exit_code = 0 if (source_exit == 0 and dest_exit == 0) else 1
 
     if stdout:
-        commands.log_std('stdout', stdout, logging.DEBUG if exit_code == 0 else logging.ERROR)
+        utils.log_std('stdout', stdout, logging.DEBUG if exit_code == 0 else logging.ERROR)
 
     if stderr:
-        commands.log_std('stderr', stderr, logging.ERROR)
+        utils.log_std('stderr', stderr, logging.ERROR)
 
     return exit_code
 
@@ -62,21 +62,21 @@ def snapshots(repository: str, last=True) -> Tuple[str, str]:
     args = ["snapshots"]
     if last:
         args.append('--last')
-    return commands.run_capture_std(restic(repository, args))
+    return utils.run_capture_std(restic(repository, args))
 
 
 def is_initialized(repository: str) -> bool:
     """
     Checks if a repository is initialized using snapshots command.
-    Note that this cannot separate between uninitalized repo
-    and other errors, but this method is reccomended by the restic
+    Note that this cannot separate between uninitialized repo
+    and other errors, but this method is recommended by the restic
     community.
     """
-    return commands.run(restic(repository, ["snapshots", '--last'])) == 0
+    return utils.run(restic(repository, ["snapshots", '--last'])) == 0
 
 
 def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
-    return commands.run(restic(repository, [
+    return utils.run(restic(repository, [
         'forget',
         '--group-by',
         'paths',
@@ -92,13 +92,13 @@ def forget(repository: str, daily: str, weekly: str, monthly: str, yearly: str):
 
 
 def prune(repository: str):
-    return commands.run(restic(repository, [
+    return utils.run(restic(repository, [
         'prune',
     ]))
 
 
 def check(repository: str):
-    return commands.run(restic(repository, [
+    return utils.run(restic(repository, [
         "check",
         # "--with-cache",
     ]))
