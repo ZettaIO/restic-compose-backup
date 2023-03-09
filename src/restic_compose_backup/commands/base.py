@@ -17,7 +17,9 @@ class BaseCommand:
 
     def get_containers(self):
         """Get running containers"""
-        return RunningContainers()
+        containers = RunningContainers()
+        containers.this_container.set_config_env('LOG_LEVEL', self.log_level)
+        return containers
 
     def run(self):
         """Run the command"""
