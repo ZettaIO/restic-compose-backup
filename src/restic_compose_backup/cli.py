@@ -46,15 +46,6 @@ def main():
     elif args.action == 'alert':
         alert(config, containers)
 
-    # Random test stuff here
-    elif args.action == "test":
-        nodes = utils.get_swarm_nodes()
-        print("Swarm nodes:")
-        for node in nodes:
-            addr = node.attrs['Status']['Addr']
-            state = node.attrs['Status']['State']
-            print(' - {} {} {}'.format(node.id, addr, state))
-
 
 def backup(config, containers):
     """Request a backup to start"""
