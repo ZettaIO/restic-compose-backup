@@ -12,8 +12,8 @@ class BaseCommand:
         self.cli_args = cli_args
         self.log_level = cli_args.log_level
         self.config = Config()
-        self.logger = logging.getLogger(__name__)
         log.setup(level=self.log_level or self.config.log_level)
+        self.logger = log.logger
 
     def get_containers(self):
         """Get running containers"""

@@ -25,4 +25,7 @@ def setup(level: str = 'warning'):
     # ch.setFormatter(logging.Formatter('%(asctime)s - {HOSTNAME} - %(name)s - %(levelname)s - %(message)s'))
     # ch.setFormatter(logging.Formatter('%(asctime)s - {HOSTNAME} - %(levelname)s - %(message)s'))
     ch.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s: %(message)s'))
-    logger.addHandler(ch)
+
+    # Prevent duplicate handlers
+    if not logger.handlers:
+        logger.addHandler(ch)
