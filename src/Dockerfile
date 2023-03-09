@@ -1,7 +1,8 @@
 FROM restic/restic:0.15.1
 
 RUN apk update && apk add python3 py3-pip dcron
-# mariadb-client postgresql-client
+# Should be removed
+RUN apk update && apk add mariadb-client postgresql-client
 
 ADD . /restic-compose-backup
 WORKDIR /restic-compose-backup
