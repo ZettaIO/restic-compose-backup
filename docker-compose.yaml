@@ -4,7 +4,7 @@ services:
     build: ./src
     env_file:
       - restic_compose_backup.env
-      - alerts.env
+      # - alerts.env
     labels:
       restic-compose-backup.volumes: true
       restic-compose-backup.volumes.include: 'src'
@@ -32,7 +32,7 @@ services:
       - SOME_VALUE=test
       - ANOTHER_VALUE=1
 
-  mysql:
+  mysql5:
     image: mysql:5
     labels:
       restic-compose-backup.mysql: true
@@ -42,7 +42,19 @@ services:
       - MYSQL_USER=myuser
       - MYSQL_PASSWORD=mypassword
     volumes:
-      - mysqldata:/var/lib/mysql
+      - mysqldata5:/var/lib/mysql
+
+  mysql8:
+    image: mysql:8
+    labels:
+      restic-compose-backup.mysql: true
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
+    volumes:
+      - mysqldata8:/var/lib/mysql
 
   mariadb:
     image: mariadb:10
@@ -68,7 +80,8 @@ services:
       - pgdata:/var/lib/postgresql/data
 
 volumes:
-  mysqldata:
+  mysqldata5:
+  mysqldata8:
   mariadbdata:
   pgdata:
 

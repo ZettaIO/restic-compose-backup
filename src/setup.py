@@ -3,12 +3,15 @@ from setuptools import setup, find_namespace_packages
 setup(
     name="restic-compose-backup",
     url="https://github.com/ZettaIO/restic-compose-backup",
-    version="0.6.3",
+    version="0.7.0",
     author="Einar Forselv",
     author_email="eforselv@gmail.com",
-    packages=find_namespace_packages(include=['restic_compose_backup']),
+    packages=find_namespace_packages(include=[
+        'restic_compose_backup',
+        'restic_compose_backup.*',
+    ]),
     install_requires=[
-        'docker==6.1.*',
+        'docker~=6.1.3',
     ],
     entry_points={'console_scripts': [
         'restic-compose-backup = restic_compose_backup.cli:main',
